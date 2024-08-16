@@ -1,5 +1,6 @@
 import {ReactNode} from 'react';
 import {Inter} from 'next/font/google';
+import { Toaster } from "@/components/ui/toaster"
 import {Navbar} from '@/components/Navbar/Navbar';
 import {Footer} from '@/components/Footer';
 import './globals.css';
@@ -24,6 +25,7 @@ export default function RootLayout({children}: Readonly<{ children: ReactNode; }
         <main>
             {children}
         </main>
+        <Toaster />
         <Footer/>
         </body>
         </html>

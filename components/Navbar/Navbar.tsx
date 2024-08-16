@@ -6,7 +6,7 @@ export const Navbar = () => {
 
     const pathName = usePathname();
 
-    if (pathName.match('/login') || pathName.match('/admin')) {
+    if (pathName.match('/login') || pathName.match('/signup') || pathName.match('/admin')) {
         return null;
     }
 
