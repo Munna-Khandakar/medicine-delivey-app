@@ -8,9 +8,17 @@ import Icon from '@/public/icon.png';
 import IconText from '@/public/textIcon.png';
 import {CartComponent} from '@/components/Navbar/CartComponent';
 import {Input} from '../ui/input';
+import {Cookie} from '@/utils/Cookie';
+import {useEffect, useState} from 'react';
 
 
 export const UserNavbar = () => {
+
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     return (
         <header
@@ -29,10 +37,14 @@ export const UserNavbar = () => {
                         className="w-full rounded-lg bg-background pl-8 md:min-w-[350px]"
                     />
                 </div>
-               <div className="flex gap-4 items-center">
-                   <CartComponent/>
-                   <ProfileDropdown/>
-               </div>
+                <div className="flex gap-4 items-center">
+                    <CartComponent/>
+                    {
+                        isMounted && Cookie.isUser()
+                            ? <ProfileDropdown/>
+                            : <Link href={'/login'}>Login</Link>
+                    }
+                </div>
             </div>
         </header>
     );

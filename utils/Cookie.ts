@@ -1,4 +1,7 @@
 import Cookies from 'js-cookie';
+import {jwtDecode} from 'jwt-decode';
+import {UserRole} from '@/types/UserRole';
+import {Token} from '@/types/Token';
 
 export class Cookie {
     static get(name: string): string | undefined {
@@ -18,7 +21,21 @@ export class Cookie {
     }
 
     static isAdmin(): boolean {
-        return !!Cookies.get('admin');
+        const token = Cookies.get('token');
+        if (!token) {
+            return false;
+        }
+        const decodedToken: Token = jwtDecode(token);
+        return decodedToken.role.includes(UserRole.ADMIN);
+    }
+
+    static isUser(): boolean {
+        const token = Cookies.get('token');
+        if (!token) {
+            return false;
+        }
+        const decodedToken: Token = jwtDecode(token);
+        return decodedToken.role.includes(UserRole.USER);
     }
 
     static clearCookies(): void {

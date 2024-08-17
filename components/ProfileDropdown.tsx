@@ -37,7 +37,7 @@ export const ProfileDropdown = () => {
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>
                     <Link href={'/login'}>
-                        Login
+                        Logout
                     </Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>

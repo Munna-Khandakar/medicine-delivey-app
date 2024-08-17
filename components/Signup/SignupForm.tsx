@@ -14,13 +14,13 @@ import {Checkbox} from '@/components/ui/checkbox';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import './Signup.css';
+import {UserRole} from '@/types/UserRole';
 
 type Inputs = {
     userName: string
     password: string
-    otp: string
+    role: string
 }
-
 
 export function SignupForm() {
 
@@ -35,12 +35,10 @@ export function SignupForm() {
     } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-
-        console.log(data);
+        data.role = UserRole.USER;
         api.post('/reg/login', data).then(() => {
             setRegistrationSuccessful(true);
         }).catch((error) => {
-            console.log(error)
             toast({
                 title: error.name,
                 description: error.message,

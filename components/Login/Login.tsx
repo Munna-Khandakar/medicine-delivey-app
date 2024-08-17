@@ -15,18 +15,18 @@ import {
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
-import React from 'react';
-
+import {Cookie} from '@/utils/Cookie';
+import {useEffect} from 'react';
 
 type Inputs = {
     userName: string
     password: string
 }
 
-
 export function LoginForm() {
 
     const {toast} = useToast();
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -34,12 +34,13 @@ export function LoginForm() {
     } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-
-        console.log(data);
-        api.post('/login', data).then((response) => {
-            console.log(response);
-            //set the token
-            // redirect to page
+        api.post('/auth/login', data).then((response) => {
+            Cookie.set('token', response.data.accessToken);
+            if (Cookie.isAdmin()) {
+                router.push('/admin');
+            } else if (Cookie.isUser()) {
+                router.push('/profile');
+            }
         }).catch((error) => {
             console.log(error);
             toast({
@@ -48,6 +49,10 @@ export function LoginForm() {
             });
         });
     };
+
+    useEffect(() => {
+        Cookie.clearCookies();
+    }, [Cookie]);
 
     return (
         <div className="flex items-center justify-center h-screen">
