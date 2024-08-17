@@ -11,9 +11,9 @@ import {ProceedToLogin} from '@/components/Signup/ProceedToLogin';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import {Checkbox} from '@/components/ui/checkbox';
-import './Signup.css';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
+import './Signup.css';
 
 type Inputs = {
     userName: string
@@ -40,6 +40,7 @@ export function SignupForm() {
         api.post('/reg/login', data).then(() => {
             setRegistrationSuccessful(true);
         }).catch((error) => {
+            console.log(error)
             toast({
                 title: error.name,
                 description: error.message,
@@ -83,7 +84,7 @@ export function SignupForm() {
                                         steps == 0 &&
                                         <Fragment>
                                             <div className="grid gap-2">
-                                                <Label htmlFor="fullname">Phone Number</Label>
+                                                <Label htmlFor="userName">Phone Number</Label>
                                                 <Input
                                                     id="userName"
                                                     type="text"

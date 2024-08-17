@@ -13,6 +13,14 @@ export class Cookie {
         Cookies.remove(name);
     }
 
+    static isLoggedIn(): boolean {
+        return !!Cookies.get('token');
+    }
+
+    static isAdmin(): boolean {
+        return !!Cookies.get('admin');
+    }
+
     static clearCookies(): void {
         const cookies = Cookies.get();
         for (const cookie in cookies) {
