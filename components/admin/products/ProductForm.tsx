@@ -1,34 +1,25 @@
-'use client'
+'use client';
 
 import * as React from 'react';
+import {useState} from 'react';
+import Image from 'next/image';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import ReactQuill from 'react-quill';
+import {format} from 'date-fns';
+import {CalendarIcon} from '@radix-ui/react-icons';
+import {Upload} from 'lucide-react';
 import 'react-quill/dist/quill.snow.css';
 
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Upload} from 'lucide-react';
 
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import {CalendarIcon} from '@radix-ui/react-icons';
-import {format} from 'date-fns';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Calendar} from '@/components/ui/calendar';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import Image from 'next/image';
-import {useState} from 'react';
+import {ImageUploader} from '@/components/common/ImageUploader';
 
 type Inputs = {
     name: string
@@ -227,11 +218,7 @@ export const ProductForm = () => {
                                         width="84"
                                     />
                                 </button>
-                                <button
-                                    className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                                    <Upload className="h-4 w-4 text-muted-foreground"/>
-                                    <span className="sr-only">Upload</span>
-                                </button>
+                               <ImageUploader/>
                             </div>
                         </div>
                     </CardContent>
