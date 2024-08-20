@@ -3,6 +3,7 @@ import {Upload} from 'lucide-react';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
 import {ErrorResponse} from '@/types/ErrorResponse';
+import {ByteArray} from '@/constants/ByteArray';
 
 
 type ServerError = {
@@ -11,32 +12,51 @@ type ServerError = {
     };
 };
 
+
 export const ImageUploader = () => {
 
     const {toast} = useToast();
+    const byteArray = ByteArray;
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const convertFileToByteArray = (file: File): Promise<Uint8Array> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const arrayBuffer = reader.result as ArrayBuffer;
+                const byteArray = new Uint8Array(arrayBuffer);
+                resolve(byteArray);
+            };
+            reader.onerror = reject;
+            reader.readAsArrayBuffer(file);
+        });
+    };
+
+    const createFormData = (file: number[], contentType: string, privacyEnabled: boolean) => {
+        return {
+            file: file,
+            contentType: contentType,
+            privacyEnabled: privacyEnabled
+        };
+    };
+
+    const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (e.target.files) {
-            const fileDetails = e.target.files[0];
-            uploadFile(fileDetails).then((res) => {
-                console.log(res);
-            });
+            const file = e.target.files[0];
+            try {
+                const uint8Array = await convertFileToByteArray(file);
+                const byteArray = Array.from(uint8Array);
+                const formData = createFormData(byteArray, 'image/png', false);
+                uploadFile(formData);
+            } catch (error) {
+                console.error('Error converting file to byte array:', error);
+            }
         }
     };
 
-    const uploadFile = async (file: File) => {
+    const uploadFile = async (formData: any) => {
         try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('contentType', 'image/png');
-            formData.append('privacyEnabled', 'false');
-
-            const res = await api.post('/settings/upload-file', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                },
-            });
+            const res = await api.post('/settings/upload-file', formData);
             return res;
         } catch (error) {
             const serverError = (error as ServerError).response.data;
