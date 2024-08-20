@@ -7,7 +7,6 @@ import {useForm, SubmitHandler} from 'react-hook-form';
 import ReactQuill from 'react-quill';
 import {format} from 'date-fns';
 import {CalendarIcon} from '@radix-ui/react-icons';
-import {Upload} from 'lucide-react';
 import 'react-quill/dist/quill.snow.css';
 
 import {cn} from '@/lib/utils';
@@ -20,14 +19,23 @@ import {Calendar} from '@/components/ui/calendar';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {ImageUploader} from '@/components/common/ImageUploader';
+import {ErrorLabel} from '@/components/common/ErrorLabel';
 
 type Inputs = {
-    name: string
-    composition: string
-    company: string
-    type: string
-    price: number
-
+    id: string;
+    name: string;
+    price: number;
+    image: [];
+    category_id: string;
+    discount?: number;
+    brand: string;
+    expires: string;
+    countryOfOrigin?: string;
+    description?: string;
+    howToUse?: string;
+    ingredients?: string;
+    stock: number;
+    coupons: []
 }
 
 export const ProductForm = () => {
@@ -66,7 +74,11 @@ export const ProductForm = () => {
                                     type="text"
                                     className="w-full"
                                     placeholder="medicine name"
+                                    {...register('name', {required: 'Please enter your phone number'})}
                                 />
+                                {
+                                    errors?.name && <ErrorLabel message={errors.name.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="description">Description</Label>
@@ -98,7 +110,11 @@ export const ProductForm = () => {
                                     type="number"
                                     className="w-full"
                                     placeholder="BDT"
+                                    {...register('price', {required: 'Please enter your phone number'})}
                                 />
+                                {
+                                    errors?.price && <ErrorLabel message={errors.price.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="discount">Discount (BDT)</Label>
@@ -107,7 +123,11 @@ export const ProductForm = () => {
                                     type="number"
                                     className="w-full"
                                     placeholder="BDT"
+                                    {...register('discount', {required: 'Please enter your phone number'})}
                                 />
+                                {
+                                    errors?.discount && <ErrorLabel message={errors.discount.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="discount">Available in Stock</Label>
@@ -116,7 +136,11 @@ export const ProductForm = () => {
                                     type="number"
                                     className="w-full"
                                     placeholder=""
+                                    {...register('stock', {required: 'Please enter your phone number'})}
                                 />
+                                {
+                                    errors?.stock && <ErrorLabel message={errors.stock.message!}/>
+                                }
                             </div>
                         </div>
                     </CardContent>
@@ -223,6 +247,7 @@ export const ProductForm = () => {
                         </div>
                     </CardContent>
                 </Card>
+                <Button type="submit" className="w-full mt-4">Save</Button>
             </div>
         </form>
     );

@@ -34,7 +34,7 @@ export const ImageUploader = () => {
 
             const res = await api.post('/settings/upload-file', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data'
                 },
             });
             return res;
