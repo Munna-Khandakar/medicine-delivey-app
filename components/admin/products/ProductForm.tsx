@@ -39,8 +39,8 @@ type Inputs = {
 
 export const ProductForm = () => {
 
-    const [value, setValue] = useState('');
     const [date, setDate] = useState<Date>();
+    const [imageUrl, setImageUrl] = useState('');
 
     const {
         register,
@@ -88,7 +88,7 @@ export const ProductForm = () => {
                                     <Controller
                                         name="description"
                                         control={control}
-                                        render={({ field: { value, onChange } }) => (
+                                        render={({field: {value, onChange}}) => (
                                             <ReactQuill
                                                 value={value}
                                                 onChange={onChange}
@@ -213,17 +213,23 @@ export const ProductForm = () => {
                                 </Popover>
                             </div>
                             <div className="grid gap-3">
-                                <Label htmlFor="category">Origin</Label>
-                                <Select>
-                                    <SelectTrigger id="category" aria-label="Select category">
-                                        <SelectValue placeholder="Select Country"/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="clothing">Bangladesh</SelectItem>
-                                        <SelectItem value="electronics">India</SelectItem>
-                                        <SelectItem value="accessories">China</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="countryOfOrigin">Origin</Label>
+                                <Controller
+                                    name="countryOfOrigin"
+                                    control={control}
+                                    render={({field: {value, onChange}}) => (
+                                        <Select onValueChange={onChange} value={value}>
+                                            <SelectTrigger id="countryOfOrigin" aria-label="Select category">
+                                                <SelectValue placeholder="Select Country"/>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="clothing">Bangladesh</SelectItem>
+                                                <SelectItem value="electronics">India</SelectItem>
+                                                <SelectItem value="accessories">China</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
                             </div>
                         </div>
                     </CardContent>
@@ -239,34 +245,19 @@ export const ProductForm = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="grid gap-2">
-                            <Image
-                                alt="Product image"
-                                className="aspect-square w-full rounded-md object-cover"
-                                height="300"
-                                src="/placeholder.svg"
-                                width="300"
+                            <Controller
+                                name="imageUrl"
+                                control={control}
+                                render={({ field }) => (
+                                    <ImageUploader
+                                        onUploadComplete={(url) => {
+                                            field.onChange(url);
+                                            setImageUrl(url);
+                                        }}
+                                        imageUrl={imageUrl}
+                                    />
+                                )}
                             />
-                            <div className="grid grid-cols-3 gap-2">
-                                <button>
-                                    <Image
-                                        alt="Product image"
-                                        className="aspect-square w-full rounded-md object-cover"
-                                        height="84"
-                                        src="/placeholder.svg"
-                                        width="84"
-                                    />
-                                </button>
-                                <button>
-                                    <Image
-                                        alt="Product image"
-                                        className="aspect-square w-full rounded-md object-cover"
-                                        height="84"
-                                        src="/placeholder.svg"
-                                        width="84"
-                                    />
-                                </button>
-                                <ImageUploader/>
-                            </div>
                         </div>
                     </CardContent>
                 </Card>
