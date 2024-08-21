@@ -3,7 +3,7 @@
 import * as React from 'react';
 import {useState} from 'react';
 import Image from 'next/image';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import ReactQuill from 'react-quill';
 import {format} from 'date-fns';
 import {CalendarIcon} from '@radix-ui/react-icons';
@@ -22,11 +22,10 @@ import {ImageUploader} from '@/components/common/ImageUploader';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 
 type Inputs = {
-    id: string;
-    name: string;
+    productName: string;
     price: number;
-    image: [];
-    category_id: string;
+    imageUrl: string;
+    categoryId: string;
     discount?: number;
     brand: string;
     expires: string;
@@ -35,7 +34,7 @@ type Inputs = {
     howToUse?: string;
     ingredients?: string;
     stock: number;
-    coupons: []
+    coupons: string[]
 }
 
 export const ProductForm = () => {
@@ -47,8 +46,11 @@ export const ProductForm = () => {
         register,
         handleSubmit,
         watch,
+        control,
         formState: {errors},
     } = useForm<Inputs>();
+
+    console.log(watch());
 
     const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
@@ -68,29 +70,35 @@ export const ProductForm = () => {
                     <CardContent>
                         <div className="grid gap-6">
                             <div className="grid gap-3">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="productName">Name</Label>
                                 <Input
-                                    id="name"
+                                    id="productName"
                                     type="text"
                                     className="w-full"
                                     placeholder="medicine name"
-                                    {...register('name', {required: 'Please enter your phone number'})}
+                                    {...register('productName', {required: 'Please enter your phone number'})}
                                 />
                                 {
-                                    errors?.name && <ErrorLabel message={errors.name.message!}/>
+                                    errors?.productName && <ErrorLabel message={errors.productName.message!}/>
                                 }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="description">Description</Label>
                                 <div className="">
-                                    <ReactQuill
-                                        value={value}
-                                        onChange={(value) => setValue(value)}
-                                        placeholder="medicine the descriptions"
-                                        style={{
-                                            maxHeight: '200px',
-                                            overflowY: 'auto',
-                                        }}
+                                    <Controller
+                                        name="description"
+                                        control={control}
+                                        render={({ field: { value, onChange } }) => (
+                                            <ReactQuill
+                                                value={value}
+                                                onChange={onChange}
+                                                placeholder="medicine the descriptions"
+                                                style={{
+                                                    maxHeight: '200px',
+                                                    overflowY: 'auto',
+                                                }}
+                                            />
+                                        )}
                                     />
                                 </div>
                             </div>
@@ -152,17 +160,23 @@ export const ProductForm = () => {
                     <CardContent>
                         <div className="grid gap-6 sm:grid-cols-3">
                             <div className="grid gap-3">
-                                <Label htmlFor="category">Manufactured Company</Label>
-                                <Select>
-                                    <SelectTrigger id="category" aria-label="Select category">
-                                        <SelectValue placeholder="Select category"/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="clothing">Square Ltd</SelectItem>
-                                        <SelectItem value="electronics">ACI Ltd</SelectItem>
-                                        <SelectItem value="accessories">Acme Pharmaceuticals Ltd</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="categoryId">Manufactured Company</Label>
+                                <Controller
+                                    name="categoryId"
+                                    control={control}
+                                    render={({field: {value, onChange}}) => (
+                                        <Select onValueChange={onChange} value={value}>
+                                            <SelectTrigger id="categoryId" aria-label="Select category">
+                                                <SelectValue>{value || 'Select category'}</SelectValue>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="clothing">Square Ltd</SelectItem>
+                                                <SelectItem value="electronics">ACI Ltd</SelectItem>
+                                                <SelectItem value="accessories">Acme Pharmaceuticals Ltd</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="subcategory">Expires In (Date)</Label>
@@ -180,11 +194,20 @@ export const ProductForm = () => {
                                         </Button>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={date}
-                                            onSelect={setDate}
-                                            initialFocus
+                                        <Controller
+                                            name="expires"
+                                            control={control}
+                                            render={({field: {onChange}}) => (
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={date}
+                                                    onSelect={(date) => {
+                                                        setDate(date);
+                                                        onChange(date);
+                                                    }}
+                                                    initialFocus
+                                                />
+                                            )}
                                         />
                                     </PopoverContent>
                                 </Popover>
@@ -242,7 +265,7 @@ export const ProductForm = () => {
                                         width="84"
                                     />
                                 </button>
-                               <ImageUploader/>
+                                <ImageUploader/>
                             </div>
                         </div>
                     </CardContent>
