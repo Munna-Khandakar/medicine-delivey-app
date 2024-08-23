@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
+import api from '@/lib/apiInstance';
+import useSWR from 'swr';
+import {MedicineResponse} from '@/types/MedicineResponse';
 
 const CustomerData = [
     {
@@ -92,22 +95,29 @@ const CustomerData = [
     },
 ];
 
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
+
 export function Orders() {
 
+    const {data, error, isLoading, mutate} = useSWR<MedicineResponse[]>('orders', fetcher, {revalidateOnFocus: false});
+
+
+    console.log(data);
+
     return (
-        <Fragment >
+        <Fragment>
             <SimpleTable
                 title="Orders"
                 subTitle="List of all orders"
                 actionItems={
-                        <div className="relative ml-auto pr-2 flex-1 md:grow-0">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
-                            <Input
-                                type="search"
-                                placeholder="Search..."
-                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                            />
-                        </div>
+                    <div className="relative ml-auto pr-2 flex-1 md:grow-0">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+                        <Input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+                        />
+                    </div>
                 }
                 tableHeader={
                     <TableRow>
@@ -142,7 +152,7 @@ export function Orders() {
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
-                                            <MoreHorizontal/>
+                                        <MoreHorizontal/>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
                                         <DropdownMenuItem>

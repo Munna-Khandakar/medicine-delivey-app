@@ -1,5 +1,5 @@
 'use client';
-import {Fragment} from 'react';
+import {Fragment, useState} from 'react';
 import Image from 'next/image';
 import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
 
@@ -21,92 +21,44 @@ import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import Revital from '@/components/medicine/revital.webp';
 import Link from 'next/link';
+import useSWR from 'swr';
+import {CategoryResponse} from '@/types/CategoryResponse';
+import api from '@/lib/apiInstance';
+import {MedicineResponse} from '@/types/MedicineResponse';
+import {useToast} from '@/components/ui/use-toast';
+import Modal from '@/components/Modal';
 
-const ProductData = [
-    {
-        id: 1,
-        name: 'Napa Extra 500',
-        composition: 'Paracetamol + Caffeine',
-        company: 'Beximco Pharmaceuticals Ltd.',
-        price: 30,
-        type: 'Tablet',
-    },
-    {
-        id: 2,
-        name: 'Zimax',
-        composition: 'Azithromycin Dihydrate',
-        company: 'Square Pharmaceuticals PLC',
-        price: 461,
-        type: 'Injection',
-    },
-    {
-        id: 3,
-        name: 'Napa Extra 500',
-        composition: 'Paracetamol + Caffeine',
-        company: 'Beximco Pharmaceuticals Ltd.',
-        price: 30,
-        type: 'Tablet',
-    },
-    {
-        id: 4,
-        name: 'Zimax',
-        composition: 'Azithromycin Dihydrate',
-        company: 'Square Pharmaceuticals PLC',
-        price: 461,
-        type: 'Injection',
-    },
-    {
-        id: 5,
-        name: 'Napa Extra 500',
-        composition: 'Paracetamol + Caffeine',
-        company: 'Beximco Pharmaceuticals Ltd.',
-        price: 30,
-        type: 'Tablet',
-    },
-    {
-        id: 6,
-        name: 'Zimax',
-        composition: 'Azithromycin Dihydrate',
-        company: 'Square Pharmaceuticals PLC',
-        price: 461,
-        type: 'Injection',
-    },
-    {
-        id: 7,
-        name: 'Napa Extra 500',
-        composition: 'Paracetamol + Caffeine',
-        company: 'Beximco Pharmaceuticals Ltd.',
-        price: 30,
-        type: 'Tablet',
-    },
-    {
-        id: 8,
-        name: 'Zimax',
-        composition: 'Azithromycin Dihydrate',
-        company: 'Square Pharmaceuticals PLC',
-        price: 461,
-        type: 'Injection',
-    },
-    {
-        id: 9,
-        name: 'Napa Extra 500',
-        composition: 'Paracetamol + Caffeine',
-        company: 'Beximco Pharmaceuticals Ltd.',
-        price: 30,
-        type: 'Tablet',
-    },
-    {
-        id: 10,
-        name: 'Zimax',
-        composition: 'Azithromycin Dihydrate',
-        company: 'Square Pharmaceuticals PLC',
-        price: 461,
-        type: 'Injection',
-    }
-];
+const productsFetcher = (url: string) => api.get(url).then((res) => res.data);
 
 
 export function Products() {
+
+    const {toast} = useToast();
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [selectedProductToDelete, setSelectedProductToDelete] = useState('');
+    const {data, error, isLoading, mutate} = useSWR<MedicineResponse[]>('products', productsFetcher, {revalidateOnFocus: false});
+
+    const deleteProduct = () => {
+        api.delete(`${'products'}/${selectedProductToDelete}`)
+            .then(() => {
+                mutate();
+                toast({
+                    title: 'Delete Successfully',
+                    description: 'This category is deleted Successfully.',
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+            }).finally(() => {
+            setSelectedProductToDelete('');
+            setOpenDeleteModal(false);
+        });
+    };
+
+    {
+        if (isLoading) return <p>Loading...</p>;
+        if (error) return <p>Error</p>;
+    }
 
     return (
         <Fragment>
@@ -151,8 +103,8 @@ export function Products() {
                     </TableRow>
                 }
                 tableBody={
-                    ProductData.map((product) => (
-                        <TableRow key={product.id}>
+                    data?.map((product) => (
+                        <TableRow key={product.productId}>
                             <TableCell className="hidden sm:table-cell">
                                 <Image
                                     alt="Product image"
@@ -163,13 +115,13 @@ export function Products() {
                                 />
                             </TableCell>
                             <TableCell className="font-medium">
-                                {product.name}
+                                {product.productName}
                             </TableCell>
-                            <TableCell className="hidden md:table-cell">{product.composition}</TableCell>
-                            <TableCell className="hidden md:table-cell">{product.company}</TableCell>
+                            {/*<TableCell className="hidden md:table-cell">{product.composition}</TableCell>*/}
+                            <TableCell className="hidden md:table-cell">{product.brand}</TableCell>
                             <TableCell>{product.price}</TableCell>
                             <TableCell className="hidden md:table-cell">
-                                <Badge variant={'outline'}>{product.type}</Badge>
+                                <Badge variant={'outline'}>{product.categoryId}</Badge>
                             </TableCell>
                             <TableCell>
                                 <DropdownMenu>
@@ -182,7 +134,12 @@ export function Products() {
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Button variant="destructive" onClick={() => {
+                                                setSelectedProductToDelete(product.productId);
+                                                setOpenDeleteModal(true);
+                                            }}>Delete</Button>
+                                        </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </TableCell>
@@ -190,6 +147,24 @@ export function Products() {
                     ))
                 }
             />
+
+            <Modal isOpen={openDeleteModal} onClose={() => {
+                setSelectedProductToDelete('');
+                setOpenDeleteModal(false);
+            }} title={'Delete Product'}>
+                <div>
+                    <p>Are you sure you want to delete this product?</p>
+                    <div className="flex gap-2">
+                        <Button onClick={deleteProduct}>Yes</Button>
+                        <Button onClick={() => {
+                            setSelectedProductToDelete('');
+                            setOpenDeleteModal(false);
+                        }}>No</Button>
+                    </div>
+                </div>
+            </Modal>
         </Fragment>
     );
 }
+
+

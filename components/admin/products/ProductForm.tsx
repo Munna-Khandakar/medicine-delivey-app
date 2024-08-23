@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import {useState} from 'react';
-import Image from 'next/image';
 import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import ReactQuill from 'react-quill';
 import {format} from 'date-fns';
@@ -20,6 +19,11 @@ import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {ImageUploader} from '@/components/common/ImageUploader';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
+import api from '@/lib/apiInstance';
+import useSWR from 'swr';
+import {CategoryResponse} from '@/types/CategoryResponse';
+import {useToast} from '@/components/ui/use-toast';
+import {useRouter} from 'next/navigation';
 
 type Inputs = {
     productName: string;
@@ -37,10 +41,19 @@ type Inputs = {
     coupons: string[]
 }
 
+const categoriesFetcher = (url: string) => api.get(url).then((res) => res.data);
+
 export const ProductForm = () => {
 
     const [date, setDate] = useState<Date>();
     const [imageUrl, setImageUrl] = useState('');
+    const {toast} = useToast();
+    const router = useRouter();
+    const {
+        data: categories,
+        error: categoriesError,
+        isLoading: categoriesLoading
+    } = useSWR<CategoryResponse[]>('categories', categoriesFetcher, {revalidateOnFocus: false});
 
     const {
         register,
@@ -50,9 +63,21 @@ export const ProductForm = () => {
         formState: {errors},
     } = useForm<Inputs>();
 
-    console.log(watch());
-
-    const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+    const onSubmit: SubmitHandler<Inputs> = (data) => {
+        api.post('/products', data).then((response) => {
+            router.push('/admin/products');
+            toast({
+                title: 'Successful',
+                description: 'Product added successfully',
+            });
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.name,
+                description: error.message,
+            });
+        });
+    };
 
     return (
         <form
@@ -160,7 +185,13 @@ export const ProductForm = () => {
                     <CardContent>
                         <div className="grid gap-6 sm:grid-cols-3">
                             <div className="grid gap-3">
-                                <Label htmlFor="categoryId">Manufactured Company</Label>
+                                <Label htmlFor="categoryId">Category</Label>
+                                {
+                                    categoriesLoading && <p>Loading...</p>
+                                }
+                                {
+                                    categoriesError && <p>Error...</p>
+                                }
                                 <Controller
                                     name="categoryId"
                                     control={control}
@@ -170,9 +201,11 @@ export const ProductForm = () => {
                                                 <SelectValue>{value || 'Select category'}</SelectValue>
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="clothing">Square Ltd</SelectItem>
-                                                <SelectItem value="electronics">ACI Ltd</SelectItem>
-                                                <SelectItem value="accessories">Acme Pharmaceuticals Ltd</SelectItem>
+                                                {
+                                                    categories?.map((category) => (
+                                                        <SelectItem value={category.id}>{category.label}</SelectItem>
+                                                    ))
+                                                }
                                             </SelectContent>
                                         </Select>
                                     )}
@@ -248,7 +281,7 @@ export const ProductForm = () => {
                             <Controller
                                 name="imageUrl"
                                 control={control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <ImageUploader
                                         onUploadComplete={(url) => {
                                             field.onChange(url);
