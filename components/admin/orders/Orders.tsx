@@ -1,7 +1,7 @@
 'use client';
 
 import {Fragment, useState} from 'react';
-import {Check, Eye, Search, X} from 'lucide-react';
+import {Check, Eye, PackageCheck, Search, X} from 'lucide-react';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
@@ -13,14 +13,74 @@ import {Badge} from '@/components/ui/badge';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import Modal from '@/components/Modal';
 import OrderDetailsSLip from '@/components/admin/common/OrderDetailsSLip';
+import {useToast} from '@/components/ui/use-toast';
+import {OrderStauts} from '@/types/enum/OrderStauts';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Orders() {
 
+    const {toast} = useToast();
     const [openOrderDetailsModal, setOpenOrderDetailsModal] = useState(false);
-    const [selectedOrder, setSelectedOrder] = useState<OrderResponse>();
+    const [openOrderAcceptModal, setOpenOrderAcceptModal] = useState(false);
+    const [openOrderCancelModal, setOpenOrderCancelModal] = useState(false);
+    const [openOrderCompleteModal, setOpenOrderCompleteModal] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState('');
     const {data, error, isLoading, mutate} = useSWR<OrderResponse[]>('orders', fetcher, {revalidateOnFocus: false});
+
+    const acceptSelectedOrder = () => {
+        api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.ACCEPTED}).then(() => {
+            toast({
+                title: 'Success',
+                description: 'Order is accepted',
+            });
+            mutate();
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.name,
+                description: error.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+        });
+    };
+
+    const cancelSelectedOrder = () => {
+        api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.FAILED}).then(() => {
+            toast({
+                title: 'Success',
+                description: 'Order is cancelled',
+            });
+            mutate();
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.name,
+                description: error.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+        });
+    };
+
+    const completeSelectedOrder = () => {
+        api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.COMPLETED}).then(() => {
+            toast({
+                title: 'Success',
+                description: 'Order is completed',
+            });
+            mutate();
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.name,
+                description: error.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+        });
+    };
 
     return (
         <Fragment>
@@ -64,7 +124,11 @@ export function Orders() {
                             <TableCell className="flex gap-1">
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button variant={'outline'} size={'icon'}>
+                                        <Button variant={'outline'} size={'icon'}
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setOpenOrderAcceptModal(true);
+                                                }}>
                                             <Check size={15} color={'green'}/>
                                         </Button>
                                     </TooltipTrigger>
@@ -72,7 +136,11 @@ export function Orders() {
                                 </Tooltip>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <Button variant={'outline'} size={'icon'}>
+                                        <Button variant={'outline'} size={'icon'}
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setOpenOrderCancelModal(true);
+                                                }}>
                                             <X size={15} color={'red'}/>
                                         </Button>
                                     </TooltipTrigger>
@@ -80,18 +148,22 @@ export function Orders() {
                                 </Tooltip>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
+                                        <Button variant={'outline'} size={'icon'}
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setOpenOrderCancelModal(true);
+                                                }}>
+                                            <PackageCheck size={15} color={'green'}/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{'Complete this order'}</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
                                         <Button
                                             variant={'outline'} size={'icon'}
                                             onClick={() => {
-                                                setSelectedOrder({
-                                                    ...order,
-                                                    user: {
-                                                        id: 'id',
-                                                        name: 'name',
-                                                        phone: 'phone',
-                                                        address: 'address'
-                                                    }
-                                                });
+                                                setSelectedOrderId(order.id);
                                                 setOpenOrderDetailsModal(true);
                                             }}>
                                             <Eye size={15}/>
@@ -105,12 +177,72 @@ export function Orders() {
                 }
             />
             <Modal isOpen={openOrderDetailsModal} onClose={() => {
-                setSelectedOrder(undefined);
+                setSelectedOrderId('');
                 setOpenOrderDetailsModal(false);
             }} title={'Oder Details'}>
                 {
-                    selectedOrder
-                    && <OrderDetailsSLip order={selectedOrder}/>
+                    selectedOrderId
+                    && <OrderDetailsSLip orderId={selectedOrderId}/>
+                }
+            </Modal>
+            <Modal isOpen={openOrderAcceptModal} onClose={() => {
+                setSelectedOrderId('');
+                setOpenOrderAcceptModal(false);
+            }} title={'Accept Order'}>
+                {
+                    selectedOrderId
+                    && <div>
+                        <div className="text-lg font-normal">Are you sure you want to accept this order?</div>
+                        <div className="flex gap-2 mt-4">
+                            <Button variant={'outline'} onClick={() => {
+                                setOpenOrderAcceptModal(false);
+                            }}>Cancel</Button>
+                            <Button onClick={() => {
+                                setOpenOrderAcceptModal(false);
+                                acceptSelectedOrder();
+                            }}>Accept</Button>
+                        </div>
+                    </div>
+                }
+            </Modal>
+            <Modal isOpen={openOrderCancelModal} onClose={() => {
+                setSelectedOrderId('');
+                setOpenOrderAcceptModal(false);
+            }} title={'Accept Order'}>
+                {
+                    selectedOrderId
+                    && <div>
+                        <div className="text-lg font-normal">Are you sure you want to cancel this order?</div>
+                        <div className="flex gap-2 mt-4">
+                            <Button variant={'outline'} onClick={() => {
+                                setOpenOrderCancelModal(false);
+                            }}>No</Button>
+                            <Button onClick={() => {
+                                setOpenOrderCancelModal(false);
+                                cancelSelectedOrder();
+                            }}>Yes</Button>
+                        </div>
+                    </div>
+                }
+            </Modal>
+            <Modal isOpen={openOrderCompleteModal} onClose={() => {
+                setSelectedOrderId('');
+                setOpenOrderCompleteModal(false);
+            }} title={'Complete Order'}>
+                {
+                    selectedOrderId
+                    && <div>
+                        <div className="text-lg font-normal">Is this order is complete?</div>
+                        <div className="flex gap-2 mt-4">
+                            <Button variant={'outline'} onClick={() => {
+                                setOpenOrderCompleteModal(false);
+                            }}>No</Button>
+                            <Button onClick={() => {
+                                setOpenOrderCompleteModal(false);
+                                completeSelectedOrder();
+                            }}>Yes</Button>
+                        </div>
+                    </div>
                 }
             </Modal>
         </Fragment>

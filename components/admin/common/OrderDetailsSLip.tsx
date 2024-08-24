@@ -4,18 +4,27 @@ import {Banknote} from 'lucide-react';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
 import {OrderResponse} from '@/types/OrderResponse';
+import api from '@/lib/apiInstance';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 type OrderDetailsSLipProps = {
-    order: OrderResponse
+    orderId: string
 };
 
 export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
 
-    const {order} = props;
-    const {name, phone, address} = order.user;
+    const {orderId} = props;
+    const {
+        data: order,
+        error,
+        isLoading,
+        mutate
+    } = useSWR<OrderResponse>(`orders/${orderId}`, fetcher, {revalidateOnFocus: false});
 
     const calculateSubTotal = () => {
-        return order.items?.reduce((acc, item) => {
+        return order?.orderItems?.reduce((acc, item) => {
             return acc + (item.unitPrice * item.quantity);
         }, 0);
     };
@@ -29,7 +38,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                     </CardTitle>
                     <CardDescription>
                         {
-                            order.deliveryDate
+                            order?.deliveryDate
                         }
                     </CardDescription>
                 </div>
@@ -39,7 +48,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                     <div className="font-semibold">Order Details</div>
                     <ul className="grid gap-3">
                         {
-                            order.items?.map((item) => {
+                            order?.orderItems?.map((item) => {
                                 return (
                                     <li key={item.productId} className="flex items-center justify-between">
                                         <span
@@ -58,7 +67,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>৳{order.deliveryCharge}</span>
+                            <span>৳{order?.deliveryCharge}</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Vat</span>
@@ -66,7 +75,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                         </li>
                         <li className="flex items-center justify-between font-semibold">
                             <span className="text-muted-foreground">Total</span>
-                            <span>৳{order.totalAmount}</span>
+                            <span>৳{order?.totalAmount}</span>
                         </li>
                     </ul>
                 </div>
@@ -75,9 +84,9 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                     <div className="grid">
                         <div className="font-semibold">Shipping Information</div>
                         <address className="grid gap-0.5 not-italic text-muted-foreground">
-                            <span>{name}</span>
-                            <span>{phone}</span>
-                            <span>{address}</span>
+                            <span>{order?.user.userName}</span>
+                            <span>{order?.user.phone}</span>
+                            <span>{order?.user.address}</span>
                         </address>
                     </div>
                 </div>
@@ -91,11 +100,10 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                             {/*    Visa*/}
                             {/*</dt>*/}
                             {/*<dd>**** **** **** 4532</dd>*/}
-                            <dt className="flex items-center gap-1 text-muted-foreground">
+                            <dt className="flex items-center gap-1 text-muted-foreground capitalize">
                                 <Banknote className="h-4 w-4"/>
-                                {order.paymentChannel}
+                                {order?.paymentChannel}
                             </dt>
-                            <dd>Cash On Delivery</dd>
                         </div>
                     </dl>
                 </div>

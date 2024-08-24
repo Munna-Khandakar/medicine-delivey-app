@@ -2,11 +2,11 @@ export type OrderResponse = {
     id: string;
     user:{
         id: string;
-        name: string;
+        userName: string;
         phone: string;
         address: string;
     }
-    items: { productId: number; productName: string, unitPrice: number; quantity: number; }[];
+    orderItems: { productId: number; productName: string, unitPrice: number; quantity: number; }[];
     status: string;
     totalAmount: number;
     deliveryCharge: number;
