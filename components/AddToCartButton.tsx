@@ -3,7 +3,6 @@
 import {useEffect, useRef, useState} from 'react';
 import Select from 'react-select';
 import {Button} from '@/components/ui/button';
-import {LocalStorageUtils} from '@/utils/LocalStorageUtils';
 import {useCartStore} from '@/stores/cartStore';
 
 type AddToCartButtonProps = {
@@ -47,7 +46,7 @@ export const AddToCartButton = (props: AddToCartButtonProps) => {
             values.unshift({value: '0', label: 'Remove Item'});
         }
         setQuantityDropDownValues(values);
-    }, [medicineId, selectedQuantity]);
+    }, [medicineId, selectedQuantity, stock]);
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {

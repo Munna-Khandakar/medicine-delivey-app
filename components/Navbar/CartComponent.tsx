@@ -43,7 +43,7 @@ export const CartComponent = () => {
 
     useEffect(() => {
         setCartItemCount(getItemsQuantityCount());
-    }, [items, setCartItemCount]);
+    }, [items, setCartItemCount,getItemsQuantityCount]);
 
     return (
         <Drawer direction="right">

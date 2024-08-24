@@ -203,7 +203,7 @@ export const ProductForm = () => {
                                             <SelectContent>
                                                 {
                                                     categories?.map((category) => (
-                                                        <SelectItem value={category.id}>{category.label}</SelectItem>
+                                                        <SelectItem key={category.id} value={category.id}>{category.label}</SelectItem>
                                                     ))
                                                 }
                                             </SelectContent>

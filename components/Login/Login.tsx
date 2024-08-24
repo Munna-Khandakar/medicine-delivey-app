@@ -52,7 +52,7 @@ export function LoginForm() {
 
     useEffect(() => {
         Cookie.clearCookies();
-    }, [Cookie]);
+    }, []);
 
     return (
         <div className="flex items-center justify-center h-screen">
