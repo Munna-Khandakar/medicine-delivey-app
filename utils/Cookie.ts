@@ -49,6 +49,16 @@ export class Cookie {
 
     }
 
+    static getMyUserId(): string {
+        const token = Cookies.get('token');
+        if (token) {
+            const decodedToken: Token = jwtDecode(token);
+            return decodedToken.userId;
+        } else {
+            return '';
+        }
+    }
+
     static clearCookies(): void {
         const cookies = Cookies.get();
         for (const cookie in cookies) {

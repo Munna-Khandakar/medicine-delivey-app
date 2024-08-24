@@ -44,5 +44,9 @@ export const useCartStore = create<CartState>()((set, getState) => ({
         items.splice(index, 1);
         LocalStorageUtils.setItem('cart', items);
         set({items});
+    },
+    clearCart: () => {
+        LocalStorageUtils.removeItem('cart');
+        set({items: []});
     }
 }));

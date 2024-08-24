@@ -1,22 +1,16 @@
 'use client';
+import {useEffect} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useForm, SubmitHandler} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
 import {Button} from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {Cookie} from '@/utils/Cookie';
-import {useEffect} from 'react';
 
 type Inputs = {
     userName: string

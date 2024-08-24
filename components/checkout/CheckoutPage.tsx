@@ -2,8 +2,11 @@
 
 import {Fragment, useEffect, useState} from 'react';
 import useSWR from 'swr';
+import {useRouter} from 'next/navigation';
 import Image from 'next/image';
 import {Minus, Plus} from 'lucide-react';
+import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {useToast} from '@/components/ui/use-toast';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useCartStore} from '@/stores/cartStore';
 import {Badge} from '@/components/ui/badge';
@@ -13,36 +16,23 @@ import api from '@/lib/apiInstance';
 import {ProductResponse} from '@/types/ProductResponse';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import MedicineDemo from '../medicine/medicine-demo.png';
 import Bill from '@/components/checkout/Bill';
-import {useToast} from '@/components/ui/use-toast';
-import {useRouter} from 'next/navigation';
-import {SubmitHandler, useForm} from 'react-hook-form';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const CheckoutPage = () => {
 
-    const {items, getItemsQuantityCount, incrementItem, decrementItem} = useCartStore();
-
-    const [cartItemCount, setCartItemCount] = useState(0);
     const {toast} = useToast();
     const router = useRouter();
     const [isMounted, setIsMounted] = useState(false);
+    const {items, getItemsQuantityCount, incrementItem, decrementItem, clearCart} = useCartStore();
 
     const {
         data,
         error,
         isLoading,
-        mutate
     } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
-
-    const {
-        register,
-        handleSubmit,
-        formState: {errors}
-    } = useForm();
 
     const placeOrder = () => {
         console.log('Order Placed');
@@ -57,10 +47,10 @@ export const CheckoutPage = () => {
         onSubmit(formData);
     };
 
-
     const onSubmit = (data: any) => {
-        api.post('/orders', data).then((response) => {
+        api.post('/orders', data).then(() => {
             router.push('/orders');
+            clearCart();
             toast({
                 title: 'Successful',
                 description: 'Order placed successfully',
@@ -75,10 +65,6 @@ export const CheckoutPage = () => {
     };
 
     useEffect(() => {
-        setCartItemCount(getItemsQuantityCount());
-    }, [items, setCartItemCount]);
-
-    useEffect(() => {
         setIsMounted(true);
     }, []);
 
@@ -88,7 +74,8 @@ export const CheckoutPage = () => {
 
     return (
         <section className="container mx-auto min-h-screen pb-10">
-            <h1 className="text-slate-800 font-semibold text-lg text-center md:text-start md:text-2xl py-4">Confirm Your Order</h1>
+            <h1 className="text-slate-800 font-semibold text-lg text-center md:text-start md:text-2xl py-4">Confirm Your
+                Order</h1>
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="col-span-1 md:col-span-3">
                     <div className="flex flex-col gap-2 md:gap-4">
@@ -112,9 +99,7 @@ export const CheckoutPage = () => {
                         }
                         {
                             items.map((item, index) => {
-
                                 const product = data?.find(med => med.productId === item.id);
-
                                 return (
                                     <div className="flex items-center justify-start border p-4 rounded-xl gap-2"
                                          key={index}>

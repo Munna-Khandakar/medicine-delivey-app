@@ -1,5 +1,11 @@
 'use client';
 
+import {Fragment, useEffect, useState} from 'react';
+import Image from 'next/image';
+import {useRouter} from 'next/navigation';
+import useSWR from 'swr';
+import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {Minus, Plus, ShoppingCart} from 'lucide-react';
 import {
     Drawer,
     DrawerContent,
@@ -8,46 +14,42 @@ import {
     DrawerTitle,
     DrawerTrigger
 } from '@/components/ui/drawer';
-import {Minus, Plus, ShoppingCart} from 'lucide-react';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useCartStore} from '@/stores/cartStore';
 import {Badge} from '@/components/ui/badge';
-import {Fragment, useEffect, useState} from 'react';
-import Image from 'next/image';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Button} from '@/components/ui/button';
 import api from '@/lib/apiInstance';
-import useSWR from 'swr';
 import {ProductResponse} from '@/types/ProductResponse';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 
 import MedicineDemo from '../medicine/medicine-demo.png';
-import Link from 'next/link';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const CartComponent = () => {
 
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem} = useCartStore();
-
     const [cartItemCount, setCartItemCount] = useState(0);
+    const router = useRouter();
 
     const {
         data,
         error,
         isLoading,
-        mutate
     } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+
+    const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
     useEffect(() => {
         setCartItemCount(getItemsQuantityCount());
-    }, [items, setCartItemCount,getItemsQuantityCount]);
+    }, [items, setCartItemCount, getItemsQuantityCount]);
 
     return (
-        <Drawer direction="right">
-            <DrawerTrigger>
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen} direction="right">
+            <DrawerTrigger onClick={toggleDrawer}>
                 <div className="relative">
                     <ShoppingCart className="w-[26px]"/>
                     {
@@ -148,7 +150,13 @@ export const CartComponent = () => {
                                     <h1 className="text-2xl">No Items In Your Cart</h1>
                                 </div>
                                 : <div className="flex items-center justify-center my-4">
-                                    <Link className="w-full bg-black text-white text-center px-3 py-2 rounded" href={"/checkout"}>Proceed To Checkout</Link>
+                                    <Button type={'button'}
+                                            className="w-full"
+                                            onClick={() => {
+                                                toggleDrawer();
+                                                router.push('/checkout');
+                                            }}
+                                    >Proceed To Checkout</Button>
                                 </div>
                         }
                     </ScrollArea>
