@@ -1,108 +1,26 @@
 'use client';
 
-import {Fragment} from 'react';
-import Image from 'next/image';
-import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
-import Revital from '@/components/medicine/revital.webp';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-    TableCell,
-    TableHead,
-    TableRow,
-} from '@/components/ui/table';
+import {Fragment, useState} from 'react';
+import {Check, Eye, Search, X} from 'lucide-react';
+import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductResponse} from '@/types/ProductResponse';
-
-const CustomerData = [
-    {
-        id: 1,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 2,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 3,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 4,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 5,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 6,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 7,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 8,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 9,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-    {
-        id: 10,
-        name: 'Munna Khandakar',
-        phone: '01794807577',
-        totalOrders: 12,
-        totalSpend: 3000,
-    },
-];
+import {OrderResponse} from '@/types/OrderResponse';
+import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui/badge';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
+import Modal from '@/components/Modal';
+import OrderDetailsSLip from '@/components/admin/common/OrderDetailsSLip';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Orders() {
 
-    const {data, error, isLoading, mutate} = useSWR<ProductResponse[]>('orders', fetcher, {revalidateOnFocus: false});
-
-
-    console.log(data);
+    const [openOrderDetailsModal, setOpenOrderDetailsModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState<OrderResponse>();
+    const {data, error, isLoading, mutate} = useSWR<OrderResponse[]>('orders', fetcher, {revalidateOnFocus: false});
 
     return (
         <Fragment>
@@ -121,52 +39,80 @@ export function Orders() {
                 }
                 tableHeader={
                     <TableRow>
-                        <TableHead className="hidden w-[100px] sm:table-cell">
-                            <span className="sr-only">Image</span>
-                        </TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="hidden md:table-cell">Phone</TableHead>
-                        <TableHead className="hidden md:table-cell">Total Orders</TableHead>
-                        <TableHead>Total Spend</TableHead>
-                        <TableHead>
-                            <span className="sr-only">Actions</span>
-                        </TableHead>
+                        <TableHead>Transaction Id</TableHead>
+                        <TableHead className="hidden md:table-cell">Items</TableHead>
+                        <TableHead className="hidden md:table-cell">Delivery Charge</TableHead>
+                        <TableHead>Total Cost</TableHead>
+                        <TableHead>Delivery Date</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
                     </TableRow>
                 }
                 tableBody={
-                    CustomerData.map((product) => (
-                        <TableRow key={product.id}>
-                            <TableCell className="hidden sm:table-cell">
-                                <Image
-                                    src={Revital}
-                                    alt="medicine"
-                                    width={40}
-                                    height={40}
-                                    className="rounded-md"
-                                />
-                            </TableCell>
-                            <TableCell>{product.name}</TableCell>
-                            <TableCell className="hidden md:table-cell">{product.phone}</TableCell>
-                            <TableCell className="hidden md:table-cell">{product.totalOrders}</TableCell>
-                            <TableCell>{product.totalSpend}</TableCell>
+                    data?.map((order) => (
+                        <TableRow key={order.id}>
+                            <TableCell>{order.transactionId}</TableCell>
+                            <TableCell className="hidden md:table-cell">{'item names'}</TableCell>
+                            <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
+                            <TableCell>{order.totalAmount}</TableCell>
+                            <TableCell>{order.deliveryDate}</TableCell>
                             <TableCell>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger>
-                                        <MoreHorizontal/>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuItem>
-                                            <DropdownMenuLabel>
-                                                <PlusCircle className="mr-2"/>
-                                            </DropdownMenuLabel>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <Badge>
+                                    {order.status}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="flex gap-1">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant={'outline'} size={'icon'}>
+                                            <Check size={15} color={'green'}/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{'Accept this order'}</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant={'outline'} size={'icon'}>
+                                            <X size={15} color={'red'}/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{'Cancel this order'}</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant={'outline'} size={'icon'}
+                                            onClick={() => {
+                                                setSelectedOrder({
+                                                    ...order,
+                                                    user: {
+                                                        id: 'id',
+                                                        name: 'name',
+                                                        phone: 'phone',
+                                                        address: 'address'
+                                                    }
+                                                });
+                                                setOpenOrderDetailsModal(true);
+                                            }}>
+                                            <Eye size={15}/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{'See this order'}</TooltipContent>
+                                </Tooltip>
                             </TableCell>
                         </TableRow>
                     ))
                 }
             />
+            <Modal isOpen={openOrderDetailsModal} onClose={() => {
+                setSelectedOrder(undefined);
+                setOpenOrderDetailsModal(false);
+            }} title={'Oder Details'}>
+                {
+                    selectedOrder
+                    && <OrderDetailsSLip order={selectedOrder}/>
+                }
+            </Modal>
         </Fragment>
     );
 }

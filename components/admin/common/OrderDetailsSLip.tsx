@@ -1,36 +1,23 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import useSWR from 'swr';
 import {Banknote} from 'lucide-react';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
-import {useCartStore} from '@/stores/cartStore';
-import {ProductResponse} from '@/types/ProductResponse';
-import api from '@/lib/apiInstance';
-import {LocalStorageUtils} from '@/utils/LocalStorageUtils';
-import {Cookie} from '@/utils/Cookie';
+import {OrderResponse} from '@/types/OrderResponse';
 
-const fetcher = (url: string) => api.get(url).then((res) => res.data);
+type OrderDetailsSLipProps = {
+    order: OrderResponse
+};
 
-export default function Bill() {
+export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
 
-    const {items} = useCartStore();
-    const today = new Date();
-
-    const {data, error, isLoading, mutate} = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+    const {order} = props;
+    const {name, phone, address} = order.user;
 
     const calculateSubTotal = () => {
-        return items?.reduce((acc, item) => {
-            const product = data?.find((product) => product.productId === item.id);
-            if (!product) return acc;
-            const discountedPrice = product.price - product.discount;
-            return acc + (discountedPrice * item.quantity);
+        return order.items?.reduce((acc, item) => {
+            return acc + (item.unitPrice * item.quantity);
         }, 0);
-    };
-
-    const calculateTotal = () => {
-        return calculateSubTotal() + 70;
     };
 
     return (
@@ -38,16 +25,11 @@ export default function Bill() {
             <CardHeader className="flex flex-row items-start bg-muted/50">
                 <div className="grid gap-0.5">
                     <CardTitle className="group flex items-center gap-2 text-lg">
-                        Your Invoice Details
+                        Invoice Details
                     </CardTitle>
                     <CardDescription>
                         {
-                            today.toLocaleDateString('en-US', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })
+                            order.deliveryDate
                         }
                     </CardDescription>
                 </div>
@@ -57,17 +39,12 @@ export default function Bill() {
                     <div className="font-semibold">Order Details</div>
                     <ul className="grid gap-3">
                         {
-                            items?.map((item) => {
-
-                                const product = data?.find((product) => product.productId === item.id);
-                                const price = product?.price ?? 0;
-                                const discount = product?.discount ?? 0;
-                                const discountedPrice = price - discount;
+                            order.items?.map((item) => {
                                 return (
-                                    <li key={item.id} className="flex items-center justify-between">
+                                    <li key={item.productId} className="flex items-center justify-between">
                                         <span
-                                            className="text-muted-foreground">{product?.productName} x <span>{item.quantity}</span></span>
-                                        <span>৳{discountedPrice}</span>
+                                            className="text-muted-foreground">{item?.productName} x <span>{item.quantity}</span></span>
+                                        <span>৳{item.unitPrice}</span>
                                     </li>
                                 );
                             })
@@ -81,7 +58,7 @@ export default function Bill() {
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>৳70</span>
+                            <span>৳{order.deliveryCharge}</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Vat</span>
@@ -89,7 +66,7 @@ export default function Bill() {
                         </li>
                         <li className="flex items-center justify-between font-semibold">
                             <span className="text-muted-foreground">Total</span>
-                            <span>৳{calculateTotal()}</span>
+                            <span>৳{order.totalAmount}</span>
                         </li>
                     </ul>
                 </div>
@@ -98,9 +75,9 @@ export default function Bill() {
                     <div className="grid">
                         <div className="font-semibold">Shipping Information</div>
                         <address className="grid gap-0.5 not-italic text-muted-foreground">
-                            <span>{LocalStorageUtils?.getProfile()?.name}</span>
-                            <span>{Cookie.getPhoneFromToken()}</span>
-                            <span>{LocalStorageUtils?.getProfile()?.address}</span>
+                            <span>{name}</span>
+                            <span>{phone}</span>
+                            <span>{address}</span>
                         </address>
                     </div>
                 </div>
@@ -116,7 +93,7 @@ export default function Bill() {
                             {/*<dd>**** **** **** 4532</dd>*/}
                             <dt className="flex items-center gap-1 text-muted-foreground">
                                 <Banknote className="h-4 w-4"/>
-                                COD
+                                {order.paymentChannel}
                             </dt>
                             <dd>Cash On Delivery</dd>
                         </div>

@@ -2,7 +2,8 @@
 
 import {Sheet, SheetContent, SheetTrigger} from '@/components/ui/sheet';
 import {Button} from '@/components/ui/button';
-import {Home, LineChart, Package, Package2, PanelLeft, ShoppingCart, Users, Users2} from 'lucide-react';
+import {useRouter} from 'next/navigation';
+import {Home, LineChart, Package, PanelLeft, ShoppingCart, Users} from 'lucide-react';
 import Link from 'next/link';
 import {
     Breadcrumb,
@@ -28,12 +29,13 @@ import {
     CommandList,
 } from '@/components/ui/command';
 import Image from 'next/image';
-import * as React from 'react';
 import {GearIcon} from '@radix-ui/react-icons';
+import {useEffect, useState} from 'react';
 
 export const AdminHeader = () => {
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     const NavItems = [
         {
@@ -63,7 +65,7 @@ export const AdminHeader = () => {
         },
     ];
 
-    React.useEffect(() => {
+    useEffect(() => {
         const down = (e: KeyboardEvent) => {
             if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
@@ -88,9 +90,10 @@ export const AdminHeader = () => {
                     <nav className="grid gap-6 text-lg font-medium">
                         {
                             NavItems.map(({icon: Icon, label, href}) => (
-                                <Link key={label} href={href} className="flex items-center gap-2 p-4 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground">
-                                        <Icon className="h-6 w-6"/>
-                                        <span>{label}</span>
+                                <Link key={label} href={href}
+                                      className="flex items-center gap-2 p-4 rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground">
+                                    <Icon className="h-6 w-6"/>
+                                    <span>{label}</span>
                                 </Link>
                             ))
                         }
@@ -122,26 +125,32 @@ export const AdminHeader = () => {
                        onFocus={() => setOpen(true)}
                 />
 
-                    <CommandDialog open={open} onOpenChange={setOpen}>
-                        <CommandInput placeholder="Type a command or search..."/>
-                        <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading="Settings">
-                                <CommandItem>
-                                    <GearIcon className="mr-2 h-4 w-4"/>
-                                    <span>Change Password</span>
-                                </CommandItem>
-                                <CommandItem>
-                                    <GearIcon className="mr-2 h-4 w-4"/>
-                                    <span>Add Product</span>
-                                </CommandItem>
-                                <CommandItem>
-                                    <GearIcon className="mr-2 h-4 w-4"/>
-                                    <span>Logout</span>
-                                </CommandItem>
-                            </CommandGroup>
-                        </CommandList>
-                    </CommandDialog>
+                <CommandDialog open={open} onOpenChange={setOpen}>
+                    <CommandInput placeholder="Type a command or search..."/>
+                    <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Settings">
+                            <CommandItem>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Change Password</span>
+                            </CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
+                                router.push('/admin/products/new');
+                            }}>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Add Product</span>
+                            </CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
+                                router.push('/logout');
+                            }}>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Logout</span>
+                            </CommandItem>
+                        </CommandGroup>
+                    </CommandList>
+                </CommandDialog>
             </div>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

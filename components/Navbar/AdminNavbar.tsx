@@ -3,17 +3,13 @@ import {Fragment} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {
-    Bell,
     Home,
     LineChart,
-    Package,
-    Package2, Settings,
+    Package, Settings,
     ShoppingCart,
-    Users, Users2,
+    Users,
 } from 'lucide-react';
-import {Button} from '@/components/ui/button';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
-import * as React from 'react';
 
 const NavItems = [
     {
