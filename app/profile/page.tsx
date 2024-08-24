@@ -1,8 +1,7 @@
+import {ProfilePage} from '@/components/profile/ProfilePage';
+
 export default function Page() {
     return (
-        <div>
-            <h1>Profile</h1>
-            <p>Profile page content</p>
-        </div>
+        <ProfilePage/>
     );
 }

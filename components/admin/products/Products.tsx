@@ -1,8 +1,9 @@
 'use client';
 import {Fragment, useState} from 'react';
+import useSWR from 'swr';
 import Image from 'next/image';
-import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
 
+import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
@@ -10,21 +11,15 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuTrigger,
+    DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import {
-    TableCell,
-    TableHead,
-    TableRow,
-} from '@/components/ui/table';
+import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import Revital from '@/components/medicine/revital.webp';
 import Link from 'next/link';
-import useSWR from 'swr';
-import {CategoryResponse} from '@/types/CategoryResponse';
 import api from '@/lib/apiInstance';
-import {MedicineResponse} from '@/types/MedicineResponse';
+import {ProductResponse} from '@/types/ProductResponse';
 import {useToast} from '@/components/ui/use-toast';
 import Modal from '@/components/Modal';
 
@@ -36,7 +31,12 @@ export function Products() {
     const {toast} = useToast();
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [selectedProductToDelete, setSelectedProductToDelete] = useState('');
-    const {data, error, isLoading, mutate} = useSWR<MedicineResponse[]>('products', productsFetcher, {revalidateOnFocus: false});
+    const {
+        data,
+        error,
+        isLoading,
+        mutate
+    } = useSWR<ProductResponse[]>('products', productsFetcher, {revalidateOnFocus: false});
 
     const deleteProduct = () => {
         api.delete(`${'products'}/${selectedProductToDelete}`)

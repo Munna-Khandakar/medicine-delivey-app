@@ -58,4 +58,13 @@ export class LocalStorageUtils {
             this.setItem('cart', cart);
         }
     }
+
+    static setProfile(profile: any) {
+        this.setItem('profile', profile);
+    }
+    static getProfile() {
+        if (this.isLocalStorageAvailable()) {
+            return JSON.parse(this.getItem('profile') || '{}');
+        }
+    }
 }

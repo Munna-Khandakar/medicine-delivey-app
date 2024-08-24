@@ -1,6 +1,7 @@
 export type Category = {
-    label: string;
-    icon: any;
     id: string;
-    category_slug: string;
+    label: string;
+    iconUrl: string;
+    categorySlug: string;
+    subCategories: string[];
 }

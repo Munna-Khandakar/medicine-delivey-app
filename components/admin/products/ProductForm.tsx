@@ -21,9 +21,9 @@ import {ImageUploader} from '@/components/common/ImageUploader';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {CategoryResponse} from '@/types/CategoryResponse';
 import {useToast} from '@/components/ui/use-toast';
 import {useRouter} from 'next/navigation';
+import {Category} from '@/types/Category';
 
 type Inputs = {
     productName: string;
@@ -53,7 +53,7 @@ export const ProductForm = () => {
         data: categories,
         error: categoriesError,
         isLoading: categoriesLoading
-    } = useSWR<CategoryResponse[]>('categories', categoriesFetcher, {revalidateOnFocus: false});
+    } = useSWR<Category[]>('categories', categoriesFetcher, {revalidateOnFocus: false});
 
     const {
         register,

@@ -20,7 +20,7 @@ import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {MedicineResponse} from '@/types/MedicineResponse';
+import {ProductResponse} from '@/types/ProductResponse';
 
 const CustomerData = [
     {
@@ -99,7 +99,7 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Orders() {
 
-    const {data, error, isLoading, mutate} = useSWR<MedicineResponse[]>('orders', fetcher, {revalidateOnFocus: false});
+    const {data, error, isLoading, mutate} = useSWR<ProductResponse[]>('orders', fetcher, {revalidateOnFocus: false});
 
 
     console.log(data);

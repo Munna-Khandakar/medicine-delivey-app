@@ -1,4 +1,4 @@
-export type MedicineResponse = {
+export type ProductResponse = {
     brand: string;
     categoryId: number;
     countryOfOrigin: string;

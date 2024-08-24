@@ -4,14 +4,26 @@ import {useCallback, useEffect, useState} from 'react';
 import {useParams} from 'next/navigation';
 import {MEDICINE} from '@/constants/Medicines';
 import {SimiliarProducts} from '@/components/category_slug/medicine/SimiliarProducts';
-import {MedicineHero} from '@/components/category_slug/medicine/MedicineHero';
+import {ProductHero} from '@/components/category_slug/medicine/ProductHero';
 import {Button} from '@/components/ui/button';
 import {Medicine} from '@/types/Medicine';
+import api from '@/lib/apiInstance';
+import useSWR from 'swr';
+import {ProductResponse} from '@/types/ProductResponse';
 
-export const MedicinePage = () => {
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-    const { medicine_id} = useParams();
+export const ProductPage = () => {
+
+    const {medicine_id} = useParams();
     const [medicine, setMedicine] = useState<Medicine>();
+
+    const {
+        data,
+        error,
+        isLoading,
+        mutate
+    } = useSWR<ProductResponse>(`products/${medicine_id}`, fetcher, {revalidateOnFocus: false});
 
     const getMedicine = useCallback(() => {
         return MEDICINE.find((medicine) => medicine.id === medicine_id);
@@ -19,13 +31,22 @@ export const MedicinePage = () => {
 
     useEffect(() => {
         setMedicine(getMedicine());
-    }, [setMedicine,getMedicine]);
+    }, [setMedicine, getMedicine]);
+
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error...</div>;
+    }
 
     return (
         <section className="container py-4 md:py-8">
             <div className="grid grid-cols-1 md:grid-cols-3">
                 <div className="col-span-1 md:col-span-2 pr-4">
-                    <MedicineHero medicine={medicine!}/>
+                    <ProductHero product={data!}/>
                     <hr className="my-6"/>
                     <SimiliarProducts/>
                 </div>
