@@ -117,7 +117,7 @@ export function Orders() {
                             <TableCell>{order.totalAmount}</TableCell>
                             <TableCell>{order.deliveryDate}</TableCell>
                             <TableCell>
-                                <Badge>
+                                <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
                                     {order.status}
                                 </Badge>
                             </TableCell>
