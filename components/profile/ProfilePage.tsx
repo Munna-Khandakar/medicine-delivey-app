@@ -59,7 +59,7 @@ export const ProfilePage = () => {
     };
 
     return (
-        <section className="container mx-auto h-screen max-w-[60%]">
+        <section className="container mx-auto h-screen max-w-full md:max-w-[60%]">
             <Card>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <CardHeader>
