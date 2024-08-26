@@ -5,11 +5,11 @@ import Link from 'next/link';
 import {Fragment} from 'react';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import MedicineDemo from './medicine-demo.png';
 
 type ProductCardProps = {
-    product: ProductResponse
+    product: ProductType
 }
 
 export function ProductCard(props: ProductCardProps) {

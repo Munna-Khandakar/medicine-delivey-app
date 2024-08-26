@@ -2,34 +2,29 @@
 import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import Image from 'next/image';
-
-import {MoreHorizontal, PlusCircle, Search} from 'lucide-react';
+import {Pencil, PlusCircle, Search, Trash} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import Revital from '@/components/medicine/revital.webp';
 import Link from 'next/link';
 import api from '@/lib/apiInstance';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import {useToast} from '@/components/ui/use-toast';
 import Modal from '@/components/Modal';
 import {Skeleton} from '@/components/ui/skeleton';
+import {Category} from '@/types/Category';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
+import {useRouter} from 'next/navigation';
 
-const productsFetcher = (url: string) => api.get(url).then((res) => res.data);
-
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Products() {
 
     const {toast} = useToast();
+    const router = useRouter();
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [selectedProductToDelete, setSelectedProductToDelete] = useState('');
     const {
@@ -37,7 +32,18 @@ export function Products() {
         error,
         isLoading,
         mutate
-    } = useSWR<ProductResponse[]>('products', productsFetcher, {revalidateOnFocus: false});
+    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+
+    const {
+        data: categories,
+        error: categoriesError,
+        isLoading: categoriesLoading
+    } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
+
+    const getCategoryName = (categoryId: string) => {
+        const category = categories?.find((category) => category.id == categoryId);
+        return category?.label || '-';
+    };
 
     const deleteProduct = () => {
         api.delete(`${'products'}/${selectedProductToDelete}`)
@@ -90,7 +96,7 @@ export function Products() {
                         <TableHead className="hidden md:table-cell">Company</TableHead>
                         <TableHead>Price(BDT)</TableHead>
                         <TableHead className="hidden md:table-cell">
-                            Type
+                            Category
                         </TableHead>
                         <TableHead>
                             <span className="sr-only">Actions</span>
@@ -175,30 +181,40 @@ export function Products() {
                                 <TableCell className="font-medium">
                                     {product.productName}
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell">{product.brand}</TableCell>
+                                <TableCell className="hidden md:table-cell capitalize">{product.brand}</TableCell>
                                 <TableCell>{product.price}</TableCell>
                                 <TableCell className="hidden md:table-cell">
-                                    <Badge variant={'outline'}>{product.categoryId}</Badge>
+                                    <Badge variant={'outline'}>
+                                        {getCategoryName(product.categoryId)}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                                                <MoreHorizontal className="h-4 w-4"/>
-                                                <span className="sr-only">Toggle menu</span>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'Delete'}
+                                                    onClick={() => {
+                                                        router.push(`/admin/products/${product.productId}`)
+                                                    }}>
+                                                <Pencil size={15} color={'green'}/>
                                             </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <Button variant="destructive" onClick={() => {
-                                                    setSelectedProductToDelete(product.productId);
-                                                    setOpenDeleteModal(true);
-                                                }}>Delete</Button>
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Delete'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'Delete'}
+                                                    className="ml-1"
+                                                    onClick={() => {
+                                                        setSelectedProductToDelete(product.productId);
+                                                        setOpenDeleteModal(true);
+                                                    }}>
+                                                <Trash size={15} color={'red'}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Delete'}</TooltipContent>
+                                    </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))

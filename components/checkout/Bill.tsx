@@ -6,7 +6,7 @@ import {Banknote} from 'lucide-react';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Separator} from '@/components/ui/separator';
 import {useCartStore} from '@/stores/cartStore';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import api from '@/lib/apiInstance';
 import {LocalStorageUtils} from '@/utils/LocalStorageUtils';
 import {Cookie} from '@/utils/Cookie';
@@ -18,7 +18,7 @@ export default function Bill() {
     const {items} = useCartStore();
     const today = new Date();
 
-    const {data, error, isLoading, mutate} = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+    const {data, error, isLoading, mutate} = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     const calculateSubTotal = () => {
         return items?.reduce((acc, item) => {

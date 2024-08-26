@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import ReactQuill from 'react-quill';
 import {format} from 'date-fns';
@@ -24,27 +24,19 @@ import useSWR from 'swr';
 import {useToast} from '@/components/ui/use-toast';
 import {useRouter} from 'next/navigation';
 import {Category} from '@/types/Category';
-
-type Inputs = {
-    productName: string;
-    price: number;
-    imageUrl: string;
-    categoryId: string;
-    discount?: number;
-    brand: string;
-    expires: string;
-    countryOfOrigin?: string;
-    description?: string;
-    howToUse?: string;
-    ingredients?: string;
-    stock: number;
-    coupons: string[]
-}
+import {ProductType} from '@/types/ProductType';
+import {Simulate} from 'react-dom/test-utils';
+import reset = Simulate.reset;
 
 const categoriesFetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const ProductForm = () => {
+type ProductFormProps = {
+    product?: ProductType
+}
 
+export const ProductForm = (props: ProductFormProps) => {
+
+    const {product} = props;
     const [date, setDate] = useState<Date>();
     const [imageUrl, setImageUrl] = useState('');
     const {toast} = useToast();
@@ -60,15 +52,19 @@ export const ProductForm = () => {
         handleSubmit,
         watch,
         control,
-        formState: {errors},
-    } = useForm<Inputs>();
+        reset,
+        formState: {errors, isDirty},
+    } = useForm<ProductType>();
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
-        api.post('/products/create', data).then((response) => {
+    const onSubmit: SubmitHandler<ProductType> = (data) => {
+        const url = product ? `/products/${product.productId}` : '/products/create';
+        const method = product ? 'put' : 'post';
+
+        api[method](url, data).then((response) => {
             router.push('/admin/products');
             toast({
                 title: 'Successful',
-                description: 'Product added successfully',
+                description: `Product ${product ? 'updated' : 'added'} successfully`,
             });
         }).catch((error) => {
             console.log(error);
@@ -78,6 +74,14 @@ export const ProductForm = () => {
             });
         });
     };
+
+    useEffect(() => {
+        if (product) {
+            setDate(new Date(product.expires));
+            setImageUrl(product.imageUrl);
+            reset(product);
+        }
+    }, [product, reset]);
 
     return (
         <form
@@ -213,40 +217,6 @@ export const ProductForm = () => {
                                 />
                             </div>
                             <div className="grid gap-3">
-                                <Label htmlFor="subcategory">Expires In (Date)</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant={'outline'}
-                                            className={cn(
-                                                'w-[240px] justify-start text-left font-normal',
-                                                !date && 'text-muted-foreground'
-                                            )}
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4"/>
-                                            {date ? format(date, 'PPP') : <span>Pick a date</span>}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Controller
-                                            name="expires"
-                                            control={control}
-                                            render={({field: {onChange}}) => (
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={date}
-                                                    onSelect={(date) => {
-                                                        setDate(date);
-                                                        onChange(date);
-                                                    }}
-                                                    initialFocus
-                                                />
-                                            )}
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-                            <div className="grid gap-3">
                                 <Label htmlFor="countryOfOrigin">Origin</Label>
                                 <Controller
                                     name="countryOfOrigin"
@@ -284,6 +254,40 @@ export const ProductForm = () => {
                                     )}
                                 />
                             </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="subcategory">Expires In (Date)</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant={'outline'}
+                                            className={cn(
+                                                'w-[240px] justify-start text-left font-normal',
+                                                !date && 'text-muted-foreground'
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2 h-4 w-4"/>
+                                            {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Controller
+                                            name="expires"
+                                            control={control}
+                                            render={({field: {onChange}}) => (
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={date}
+                                                    onSelect={(date) => {
+                                                        setDate(date);
+                                                        onChange(date);
+                                                    }}
+                                                    initialFocus
+                                                />
+                                            )}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -314,7 +318,13 @@ export const ProductForm = () => {
                         </div>
                     </CardContent>
                 </Card>
-                <Button type="submit" className="w-full mt-4">Save</Button>
+                <Button
+                    type="submit" className="w-full mt-4"
+                    disabled={!isDirty}
+                    variant={isDirty ? 'default' : 'secondary'}
+                >
+                    Save
+                </Button>
             </div>
         </form>
     );

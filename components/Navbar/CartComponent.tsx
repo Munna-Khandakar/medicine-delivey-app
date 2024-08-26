@@ -20,7 +20,7 @@ import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Button} from '@/components/ui/button';
 import api from '@/lib/apiInstance';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 
@@ -39,7 +39,7 @@ export const CartComponent = () => {
         data,
         error,
         isLoading,
-    } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 

@@ -6,7 +6,7 @@ import {MEDICINE} from '@/constants/Medicines';
 import {ProductCard} from '@/components/medicine/ProductCard';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
@@ -23,7 +23,7 @@ export const SimiliarProducts = () => {
         error,
         isLoading,
         mutate
-    } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
 
     return (

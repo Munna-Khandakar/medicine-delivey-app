@@ -1,12 +1,14 @@
 'use client';
 
 import {Fragment, useState} from 'react';
+import useSWR from 'swr';
+import {format} from 'date-fns';
+import {DateRange} from 'react-day-picker';
 import {Check, Eye, PackageCheck, Search, X} from 'lucide-react';
+import {CalendarIcon} from '@radix-ui/react-icons';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
-import api from '@/lib/apiInstance';
-import useSWR from 'swr';
 import {OrderResponse} from '@/types/OrderResponse';
 import {Button} from '@/components/ui/button';
 import {Badge} from '@/components/ui/badge';
@@ -16,18 +18,33 @@ import OrderDetailsSLip from '@/components/admin/common/OrderDetailsSLip';
 import {useToast} from '@/components/ui/use-toast';
 import {OrderStauts} from '@/types/enum/OrderStauts';
 import {Skeleton} from '@/components/ui/skeleton';
+import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
+import {Calendar} from '@/components/ui/calendar';
+import {MedicineUtils} from '@/utils/MedicineUtils';
+import {cn} from '@/lib/utils';
+import api from '@/lib/apiInstance';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Orders() {
 
     const {toast} = useToast();
+
+    const [date, setDate] = useState<DateRange | undefined>({
+        from: new Date(new Date().setHours(0, 0, 0, 0)),
+        to: new Date(),
+    });
     const [openOrderDetailsModal, setOpenOrderDetailsModal] = useState(false);
     const [openOrderAcceptModal, setOpenOrderAcceptModal] = useState(false);
     const [openOrderCancelModal, setOpenOrderCancelModal] = useState(false);
     const [openOrderCompleteModal, setOpenOrderCompleteModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState('');
-    const {data, error, isLoading, mutate} = useSWR<OrderResponse[]>('orders', fetcher, {revalidateOnFocus: false});
+    const {
+        data,
+        error,
+        isLoading,
+        mutate
+    } = useSWR<OrderResponse[]>(date ? `orders/within-date?startDate=${date?.from!.toISOString()}&endDate=${date.to?.toISOString()}` : null, fetcher, {revalidateOnFocus: false});
 
     const acceptSelectedOrder = () => {
         api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.ACCEPTED}).then(() => {
@@ -89,13 +106,51 @@ export function Orders() {
                 title="Orders"
                 subTitle="List of all orders"
                 actionItems={
-                    <div className="relative ml-auto pr-2 flex-1 md:grow-0">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
-                        <Input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                        />
+                    <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    id="date"
+                                    variant={'outline'}
+                                    className={cn(
+                                        'w-[300px] justify-start text-left font-normal',
+                                        !date && 'text-muted-foreground'
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4"/>
+                                    {date?.from ? (
+                                        date.to ? (
+                                            <>
+                                                {format(date.from, 'LLL dd, y')} -{' '}
+                                                {format(date.to, 'LLL dd, y')}
+                                            </>
+                                        ) : (
+                                            format(date.from, 'LLL dd, y')
+                                        )
+                                    ) : (
+                                        <span>Pick a date</span>
+                                    )}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    initialFocus
+                                    mode="range"
+                                    defaultMonth={date?.from}
+                                    selected={date}
+                                    onSelect={setDate}
+                                    numberOfMonths={2}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <div className="relative">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+                            <Input
+                                type="search"
+                                placeholder="Search..."
+                                className="w-full rounded-md bg-background pl-8 md:w-[200px] lg:w-[336px]"
+                            />
+                        </div>
                     </div>
                 }
                 tableHeader={
@@ -176,7 +231,8 @@ export function Orders() {
                         : data?.map((order) => (
                             <TableRow key={order.id}>
                                 <TableCell>{order.transactionId}</TableCell>
-                                <TableCell className="hidden md:table-cell">{'item names'}</TableCell>
+                                <TableCell
+                                    className="hidden md:table-cell">{MedicineUtils.getNamesFromOrderItems(order.orderItems)}</TableCell>
                                 <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
                                 <TableCell>{order.totalAmount}</TableCell>
                                 <TableCell>{order.deliveryDate}</TableCell>

@@ -1,26 +1,20 @@
 'use client';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import Link from 'next/link';
 import useSWR from 'swr';
 import api from '@/lib/apiInstance';
 import {useEffect, useState} from 'react';
 import {Cookie} from '@/utils/Cookie';
-import {OrderItem, OrderResponse} from '@/types/OrderResponse';
+import {OrderResponse} from '@/types/OrderResponse';
 import {Skeleton} from '@/components/ui/skeleton';
 import NoOrderImg from './no-order.svg';
 import Image from 'next/image';
+import {MedicineUtils} from '@/utils/MedicineUtils';
 
-type CardProps = React.ComponentProps<typeof Card>
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export function OrdersList({className, ...props}: CardProps) {
+export function OrdersList() {
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
 
     const {
@@ -34,10 +28,6 @@ export function OrdersList({className, ...props}: CardProps) {
         const id = Cookie.getMyUserId();
         if (id) setOwnUserId(id);
     }, []);
-
-    const getNamesfromOrderItems = (orderItems: OrderItem[]) => {
-        return orderItems.map((item) => item.productName).join(', ');
-    };
 
     return (
         <div className="container p-4 min-h-screen">
@@ -83,7 +73,7 @@ export function OrdersList({className, ...props}: CardProps) {
                                             <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500"/>
                                             <div className="space-y-1">
                                                 <p className="text-sm font-medium leading-none">
-                                                    {getNamesfromOrderItems(order.orderItems)}
+                                                    {MedicineUtils.getNamesFromOrderItems(order.orderItems)}
                                                 </p>
                                                 <p className="text-sm text-muted-foreground">
                                                     {order.status}

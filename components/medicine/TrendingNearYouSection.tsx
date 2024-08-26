@@ -4,7 +4,7 @@ import {SectionLabel} from '@/components/SectionLabel';
 import {ProductCard} from '@/components/medicine/ProductCard';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -21,7 +21,7 @@ export const TrendingNearYouSection = () => {
         error,
         isLoading,
         mutate
-    } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
+    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     return (
         <section className="container mx-auto">

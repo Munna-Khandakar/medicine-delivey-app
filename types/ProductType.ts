@@ -1,8 +1,8 @@
-export type ProductResponse = {
+export type ProductType = {
     brand: string;
-    categoryId: number;
+    categoryId: string;
     countryOfOrigin: string;
-    coupons: any[];
+    coupons: string[];
     description: string;
     discount: number;
     expires: string;

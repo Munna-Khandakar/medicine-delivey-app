@@ -6,10 +6,10 @@ import {Fragment} from 'react';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {AddToCartButton} from '@/components/AddToCartButton';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import MedicineDemo from '../../medicine/medicine-demo.png';
 type ProductHeroProps = {
-    product: ProductResponse
+    product: ProductType
 }
 
 export const ProductHero = (props: ProductHeroProps) => {

@@ -8,7 +8,7 @@ import {ProductHero} from '@/components/category_slug/medicine/ProductHero';
 import {Medicine} from '@/types/Medicine';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductResponse} from '@/types/ProductResponse';
+import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 
 
@@ -24,7 +24,7 @@ export const ProductPage = () => {
         error,
         isLoading,
         mutate
-    } = useSWR<ProductResponse>(`products/${medicine_id}`, fetcher, {revalidateOnFocus: false});
+    } = useSWR<ProductType>(`products/${medicine_id}`, fetcher, {revalidateOnFocus: false});
 
     const getMedicine = useCallback(() => {
         return MEDICINE.find((medicine) => medicine.id === medicine_id);
