@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import ReactQuill from 'react-quill';
@@ -25,8 +24,6 @@ import {useToast} from '@/components/ui/use-toast';
 import {useRouter} from 'next/navigation';
 import {Category} from '@/types/Category';
 import {ProductType} from '@/types/ProductType';
-import {Simulate} from 'react-dom/test-utils';
-import reset = Simulate.reset;
 
 const categoriesFetcher = (url: string) => api.get(url).then((res) => res.data);
 

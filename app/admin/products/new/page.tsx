@@ -1,7 +1,9 @@
 import {ProductForm} from '@/components/admin/products/ProductForm';
 
-export default function page() {
+export default function Page() {
     return (
-        <ProductForm/>
+        <div>
+            {typeof window !== 'undefined' && <ProductForm/>}
+        </div>
     );
 }
