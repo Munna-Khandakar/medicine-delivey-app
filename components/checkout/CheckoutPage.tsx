@@ -18,6 +18,8 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import MedicineDemo from '../medicine/medicine-demo.png';
 import Bill from '@/components/checkout/Bill';
+import {Cookie} from '@/utils/Cookie';
+import {User} from '@/types/User';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -25,6 +27,7 @@ export const CheckoutPage = () => {
 
     const {toast} = useToast();
     const router = useRouter();
+    const [ownUserId, setOwnUserId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem, clearCart} = useCartStore();
 
@@ -33,6 +36,25 @@ export const CheckoutPage = () => {
         error,
         isLoading,
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+
+    const {
+        data: user,
+        error: userError,
+        isLoading: userLoading,
+    } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
+
+    const proccedToOrder = () => {
+        if (user!.address == null || user!.userName == null) {
+            router.push('/profile');
+            toast({
+                title: 'Name and Address Required',
+                description: 'Please Update your profile to complete this order',
+            });
+        } else {
+            placeOrder();
+        }
+
+    };
 
     const placeOrder = () => {
         const formData = {
@@ -48,7 +70,7 @@ export const CheckoutPage = () => {
 
     const onSubmit = (data: any) => {
         api.post('/orders', data).then(() => {
-            router.push('/orders');
+            router.push('/order');
             clearCart();
             toast({
                 title: 'Successful',
@@ -62,6 +84,11 @@ export const CheckoutPage = () => {
             });
         });
     };
+
+    useEffect(() => {
+        const id = Cookie.getMyUserId();
+        if (id) setOwnUserId(id);
+    }, []);
 
     useEffect(() => {
         setIsMounted(true);
@@ -160,7 +187,9 @@ export const CheckoutPage = () => {
                             ? <div className="flex items-center justify-center h-full">
                                 <h1 className="text-2xl">No Items In Your Cart</h1>
                             </div>
-                            : <Button className="align-bottom w-full my-1 md:my-2" onClick={placeOrder}>
+                            : <Button
+                                disabled={!user || userLoading}
+                                className="align-bottom w-full my-1 md:my-2" onClick={proccedToOrder}>
                                 Confirm Order
                             </Button>
                     }

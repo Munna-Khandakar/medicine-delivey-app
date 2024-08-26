@@ -62,15 +62,15 @@ export function OrdersList() {
                                 <Image src={NoOrderImg} alt={'no order'}/>
                                 <p>No orders found</p>
                             </div>
-                            : <div>
+                            : <div className="flex flex-col gap-2">
                                 {
                                     data?.map((order, index) => (
                                         <Link
                                             href={'/order/1'}
                                             key={index}
-                                            className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+                                            className="flex gap-3 items-center py-1 rounded-md hover:bg-slate-50"
                                         >
-                                            <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500"/>
+                                            <span className="flex h-2 w-2 rounded-full bg-sky-500"/>
                                             <div className="space-y-1">
                                                 <p className="text-sm font-medium leading-none">
                                                     {MedicineUtils.getNamesFromOrderItems(order.orderItems)}

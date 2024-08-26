@@ -29,12 +29,11 @@ export function LoginForm() {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         api.post('/auth/login', data).then((response) => {
-            console.log(response.data);
             Cookie.set('token', response.data.accessToken);
             if (Cookie.isAdmin()) {
                 router.push('/admin');
             }
-            router.push('/profile');
+            router.push('/');
 
         }).catch((error) => {
             console.log(error.response.data.message);

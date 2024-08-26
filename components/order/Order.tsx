@@ -59,9 +59,9 @@ export default function Order() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuItem>Edit</DropdownMenuItem>
-                                <DropdownMenuItem>Export</DropdownMenuItem>
-                                <DropdownMenuSeparator/>
-                                <DropdownMenuItem>Trash</DropdownMenuItem>
+                                <DropdownMenuItem>Delete</DropdownMenuItem>
+                                {/*<DropdownMenuSeparator/>*/}
+                                {/*<DropdownMenuItem>Trash</DropdownMenuItem>*/}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
