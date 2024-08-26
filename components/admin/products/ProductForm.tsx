@@ -64,7 +64,7 @@ export const ProductForm = () => {
     } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-        api.post('/products', data).then((response) => {
+        api.post('/products/create', data).then((response) => {
             router.push('/admin/products');
             toast({
                 title: 'Successful',
@@ -203,7 +203,8 @@ export const ProductForm = () => {
                                             <SelectContent>
                                                 {
                                                     categories?.map((category) => (
-                                                        <SelectItem key={category.id} value={category.id}>{category.label}</SelectItem>
+                                                        <SelectItem key={category.id}
+                                                                    value={category.id}>{category.label}</SelectItem>
                                                     ))
                                                 }
                                             </SelectContent>
@@ -259,6 +260,25 @@ export const ProductForm = () => {
                                                 <SelectItem value="clothing">Bangladesh</SelectItem>
                                                 <SelectItem value="electronics">India</SelectItem>
                                                 <SelectItem value="accessories">China</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="brand">Brand</Label>
+                                <Controller
+                                    name="brand"
+                                    control={control}
+                                    render={({field: {value, onChange}}) => (
+                                        <Select onValueChange={onChange} value={value}>
+                                            <SelectTrigger id="brand" aria-label="Select Brand">
+                                                <SelectValue placeholder="Select Brand"/>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="square">Square Ltd</SelectItem>
+                                                <SelectItem value="skf">SKF</SelectItem>
+                                                <SelectItem value="beximco">Beximco</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}

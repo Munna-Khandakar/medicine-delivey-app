@@ -13,11 +13,11 @@ import {Input} from '@/components/ui/input';
 import {Checkbox} from '@/components/ui/checkbox';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
-import './Signup.css';
 import {UserRole} from '@/types/UserRole';
+import './Signup.css';
 
 type Inputs = {
-    userName: string
+    phoneNumber: string
     password: string
     role: string
 }
@@ -53,7 +53,7 @@ export function SignupForm() {
         if (steps == 1) {
             return setRegistrationSuccessful(true);
         }
-        trigger(['userName', 'password']).then((valid) => {
+        trigger(['phoneNumber', 'password']).then((valid) => {
             if (valid) {
                 setSteps(p => p + 1);
             }
@@ -87,10 +87,10 @@ export function SignupForm() {
                                                     id="userName"
                                                     type="text"
                                                     placeholder="01XXXXXXXXX"
-                                                    {...register('userName', {required: 'Please enter your phone number'})}
+                                                    {...register('phoneNumber', {required: 'Please enter your phone number'})}
                                                 />
                                                 {
-                                                    errors?.userName && <ErrorLabel message={errors.userName.message!}/>
+                                                    errors?.phoneNumber && <ErrorLabel message={errors.phoneNumber.message!}/>
                                                 }
                                             </div>
                                             <div className="grid gap-2">

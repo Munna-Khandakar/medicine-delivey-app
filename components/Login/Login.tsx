@@ -13,7 +13,7 @@ import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {Cookie} from '@/utils/Cookie';
 
 type Inputs = {
-    userName: string
+    phoneNumber: string
     password: string
 }
 
@@ -29,17 +29,18 @@ export function LoginForm() {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         api.post('/auth/login', data).then((response) => {
+            console.log(response.data);
             Cookie.set('token', response.data.accessToken);
             if (Cookie.isAdmin()) {
                 router.push('/admin');
-            } else if (Cookie.isUser()) {
-                router.push('/profile');
             }
+            router.push('/profile');
+
         }).catch((error) => {
-            console.log(error);
+            console.log(error.response.data.message);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.code,
+                description: error.response.data.message,
             });
         });
     };
@@ -61,15 +62,15 @@ export function LoginForm() {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="userName">Phone Number</Label>
+                                <Label htmlFor="phoneNumber">Phone Number</Label>
                                 <Input
-                                    id="userName"
+                                    id="phoneNumber"
                                     type="text"
                                     placeholder="01XXXXXXXXX"
-                                    {...register('userName', {required: 'Please enter your phone number'})}
+                                    {...register('phoneNumber', {required: 'Please enter your phone number'})}
                                 />
                                 {
-                                    errors?.userName && <ErrorLabel message={errors.userName.message!}/>
+                                    errors?.phoneNumber && <ErrorLabel message={errors.phoneNumber.message!}/>
                                 }
                             </div>
                             <div className="grid gap-2">

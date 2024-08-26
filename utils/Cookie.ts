@@ -34,7 +34,9 @@ export class Cookie {
         if (!token) {
             return false;
         }
+        console.log(token);
         const decodedToken: Token = jwtDecode(token);
+        console.log(decodedToken);
         return decodedToken.role.includes(UserRole.USER);
     }
 

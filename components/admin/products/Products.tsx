@@ -22,6 +22,7 @@ import api from '@/lib/apiInstance';
 import {ProductResponse} from '@/types/ProductResponse';
 import {useToast} from '@/components/ui/use-toast';
 import Modal from '@/components/Modal';
+import {Skeleton} from '@/components/ui/skeleton';
 
 const productsFetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -55,11 +56,6 @@ export function Products() {
         });
     };
 
-    {
-        if (isLoading) return <p>Loading...</p>;
-        if (error) return <p>Error</p>;
-    }
-
     return (
         <Fragment>
             <SimpleTable
@@ -91,7 +87,6 @@ export function Products() {
                             <span className="sr-only">Image</span>
                         </TableHead>
                         <TableHead>Name</TableHead>
-                        <TableHead className="hidden md:table-cell">Composition</TableHead>
                         <TableHead className="hidden md:table-cell">Company</TableHead>
                         <TableHead>Price(BDT)</TableHead>
                         <TableHead className="hidden md:table-cell">
@@ -103,48 +98,110 @@ export function Products() {
                     </TableRow>
                 }
                 tableBody={
-                    data?.map((product) => (
-                        <TableRow key={product.productId}>
-                            <TableCell className="hidden sm:table-cell">
-                                <Image
-                                    alt="Product image"
-                                    className="aspect-square rounded-md object-cover"
-                                    height="64"
-                                    src={Revital}
-                                    width="64"
-                                />
-                            </TableCell>
-                            <TableCell className="font-medium">
-                                {product.productName}
-                            </TableCell>
-                            {/*<TableCell className="hidden md:table-cell">{product.composition}</TableCell>*/}
-                            <TableCell className="hidden md:table-cell">{product.brand}</TableCell>
-                            <TableCell>{product.price}</TableCell>
-                            <TableCell className="hidden md:table-cell">
-                                <Badge variant={'outline'}>{product.categoryId}</Badge>
-                            </TableCell>
-                            <TableCell>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                                            <MoreHorizontal className="h-4 w-4"/>
-                                            <span className="sr-only">Toggle menu</span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <Button variant="destructive" onClick={() => {
-                                                setSelectedProductToDelete(product.productId);
-                                                setOpenDeleteModal(true);
-                                            }}>Delete</Button>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
-                    ))
+                    isLoading
+                        ? <Fragment>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                        </Fragment>
+                        : data?.map((product) => (
+                            <TableRow key={product.productId}>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Image
+                                        alt="Product image"
+                                        className="aspect-square rounded-md object-cover"
+                                        height="64"
+                                        src={Revital}
+                                        width="64"
+                                    />
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    {product.productName}
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">{product.brand}</TableCell>
+                                <TableCell>{product.price}</TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Badge variant={'outline'}>{product.categoryId}</Badge>
+                                </TableCell>
+                                <TableCell>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                                                <MoreHorizontal className="h-4 w-4"/>
+                                                <span className="sr-only">Toggle menu</span>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <Button variant="destructive" onClick={() => {
+                                                    setSelectedProductToDelete(product.productId);
+                                                    setOpenDeleteModal(true);
+                                                }}>Delete</Button>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))
                 }
             />
 
