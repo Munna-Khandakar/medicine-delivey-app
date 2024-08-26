@@ -1,12 +1,12 @@
 export type OrderResponse = {
     id: string;
-    user:{
+    user: {
         id: string;
         userName: string;
         phone: string;
         address: string;
     }
-    orderItems: { productId: number; productName: string, unitPrice: number; quantity: number; }[];
+    orderItems: OrderItem[];
     status: string;
     totalAmount: number;
     deliveryCharge: number;
@@ -15,4 +15,11 @@ export type OrderResponse = {
     paymentChannel: string;
     transactionId: string;
     orderDate: string;
+}
+
+export type OrderItem = {
+    productId: number;
+    productName: string;
+    unitPrice: number;
+    quantity: number;
 }

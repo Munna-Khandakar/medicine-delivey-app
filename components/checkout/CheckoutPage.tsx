@@ -35,7 +35,6 @@ export const CheckoutPage = () => {
     } = useSWR<ProductResponse[]>('products', fetcher, {revalidateOnFocus: false});
 
     const placeOrder = () => {
-        console.log('Order Placed');
         const formData = {
             items: items.map(item => {
                 return {
@@ -69,7 +68,7 @@ export const CheckoutPage = () => {
     }, []);
 
     if (!isMounted) {
-        return null;
+        return <div className="h-screen"></div>;
     }
 
     return (

@@ -24,7 +24,6 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 export const ProfilePage = () => {
 
     const {toast} = useToast();
-    const router = useRouter();
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
 
     const {
@@ -33,8 +32,6 @@ export const ProfilePage = () => {
         isLoading,
         mutate
     } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
-
-    console.log(data);
 
     const {
         register,
@@ -46,7 +43,7 @@ export const ProfilePage = () => {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         if (ownUserId) {
-            api.post(`/users/${ownUserId}`, data).then((response) => {
+            api.put(`/users/${ownUserId}`, data).then((response) => {
                 mutate();
                 toast({
                     title: 'Successful',
@@ -63,8 +60,8 @@ export const ProfilePage = () => {
 
 
     useEffect(() => {
-        const pp = Cookie.getMyUserId();
-        if (pp) setOwnUserId(pp);
+        const id = Cookie.getMyUserId();
+        if (id) setOwnUserId(id);
     }, []);
 
     useEffect(() => {

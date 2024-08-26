@@ -26,7 +26,7 @@ export class Cookie {
             return false;
         }
         const decodedToken: Token = jwtDecode(token);
-        return decodedToken.role.includes(UserRole.ADMIN);
+        return decodedToken.role === UserRole.ADMIN;
     }
 
     static isUser(): boolean {
@@ -34,10 +34,8 @@ export class Cookie {
         if (!token) {
             return false;
         }
-        console.log(token);
         const decodedToken: Token = jwtDecode(token);
-        console.log(decodedToken);
-        return decodedToken.role.includes(UserRole.USER);
+        return decodedToken.role === UserRole.USER;
     }
 
     static getPhoneFromToken(): string {

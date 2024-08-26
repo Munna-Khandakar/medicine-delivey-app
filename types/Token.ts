@@ -4,7 +4,7 @@ export type Token = {
     iss: string;
     aud: string;
     userId: string;
-    role: UserRole[];
+    role: UserRole;
     iat: number;
     exp: number;
 }

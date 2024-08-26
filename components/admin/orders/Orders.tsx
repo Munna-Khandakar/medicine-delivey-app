@@ -15,6 +15,7 @@ import Modal from '@/components/Modal';
 import OrderDetailsSLip from '@/components/admin/common/OrderDetailsSLip';
 import {useToast} from '@/components/ui/use-toast';
 import {OrderStauts} from '@/types/enum/OrderStauts';
+import {Skeleton} from '@/components/ui/skeleton';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -109,71 +110,141 @@ export function Orders() {
                     </TableRow>
                 }
                 tableBody={
-                    data?.map((order) => (
-                        <TableRow key={order.id}>
-                            <TableCell>{order.transactionId}</TableCell>
-                            <TableCell className="hidden md:table-cell">{'item names'}</TableCell>
-                            <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
-                            <TableCell>{order.totalAmount}</TableCell>
-                            <TableCell>{order.deliveryDate}</TableCell>
-                            <TableCell>
-                                <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
-                                    {order.status}
-                                </Badge>
-                            </TableCell>
-                            <TableCell className="flex gap-1">
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant={'outline'} size={'icon'}
+                    isLoading
+                        ? <Fragment>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="hidden sm:table-cell">
+                                    <Skeleton className="aspect-square rounded-md object-cover h-16 w-16"/>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                    <Skeleton className="h-6 w-3/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/2"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                    <Skeleton className="h-6 w-1/4"/>
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton className="h-6 w-6"/>
+                                </TableCell>
+                            </TableRow>
+                        </Fragment>
+                        : data?.map((order) => (
+                            <TableRow key={order.id}>
+                                <TableCell>{order.transactionId}</TableCell>
+                                <TableCell className="hidden md:table-cell">{'item names'}</TableCell>
+                                <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
+                                <TableCell>{order.totalAmount}</TableCell>
+                                <TableCell>{order.deliveryDate}</TableCell>
+                                <TableCell>
+                                    <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
+                                        {order.status}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="flex gap-1">
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'Accept this order'}
+                                                    disabled={order.status === OrderStauts.ACCEPTED}
+                                                    onClick={() => {
+                                                        setSelectedOrderId(order.id);
+                                                        setOpenOrderAcceptModal(true);
+                                                    }}>
+                                                <Check size={15} color={'green'}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Accept this order'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'Cancel this order'}
+                                                    disabled={order.status === OrderStauts.FAILED}
+                                                    onClick={() => {
+                                                        setSelectedOrderId(order.id);
+                                                        setOpenOrderCancelModal(true);
+                                                    }}>
+                                                <X size={15} color={'red'}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Cancel this order'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'Complete this order'}
+                                                    disabled={order.status === OrderStauts.COMPLETED}
+                                                    onClick={() => {
+                                                        setSelectedOrderId(order.id);
+                                                        setOpenOrderCompleteModal(true);
+                                                    }}>
+                                                <PackageCheck size={15} color={'green'}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Complete this order'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant={'outline'} size={'icon'}
+                                                aria-label={'See this order'}
                                                 onClick={() => {
                                                     setSelectedOrderId(order.id);
-                                                    setOpenOrderAcceptModal(true);
+                                                    setOpenOrderDetailsModal(true);
                                                 }}>
-                                            <Check size={15} color={'green'}/>
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{'Accept this order'}</TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant={'outline'} size={'icon'}
-                                                onClick={() => {
-                                                    setSelectedOrderId(order.id);
-                                                    setOpenOrderCancelModal(true);
-                                                }}>
-                                            <X size={15} color={'red'}/>
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{'Cancel this order'}</TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant={'outline'} size={'icon'}
-                                                onClick={() => {
-                                                    setSelectedOrderId(order.id);
-                                                    setOpenOrderCancelModal(true);
-                                                }}>
-                                            <PackageCheck size={15} color={'green'}/>
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{'Complete this order'}</TooltipContent>
-                                </Tooltip>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button
-                                            variant={'outline'} size={'icon'}
-                                            onClick={() => {
-                                                setSelectedOrderId(order.id);
-                                                setOpenOrderDetailsModal(true);
-                                            }}>
-                                            <Eye size={15}/>
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>{'See this order'}</TooltipContent>
-                                </Tooltip>
-                            </TableCell>
-                        </TableRow>
-                    ))
+                                                <Eye size={15}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'See this order'}</TooltipContent>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))
                 }
             />
             <Modal isOpen={openOrderDetailsModal} onClose={() => {
