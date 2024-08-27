@@ -106,9 +106,10 @@ export function OrdersList() {
                                                     <p className="text-sm font-medium leading-none">
                                                         {MedicineUtils.getNamesFromOrderItems(order.orderItems)}
                                                     </p>
-                                                    <p className="text-sm text-muted-foreground">
+                                                    <p className="text-xs text-muted-foreground">
                                                         {order.status}
                                                     </p>
+                                                    <p className="text-sm">{order.totalAmount} BDT</p>
                                                 </div>
                                             </div>
                                             {

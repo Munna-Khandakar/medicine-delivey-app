@@ -2,12 +2,17 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {useRouter} from 'next/navigation';
+import useSWR from 'swr';
 import {Camera, ScrollText, Search, X} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {SearchResultCard} from '@/components/Searchbar/SearchResultCard';
-import {MEDICINE} from '@/constants/Medicines';
+import api from '@/lib/apiInstance';
+import {ProductType} from '@/types/ProductType';
 import './searchbar.css';
+
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
+
 
 export const Searchbar = () => {
 
@@ -17,6 +22,13 @@ export const Searchbar = () => {
     const [searchDisabled, setSearchDisabled] = useState(true);
 
     const router = useRouter();
+
+    const {
+        data,
+        error,
+        isLoading,
+        mutate
+    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {
@@ -104,8 +116,8 @@ export const Searchbar = () => {
                     showDropdown && (
                         <ul className="py-4">
                             {
-                                MEDICINE.map((medicine) =>
-                                    <SearchResultCard key={medicine.id} medicine={medicine}/>
+                                data?.map((product) =>
+                                    <SearchResultCard key={product.productId} product={product}/>
                                 )
                             }
                         </ul>
