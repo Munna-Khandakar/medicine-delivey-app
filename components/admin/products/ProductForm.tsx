@@ -2,10 +2,10 @@
 
 import {useEffect, useState} from 'react';
 import {useForm, SubmitHandler, Controller} from 'react-hook-form';
-import ReactQuill from 'react-quill';
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import {format} from 'date-fns';
 import {CalendarIcon} from '@radix-ui/react-icons';
-import 'react-quill/dist/quill.snow.css';
 
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
@@ -24,6 +24,7 @@ import {useToast} from '@/components/ui/use-toast';
 import {useRouter} from 'next/navigation';
 import {Category} from '@/types/Category';
 import {ProductType} from '@/types/ProductType';
+import 'react-quill/dist/quill.snow.css';
 
 const categoriesFetcher = (url: string) => api.get(url).then((res) => res.data);
 
