@@ -12,7 +12,7 @@ export const Footer = () => {
     }
 
     return (
-        <footer className="font-sans tracking-wide bg-teal-950 container py-8">
+        <footer className="font-sans tracking-wide bg-teal-950 container py-8 mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-10">
                 <div>
                     <a href="#">
