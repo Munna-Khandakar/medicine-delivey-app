@@ -31,6 +31,7 @@ export function SignupForm() {
         register,
         handleSubmit,
         trigger,
+        getValues,
         formState: {errors}
     } = useForm<Inputs>();
 
@@ -40,24 +41,41 @@ export function SignupForm() {
             setRegistrationSuccessful(true);
         }).catch((error) => {
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.code,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setSteps(0);
         });
     };
 
-    const nextForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const sendOTP = async (phoneNumber: string) => {
+        return api.post('/otp/send', { phoneNumber })
+            .then((response) => {
+                console.log(response);
+                return true;
+            })
+            .catch((error) => {
+                toast({
+                    title: error.response.data.code,
+                    description: error.response.data.message,
+                });
+                return false;
+            });
+    };
+
+    const nextForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (steps == 1) {
             return setRegistrationSuccessful(true);
         }
-        trigger(['phoneNumber', 'password']).then((valid) => {
-            if (valid) {
+        const valid = await trigger(['phoneNumber', 'password']);
+        if (valid) {
+            const otpSent = await sendOTP(getValues('phoneNumber'));
+            if (otpSent) {
                 setSteps(p => p + 1);
             }
-        });
+        }
     };
     const previousForm = () => {
         setSteps(p => p - 1);
@@ -90,7 +108,8 @@ export function SignupForm() {
                                                     {...register('phoneNumber', {required: 'Please enter your phone number'})}
                                                 />
                                                 {
-                                                    errors?.phoneNumber && <ErrorLabel message={errors.phoneNumber.message!}/>
+                                                    errors?.phoneNumber &&
+                                                    <ErrorLabel message={errors.phoneNumber.message!}/>
                                                 }
                                             </div>
                                             <div className="grid gap-2">

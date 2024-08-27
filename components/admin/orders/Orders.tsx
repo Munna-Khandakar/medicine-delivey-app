@@ -4,7 +4,7 @@ import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import {format} from 'date-fns';
 import {DateRange} from 'react-day-picker';
-import {Check, Eye, PackageCheck, Search, X} from 'lucide-react';
+import {Check, Eye, PackageCheck, Search, Truck, X} from 'lucide-react';
 import {CalendarIcon} from '@radix-ui/react-icons';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {Input} from '@/components/ui/input';
@@ -37,6 +37,7 @@ export function Orders() {
     const [openOrderDetailsModal, setOpenOrderDetailsModal] = useState(false);
     const [openOrderAcceptModal, setOpenOrderAcceptModal] = useState(false);
     const [openOrderCancelModal, setOpenOrderCancelModal] = useState(false);
+    const [openOrderOntheWayModal, setOpenOrderOntheWayModal] = useState(false);
     const [openOrderCompleteModal, setOpenOrderCompleteModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState('');
     const {
@@ -69,6 +70,24 @@ export function Orders() {
             toast({
                 title: 'Success',
                 description: 'Order is cancelled',
+            });
+            mutate();
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.name,
+                description: error.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+        });
+    };
+
+    const onTheWaySelectedOrder = () => {
+        api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.ON_THE_WAY}).then(() => {
+            toast({
+                title: 'Success',
+                description: 'Order is updated to on the way',
             });
             mutate();
         }).catch((error) => {
@@ -273,6 +292,20 @@ export function Orders() {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
+                                                    aria-label={'on the way this order'}
+                                                    disabled={order.status === OrderStauts.ON_THE_WAY}
+                                                    onClick={() => {
+                                                        setSelectedOrderId(order.id);
+                                                        setOpenOrderOntheWayModal(true);
+                                                    }}>
+                                                <Truck size={15} color={'blue'}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'On the way'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Complete this order'}
                                                     disabled={order.status === OrderStauts.COMPLETED}
                                                     onClick={() => {
@@ -332,9 +365,30 @@ export function Orders() {
                     </div>
                 }
             </Modal>
+
+            <Modal isOpen={openOrderOntheWayModal} onClose={() => {
+                setSelectedOrderId('');
+                setOpenOrderOntheWayModal(false);
+            }} title={'On the way'}>
+                {
+                    selectedOrderId
+                    && <div>
+                        <div className="text-lg font-normal">Are you sure you want to send this order?</div>
+                        <div className="flex gap-2 mt-4">
+                            <Button variant={'outline'} onClick={() => {
+                                setOpenOrderOntheWayModal(false);
+                            }}>No</Button>
+                            <Button onClick={() => {
+                                setOpenOrderOntheWayModal(false);
+                                onTheWaySelectedOrder();
+                            }}>Yes</Button>
+                        </div>
+                    </div>
+                }
+            </Modal>
             <Modal isOpen={openOrderCancelModal} onClose={() => {
                 setSelectedOrderId('');
-                setOpenOrderAcceptModal(false);
+                setOpenOrderCancelModal(false);
             }} title={'Accept Order'}>
                 {
                     selectedOrderId

@@ -34,6 +34,11 @@ export const ProfileDropdown = () => {
                         Profile
                     </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem>
+                    <Link href={'/reset-password'}>
+                        Reset Password
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>
                     <Link href={'/login'}>
