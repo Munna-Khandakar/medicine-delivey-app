@@ -29,7 +29,8 @@ export function LoginForm() {
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
         api.post('/auth/login', data).then((response) => {
-            Cookie.set('token', response.data.accessToken);
+            Cookie.setToken(response.data.accessToken);
+            Cookie.setRefreshToken(response.data.refreshToken);
             if (Cookie.isAdmin()) {
                 router.push('/admin');
             }

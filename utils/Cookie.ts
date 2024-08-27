@@ -59,6 +59,18 @@ export class Cookie {
         }
     }
 
+    static getRefreshToken(): string | undefined {
+        return Cookies.get('refreshToken');
+    }
+
+    static setToken(value: string): void {
+        Cookies.set('token', value);
+    }
+
+    static setRefreshToken(value: string): void {
+        Cookies.set('refreshToken', value);
+    }
+
     static clearCookies(): void {
         const cookies = Cookies.get();
         for (const cookie in cookies) {
