@@ -7,7 +7,7 @@ import {Camera, ScrollText, Search, X} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Skeleton} from '@/components/ui/skeleton';
-import { ScrollArea } from "@/components/ui/scroll-area"
+import {ScrollArea} from '@/components/ui/scroll-area';
 import {SearchResultCard} from '@/components/Searchbar/SearchResultCard';
 import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
@@ -19,6 +19,7 @@ export const Searchbar = () => {
 
     const searchInputRef = useRef<HTMLDivElement>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [products, setProducts] = useState<ProductType[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [searchDisabled, setSearchDisabled] = useState(true);
 
@@ -44,14 +45,27 @@ export const Searchbar = () => {
         };
     }, [showDropdown]);
 
-    useEffect(() => {
-        setSearchDisabled(searchQuery === '');
-    }, [searchQuery]);
-
     const gotoSearchPage = () => {
         if (searchQuery === '') return;
         router.push(`/search?name=${searchQuery}`);
     };
+
+    const filterSearch = (query: string) => {
+        if (query && data) {
+            const filteredProducts = data.filter((product) => product.productName.toLowerCase().includes(query.toLowerCase()));
+            setProducts(filteredProducts);
+        }
+    };
+
+    useEffect(() => {
+        setSearchDisabled(searchQuery === '');
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (data) {
+            setProducts(data);
+        }
+    }, [data, setProducts]);
 
     return (
         <section className="container p-4 md:p-12">
@@ -80,7 +94,10 @@ export const Searchbar = () => {
                             value={searchQuery}
                             className="py-2 md:py-4 border-0 outline-none shadow-none focus:ring-0 w-full focus:outline-none focus-visible:ring-0"
                             placeholder="Search for medicines/heathcare products"
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                filterSearch(e.target.value);
+                            }}
                             onFocus={() => setShowDropdown(true)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
@@ -117,14 +134,14 @@ export const Searchbar = () => {
                     showDropdown && (
                         <ScrollArea className="h-40 w-full py-4">
                             {
-                               isLoading && <div className="w-full border-0 p-2 rounded-0 space-y-2">
+                                isLoading && <div className="w-full border-0 p-2 rounded-0 space-y-2">
                                     <Skeleton className="h-8 w-full"/>
                                     <Skeleton className="h-8 w-full"/>
                                     <Skeleton className="h-8 w-full"/>
                                 </div>
                             }
                             {
-                                data?.map((product) =>
+                                products?.map((product) =>
                                     <SearchResultCard key={product.productId} product={product}/>
                                 )
                             }
