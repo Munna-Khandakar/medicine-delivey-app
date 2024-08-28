@@ -15,7 +15,6 @@ import {ProductType} from '@/types/ProductType';
 import {useToast} from '@/components/ui/use-toast';
 import Modal from '@/components/Modal';
 import {Skeleton} from '@/components/ui/skeleton';
-import {Category} from '@/types/Category';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import {useRouter} from 'next/navigation';
 
@@ -33,17 +32,6 @@ export function Products() {
         isLoading,
         mutate
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
-
-    const {
-        data: categories,
-        error: categoriesError,
-        isLoading: categoriesLoading
-    } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
-
-    const getCategoryName = (categoryId: string) => {
-        const category = categories?.find((category) => category.id == categoryId);
-        return category?.label || '-';
-    };
 
     const deleteProduct = () => {
         api.delete(`${'products'}/${selectedProductToDelete}`)
@@ -181,11 +169,11 @@ export function Products() {
                                 <TableCell className="font-medium">
                                     {product.productName}
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell capitalize">{product.brand}</TableCell>
+                                <TableCell className="hidden md:table-cell capitalize">{product.brand.brandName}</TableCell>
                                 <TableCell>{product.price}</TableCell>
                                 <TableCell className="hidden md:table-cell">
                                     <Badge variant={'outline'}>
-                                        {getCategoryName(product.categoryId)}
+                                        {product.category.label}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>

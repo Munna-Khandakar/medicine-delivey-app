@@ -1,9 +1,12 @@
-import {LoginForm} from '@/components/Login/Login';
-// import {AdvanceLogin} from '@/components/Login/AdvanceLogin';
+// import {LoginForm} from '@/components/Login/Login';
+import {Suspense} from 'react';
+import {AdvanceLogin} from '@/components/Login/AdvanceLogin';
 
 export default function LoginPage() {
     return (
-        <LoginForm/>
-        // <AdvanceLogin/>
+        // <LoginForm/>
+        <Suspense>
+            <AdvanceLogin/>
+        </Suspense>
     );
 }

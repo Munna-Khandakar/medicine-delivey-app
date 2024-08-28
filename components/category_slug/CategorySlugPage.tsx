@@ -65,7 +65,7 @@ export const CategorySlugPage = () => {
 
     useEffect(() => {
         if (data) {
-            const filteredData = data.filter((product) => product.categoryId == categoryId);
+            const filteredData = data.filter((product) => product.category.id == categoryId);
             setProducts(filteredData);
         }
     }, [data, categoryId]);

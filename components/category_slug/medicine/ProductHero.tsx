@@ -8,6 +8,7 @@ import {MedicineUtils} from '@/utils/MedicineUtils';
 import {AddToCartButton} from '@/components/AddToCartButton';
 import {ProductType} from '@/types/ProductType';
 import MedicineDemo from '../../medicine/medicine-demo.png';
+
 type ProductHeroProps = {
     product: ProductType
 }
@@ -32,9 +33,10 @@ export const ProductHero = (props: ProductHeroProps) => {
                     {
                         product?.description &&
                         <Link
-                            href={`/company/${product?.brand}`}
+                            // href={`/company/${product?.brand.id}`}
+                            href={"#"}
                             className="text-teal-900 font-normal text-xs md:text-sm leading-2 md:leading-7">Visit
-                            all {product?.brand} Company &apos;s Product
+                            all {product?.brand.brandName} Company &apos;s Product
                         </Link>
                     }
                     <br/>

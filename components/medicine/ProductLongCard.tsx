@@ -17,7 +17,7 @@ export function ProductLongCard(props: ProductLongCardProps) {
     const {product} = props;
 
     return (
-        <Link href={`/${product.categoryId}/${product.productId}`} className="border p-3 rounded-lg min-w-fit">
+        <Link href={`/${product.category.id}/${product.productId}`} className="border p-3 rounded-lg min-w-fit">
             <div className="flex flex-col items-center w-[120px] md:w-[200px] gap-2">
                 <div
                     className="flex items-center justify-center w-full h-[120px] md:h-[200px]">

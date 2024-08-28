@@ -14,7 +14,7 @@ export const SearchResultCard = (props: SearchResultCardProps) => {
 
     return (
         <Link
-            href={`/${product.categoryId}/${product.productId}`}
+            href={`/${product.category.id}/${product.productId}`}
             className="w-full border-0 p-0 rounded-0"
         >
             <div
