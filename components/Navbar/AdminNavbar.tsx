@@ -4,10 +4,10 @@ import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {
     Home,
-    LineChart,
     Package, Settings,
     ShoppingCart,
     Users,
+    Flag
 } from 'lucide-react';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 
@@ -33,9 +33,9 @@ const NavItems = [
         href: '/admin/customers',
     },
     {
-        icon: LineChart,
-        label: 'Analytics',
-        href: '/admin/analytics',
+        icon: Flag,
+        label: 'Countries',
+        href: '/admin/countries',
     },
 ];
 

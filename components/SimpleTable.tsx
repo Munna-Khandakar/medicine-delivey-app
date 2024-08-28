@@ -52,9 +52,9 @@ export function SimpleTable(props: SimpleTableProps) {
                 </Table>
             </CardContent>
             <CardFooter className="py-2">
-                <div className="text-xs text-muted-foreground">
-                    Showing <strong>1-10</strong> of <strong>32</strong> products
-                </div>
+                {/*<div className="text-xs text-muted-foreground">*/}
+                {/*    Showing <strong>1-10</strong> of <strong>32</strong> products*/}
+                {/*</div>*/}
             </CardFooter>
         </Card>
     );
