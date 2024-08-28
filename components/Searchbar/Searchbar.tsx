@@ -6,13 +6,14 @@ import useSWR from 'swr';
 import {Camera, ScrollText, Search, X} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
+import {Skeleton} from '@/components/ui/skeleton';
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {SearchResultCard} from '@/components/Searchbar/SearchResultCard';
 import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
 import './searchbar.css';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
-
 
 export const Searchbar = () => {
 
@@ -114,13 +115,20 @@ export const Searchbar = () => {
                 </div>
                 {
                     showDropdown && (
-                        <ul className="py-4">
+                        <ScrollArea className="h-40 w-full py-4">
+                            {
+                               isLoading && <div className="w-full border-0 p-2 rounded-0 space-y-2">
+                                    <Skeleton className="h-8 w-full"/>
+                                    <Skeleton className="h-8 w-full"/>
+                                    <Skeleton className="h-8 w-full"/>
+                                </div>
+                            }
                             {
                                 data?.map((product) =>
                                     <SearchResultCard key={product.productId} product={product}/>
                                 )
                             }
-                        </ul>
+                        </ScrollArea>
                     )
                 }
             </div>

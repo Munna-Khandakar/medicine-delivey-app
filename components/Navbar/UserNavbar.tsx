@@ -10,11 +10,19 @@ import {CartComponent} from '@/components/Navbar/CartComponent';
 import {Input} from '../ui/input';
 import {Cookie} from '@/utils/Cookie';
 import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
 
 
 export const UserNavbar = () => {
 
+    const router = useRouter();
     const [isMounted, setIsMounted] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const gotoSearchPage = () => {
+        if (searchQuery === '') return;
+        router.push(`/search?name=${searchQuery}`);
+    };
 
     useEffect(() => {
         setIsMounted(true);
@@ -35,6 +43,12 @@ export const UserNavbar = () => {
                         type="search"
                         placeholder="Search your medicine..."
                         className="w-full rounded-lg bg-background pl-8 md:min-w-[350px]"
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                gotoSearchPage();
+                            }
+                        }}
                     />
                 </div>
                 <div className="flex gap-4 items-center">
