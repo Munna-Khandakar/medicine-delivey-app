@@ -51,9 +51,9 @@ export const ProfilePage = () => {
                     title: 'Successful',
                     description: 'Profile updated successfully',
                 });
-                const redirect = LocalStorageUtils.getItem('redirect');
+                const redirect = LocalStorageUtils.getItem(LocalStorageKeys.REDIRECT);
                 if (redirect) {
-                    LocalStorageUtils.removeItem('redirect');
+                    LocalStorageUtils.removeItem(LocalStorageKeys.REDIRECT);
                     router.push(redirect);
                 }
             }).catch((error) => {
