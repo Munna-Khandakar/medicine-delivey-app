@@ -16,14 +16,15 @@ import {SubmitHandler, useForm} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
+import {Category} from '@/types/Category';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const CountriesPage = () => {
+export const CategoriesPage = () => {
 
     const {toast} = useToast();
-    const [selectedCountry, setSelectedCountry] = useState<Country | null>();
+    const [selectedCountry, setSelectedCountry] = useState<Category | null>();
     const [openCountryFormModal, setOpenCountryFormModal] = useState(false);
     const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
     const {
@@ -31,7 +32,7 @@ export const CountriesPage = () => {
         error,
         isLoading,
         mutate,
-    } = useSWR<Country[]>('countries', fetcher, {revalidateOnFocus: false});
+    } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
 
     const {
         register,
@@ -40,17 +41,17 @@ export const CountriesPage = () => {
         setValue,
         reset,
         formState: {errors, isDirty},
-    } = useForm<Country>();
+    } = useForm<Category>();
 
-    const onSubmit: SubmitHandler<Country> = (data) => {
-        const url = selectedCountry ? `/countries/${selectedCountry.id}` : '/countries';
+    const onSubmit: SubmitHandler<Category> = (data) => {
+        const url = selectedCountry ? `/categories/${selectedCountry.id}` : '/categories';
         const method = selectedCountry ? 'put' : 'post';
 
         api[method](url, data).then(() => {
             mutate().then(() => {
                 toast({
                     title: 'Successful',
-                    description: `Product ${selectedCountry ? 'updated' : 'added'} successfully`,
+                    description: `Categories ${selectedCountry ? 'updated' : 'added'} successfully`,
                 });
             });
         }).catch((error) => {
@@ -68,11 +69,11 @@ export const CountriesPage = () => {
 
     const deleteCountry = () => {
         if (selectedCountry) {
-            api.delete(`/countries/${selectedCountry.id}`).then(() => {
+            api.delete(`/categories/${selectedCountry.id}`).then(() => {
                 mutate().then(() => {
                     toast({
                         title: 'Successful',
-                        description: 'Country deleted successfully',
+                        description: 'Categories deleted successfully',
                     });
                 });
             }).catch((error) => {
@@ -110,7 +111,7 @@ export const CountriesPage = () => {
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
                             <span className="hidden md:block whitespace-nowrap text-sm">
-                                  Add Country
+                                  Add Category
                             </span>
                         </Button>
                     </div>
@@ -185,16 +186,16 @@ export const CountriesPage = () => {
                                 </TableCell>
                             </TableRow>
                         </Fragment>
-                        : data?.map((country) => (
-                            <TableRow key={country.id}>
-                                <TableCell>{country.countryName}</TableCell>
+                        : data?.map((category) => (
+                            <TableRow key={category.id}>
+                                <TableCell>{category.label}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this country'}
+                                                    aria-label={'Accept this category'}
                                                     onClick={() => {
-                                                        setSelectedCountry(country);
+                                                        setSelectedCountry(category);
                                                         setOpenCountryFormModal(true);
                                                     }}>
                                                 <Pencil size={15} color={'green'}/>
@@ -205,9 +206,9 @@ export const CountriesPage = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Cancel this country'}
+                                                    aria-label={'Cancel this category'}
                                                     onClick={() => {
-                                                        setSelectedCountry(country);
+                                                        setSelectedCountry(category);
                                                         setOpenCountryDeleteModal(true);
                                                     }}>
                                                 <Trash size={15} color={'red'}/>
@@ -228,15 +229,15 @@ export const CountriesPage = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="countryName">Country Name</Label>
+                                <Label htmlFor="label">Category Label</Label>
                                 <Input
                                     id="countryName"
                                     type="text"
-                                    placeholder="country"
-                                    {...register('countryName', {required: 'Please enter country name'})}
+                                    placeholder="label"
+                                    {...register('label', {required: 'Please enter category label'})}
                                 />
                                 {
-                                    errors?.countryName && <ErrorLabel message={errors.countryName.message!}/>
+                                    errors?.label && <ErrorLabel message={errors.label.message!}/>
                                 }
                             </div>
                             <Button variant={isDirty ? 'default' : 'secondary'} disabled={!isDirty} type="submit"

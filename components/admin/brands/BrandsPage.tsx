@@ -16,14 +16,15 @@ import {SubmitHandler, useForm} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
+import {Brand} from '@/types/Brand';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const CountriesPage = () => {
+export const BrandsPage = () => {
 
     const {toast} = useToast();
-    const [selectedCountry, setSelectedCountry] = useState<Country | null>();
+    const [selectedCountry, setSelectedCountry] = useState<Brand | null>();
     const [openCountryFormModal, setOpenCountryFormModal] = useState(false);
     const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
     const {
@@ -31,7 +32,7 @@ export const CountriesPage = () => {
         error,
         isLoading,
         mutate,
-    } = useSWR<Country[]>('countries', fetcher, {revalidateOnFocus: false});
+    } = useSWR<Brand[]>('brands', fetcher, {revalidateOnFocus: false});
 
     const {
         register,
@@ -40,17 +41,17 @@ export const CountriesPage = () => {
         setValue,
         reset,
         formState: {errors, isDirty},
-    } = useForm<Country>();
+    } = useForm<Brand>();
 
-    const onSubmit: SubmitHandler<Country> = (data) => {
-        const url = selectedCountry ? `/countries/${selectedCountry.id}` : '/countries';
+    const onSubmit: SubmitHandler<Brand> = (data) => {
+        const url = selectedCountry ? `/brands/${selectedCountry.id}` : '/brands';
         const method = selectedCountry ? 'put' : 'post';
 
         api[method](url, data).then(() => {
             mutate().then(() => {
                 toast({
                     title: 'Successful',
-                    description: `Product ${selectedCountry ? 'updated' : 'added'} successfully`,
+                    description: `Brand ${selectedCountry ? 'updated' : 'added'} successfully`,
                 });
             });
         }).catch((error) => {
@@ -68,11 +69,11 @@ export const CountriesPage = () => {
 
     const deleteCountry = () => {
         if (selectedCountry) {
-            api.delete(`/countries/${selectedCountry.id}`).then(() => {
+            api.delete(`/brands/${selectedCountry.id}`).then(() => {
                 mutate().then(() => {
                     toast({
                         title: 'Successful',
-                        description: 'Country deleted successfully',
+                        description: 'Brand deleted successfully',
                     });
                 });
             }).catch((error) => {
@@ -100,7 +101,7 @@ export const CountriesPage = () => {
         <Fragment>
             <SimpleTable
                 title="Country"
-                subTitle="List of all countries"
+                subTitle="List of all brands"
                 actionItems={
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {
@@ -110,7 +111,7 @@ export const CountriesPage = () => {
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
                             <span className="hidden md:block whitespace-nowrap text-sm">
-                                  Add Country
+                                  Add Brand
                             </span>
                         </Button>
                     </div>
@@ -185,16 +186,16 @@ export const CountriesPage = () => {
                                 </TableCell>
                             </TableRow>
                         </Fragment>
-                        : data?.map((country) => (
-                            <TableRow key={country.id}>
-                                <TableCell>{country.countryName}</TableCell>
+                        : data?.map((brand) => (
+                            <TableRow key={brand.id}>
+                                <TableCell>{brand.brandName}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this country'}
+                                                    aria-label={'Accept this brand'}
                                                     onClick={() => {
-                                                        setSelectedCountry(country);
+                                                        setSelectedCountry(brand);
                                                         setOpenCountryFormModal(true);
                                                     }}>
                                                 <Pencil size={15} color={'green'}/>
@@ -205,9 +206,9 @@ export const CountriesPage = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Cancel this country'}
+                                                    aria-label={'Cancel this brand'}
                                                     onClick={() => {
-                                                        setSelectedCountry(country);
+                                                        setSelectedCountry(brand);
                                                         setOpenCountryDeleteModal(true);
                                                     }}>
                                                 <Trash size={15} color={'red'}/>
@@ -223,20 +224,20 @@ export const CountriesPage = () => {
             <Modal isOpen={openCountryFormModal} onClose={() => {
                 setSelectedCountry(null);
                 setOpenCountryFormModal(false);
-            }} title={'Country Form'}>
+            }} title={'Brand Form'}>
                 {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="countryName">Country Name</Label>
+                                <Label htmlFor="brandName">Brand Name</Label>
                                 <Input
-                                    id="countryName"
+                                    id="brandName"
                                     type="text"
-                                    placeholder="country"
-                                    {...register('countryName', {required: 'Please enter country name'})}
+                                    placeholder="brand"
+                                    {...register('brandName', {required: 'Please enter brand name'})}
                                 />
                                 {
-                                    errors?.countryName && <ErrorLabel message={errors.countryName.message!}/>
+                                    errors?.brandName && <ErrorLabel message={errors.brandName.message!}/>
                                 }
                             </div>
                             <Button variant={isDirty ? 'default' : 'secondary'} disabled={!isDirty} type="submit"
@@ -251,11 +252,11 @@ export const CountriesPage = () => {
             <Modal isOpen={openCountryDeleteModal} onClose={() => {
                 setSelectedCountry(null);
                 setOpenCountryDeleteModal(false);
-            }} title={'Delete Country'}>
+            }} title={'Delete Brand'}>
                 {
                     selectedCountry
                     && <div>
-                        <div className="text-lg font-normal">Are you sure you want to cancel this country?</div>
+                        <div className="text-lg font-normal">Are you sure you want to cancel this brand?</div>
                         <div className="flex gap-2 mt-4">
                             <Button variant={'outline'} onClick={() => {
                                 setOpenCountryDeleteModal(false);

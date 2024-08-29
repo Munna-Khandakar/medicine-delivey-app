@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useSearchParams} from 'next/navigation';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
 import {Button} from '@/components/ui/button';
@@ -17,11 +17,13 @@ import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
 type Inputs = {
     phoneNumber: string
     password: string
+    otpCode: string
 }
 
 enum USER_REG_STATUS {
     REGISTERED = 'REGISTERED',
     NOT_REGISTERED = 'NOT_REGISTERED',
+    OTP_VERIFIED = 'OTP_VERIFIED'
 }
 
 export function AdvanceLogin() {
@@ -34,6 +36,7 @@ export function AdvanceLogin() {
 
     const {
         register,
+        control,
         handleSubmit,
         setValue,
         formState: {errors}
@@ -59,6 +62,8 @@ export function AdvanceLogin() {
             const registrationStatus = response.data.status;
             if (registrationStatus === USER_REG_STATUS.REGISTERED) {
                 router.push(`?status=${USER_REG_STATUS.REGISTERED}&phoneNumber=${data.phoneNumber}`);
+            } else if (registrationStatus === USER_REG_STATUS.OTP_VERIFIED) {
+                router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}&phoneNumber=${data.phoneNumber}`);
             } else {
                 sendOTP(data.phoneNumber).then((response) => {
                     router.push(`?status=${USER_REG_STATUS.NOT_REGISTERED}&phoneNumber=${data.phoneNumber}`);
@@ -93,7 +98,27 @@ export function AdvanceLogin() {
     };
 
     const otpVerify: SubmitHandler<Inputs> = async (data) => {
-        api.post('/otp/verify', data).then((response) => {
+        const otpPayload = {
+            phoneNumber: data.phoneNumber,
+            otpCode: data.otpCode,
+        };
+        api.post('/otp/verify', otpPayload).then((response) => {
+            router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}`);
+        }).catch((error) => {
+            console.log(error.response.data.message);
+            toast({
+                title: error.response.data.code,
+                description: error.response.data.message,
+            });
+        });
+    };
+
+    const onResitrationSubmit: SubmitHandler<Inputs> = async (data) => {
+        const otpPayload = {
+            phoneNumber: data.phoneNumber,
+            password: data.password,
+        };
+        api.post('/reg/login', otpPayload).then((response) => {
             // if verify then take password and register
 
         }).catch((error) => {
@@ -119,9 +144,9 @@ export function AdvanceLogin() {
         <div className="flex items-center justify-center h-screen">
             <Card className=" max-w-sm">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Login</CardTitle>
+                    <CardTitle className="text-2xl">Authentication</CardTitle>
                     <CardDescription>
-                        Enter your phone number below to login to your account
+                        Please follow the steps below to authenticate your account
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -188,7 +213,7 @@ export function AdvanceLogin() {
                     }
                     {
                         status === USER_REG_STATUS.NOT_REGISTERED &&
-                        <form onSubmit={handleSubmit(onLoginSubmit)}>
+                        <form onSubmit={handleSubmit(otpVerify)}>
                             <div className="grid gap-4">
                                 <div className="hidden">
                                     <Label htmlFor="phoneNumber">Phone Number</Label>
@@ -205,28 +230,77 @@ export function AdvanceLogin() {
                                 <div className="grid gap-2">
                                     <Label htmlFor="fullname">OTP</Label>
                                     <p className="text-xs font-normal text-slate-500">Please check your phone
-                                        for OTP. </p>
-                                    <InputOTP maxLength={6}>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={0}/>
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={1}/>
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={2}/>
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={3}/>
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={4}/>
-                                        </InputOTPGroup>
-                                        <InputOTPGroup>
-                                            <InputOTPSlot index={5}/>
-                                        </InputOTPGroup>
-                                    </InputOTP>
+                                        for OTP. <span className="ml-4 text-end text-black" role="button"
+                                                       onClick={() => {
+                                                           sendOTP(phoneNumber as string);
+                                                       }}>Resend</span></p>
+                                    <Controller
+                                        name="otpCode"
+                                        control={control}
+                                        defaultValue=""
+                                        render={({field}) => (
+                                            <InputOTP maxLength={6} {...field}>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={0}/>
+                                                </InputOTPGroup>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={1}/>
+                                                </InputOTPGroup>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={2}/>
+                                                </InputOTPGroup>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={3}/>
+                                                </InputOTPGroup>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={4}/>
+                                                </InputOTPGroup>
+                                                <InputOTPGroup>
+                                                    <InputOTPSlot index={5}/>
+                                                </InputOTPGroup>
+                                            </InputOTP>
+                                        )}
+                                    />
 
+                                </div>
+                                <Button type="submit" className="w-full">
+                                    Verify
+                                </Button>
+                            </div>
+                        </form>
+                    }
+                    {
+                        status === USER_REG_STATUS.OTP_VERIFIED &&
+                        <form onSubmit={handleSubmit(onResitrationSubmit)}>
+                            <div className="grid gap-4">
+                                <div className="hidden">
+                                    <Label htmlFor="phoneNumber">Phone Number</Label>
+                                    <Input
+                                        id="phoneNumber"
+                                        type="text"
+                                        placeholder="01XXXXXXXXX"
+                                        {...register('phoneNumber', {required: 'Please enter your phone number'})}
+                                    />
+                                    {
+                                        errors?.phoneNumber && <ErrorLabel message={errors.phoneNumber.message!}/>
+                                    }
+                                </div>
+                                <div className="grid gap-2">
+                                    <div className="flex items-center">
+                                        <Label htmlFor="password">Password</Label>
+                                        <Link href="#" className="ml-auto inline-block text-sm underline">
+                                            Forgot your password?
+                                        </Link>
+                                    </div>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        placeholder="***"
+                                        {...register('password', {required: 'Please enter your password'})}
+                                    />
+                                    {
+                                        errors?.password && <ErrorLabel message={errors.password.message!}/>
+                                    }
                                 </div>
                                 <Button type="submit" className="w-full">
                                     Login

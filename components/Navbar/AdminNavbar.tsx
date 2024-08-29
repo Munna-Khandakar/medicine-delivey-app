@@ -2,13 +2,7 @@
 import {Fragment} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
-import {
-    Home,
-    Package, Settings,
-    ShoppingCart,
-    Users,
-    Flag
-} from 'lucide-react';
+import {Home, Package, Settings, ShoppingCart, Users, Flag, SquareMenu, Tag} from 'lucide-react';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 
 const NavItems = [
@@ -37,8 +31,17 @@ const NavItems = [
         label: 'Countries',
         href: '/admin/countries',
     },
+    {
+        icon: SquareMenu,
+        label: 'Categories',
+        href: '/admin/categories',
+    },
+    {
+        icon: Tag,
+        label: 'Brands',
+        href: '/admin/brands',
+    },
 ];
-
 export const AdminNavbar = () => {
 
     const pathName = usePathname();
