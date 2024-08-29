@@ -119,7 +119,12 @@ export function AdvanceLogin() {
             password: data.password,
         };
         api.post('/reg/login', otpPayload).then((response) => {
-            // if verify then take password and register
+            Cookie.setToken(response.data.accessToken);
+            Cookie.setRefreshToken(response.data.refreshToken);
+            if (Cookie.isAdmin()) {
+                router.push('/admin');
+            }
+            router.push('/');
 
         }).catch((error) => {
             console.log(error.response.data.message);
@@ -309,9 +314,9 @@ export function AdvanceLogin() {
                         </form>
                     }
                     <div className="mt-4 text-center text-sm">
-                        Don&apos;t have an account?{' '}
-                        <Link href={'/signup'} className="underline">
-                            Sign up
+                       Go to Home Page{' '}
+                        <Link href={'/'} className="underline">
+                            Home
                         </Link>
                     </div>
                 </CardContent>
