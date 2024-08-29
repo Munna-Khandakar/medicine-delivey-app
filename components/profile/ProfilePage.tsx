@@ -13,6 +13,7 @@ import api from '@/lib/apiInstance';
 import useSWR from 'swr';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
+import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
 
 type Inputs = {
     userName: string;
@@ -25,6 +26,7 @@ export const ProfilePage = () => {
 
     const {toast} = useToast();
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
+    const router = useRouter();
 
     const {
         data,
@@ -49,6 +51,11 @@ export const ProfilePage = () => {
                     title: 'Successful',
                     description: 'Profile updated successfully',
                 });
+                const redirect = LocalStorageUtils.getItem('redirect');
+                if (redirect) {
+                    LocalStorageUtils.removeItem('redirect');
+                    router.push(redirect);
+                }
             }).catch((error) => {
                 toast({
                     title: error.response.data.code,

@@ -20,6 +20,7 @@ import MedicineDemo from '../medicine/medicine-demo.png';
 import Bill from '@/components/checkout/Bill';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
+import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -45,6 +46,7 @@ export const CheckoutPage = () => {
 
     const proccedToOrder = () => {
         if (user!.address == null || user!.userName == null) {
+            LocalStorageUtils.setItem(LocalStorageKeys.REDIRECT, '/checkout');
             router.push('/profile');
             toast({
                 title: 'Name and Address Required',

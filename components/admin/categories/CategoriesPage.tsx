@@ -100,8 +100,8 @@ export const CategoriesPage = () => {
     return (
         <Fragment>
             <SimpleTable
-                title="Country"
-                subTitle="List of all countries"
+                title="Categories"
+                subTitle="List of all categories"
                 actionItems={
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {

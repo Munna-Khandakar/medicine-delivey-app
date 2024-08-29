@@ -100,7 +100,7 @@ export const BrandsPage = () => {
     return (
         <Fragment>
             <SimpleTable
-                title="Country"
+                title="Brands"
                 subTitle="List of all brands"
                 actionItems={
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
