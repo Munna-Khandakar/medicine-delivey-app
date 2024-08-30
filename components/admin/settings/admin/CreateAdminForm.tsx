@@ -64,8 +64,12 @@ export const CreateAdminForm = () => {
             phoneNumber: data.phoneNumber,
             otpCode: data.otpCode,
         };
-        api.post('/otp/verify', otpPayload).then((response) => {
-            router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}`);
+        api.post('/otp/verify', otpPayload).then(() => {
+            toast({
+                title: 'OTP verified',
+                description: 'You are now verified',
+            });
+            setUserResitrationStatus(USER_REG_STATUS.OTP_VERIFIED);
         }).catch((error) => {
             console.log(error.response.data.message);
             toast({
@@ -79,12 +83,24 @@ export const CreateAdminForm = () => {
         api.post('/reg/user-status', data).then((response) => {
             const registrationStatus = response.data.status;
             if (registrationStatus === USER_REG_STATUS.REGISTERED) {
-                router.push(`?status=${USER_REG_STATUS.REGISTERED}&phoneNumber=${data.phoneNumber}`);
+                toast({
+                    title: 'User already exists',
+                    description: 'Sorry we can not create a new user with this phone number',
+                });
             } else if (registrationStatus === USER_REG_STATUS.OTP_VERIFIED) {
-                router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}&phoneNumber=${data.phoneNumber}`);
-            } else {
+                setUserResitrationStatus(USER_REG_STATUS.OTP_VERIFIED);
+            } else if (registrationStatus === USER_REG_STATUS.NOT_REGISTERED) {
+                setUserResitrationStatus(USER_REG_STATUS.NOT_REGISTERED);
                 sendOTP(data.phoneNumber).then((response) => {
-                    router.push(`?status=${USER_REG_STATUS.NOT_REGISTERED}&phoneNumber=${data.phoneNumber}`);
+                    toast({
+                        title: 'OTP send',
+                        description: 'please check your phone for OTP',
+                    });
+                });
+            } else {
+                toast({
+                    title: 'Something went wrong',
+                    description: 'Please try again',
                 });
             }
 
@@ -105,7 +121,7 @@ export const CreateAdminForm = () => {
                     number</CardDescription>
             </CardHeader>
             <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={(e) => e.preventDefault()}>
                     <div className="grid gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="phoneNumber">Phone Number</Label>
@@ -164,12 +180,9 @@ export const CreateAdminForm = () => {
             </CardContent>
             <CardFooter className="flex justify-between">
                 <Button variant="outline">Cancel</Button>
-                {
-                    userResitrationStatus === '' &&
-                    <Button>Send OTP</Button>
-                }
-
+                <Button onClick={handleSubmit(onSubmit)}>Deploy</Button>
             </CardFooter>
+
         </Card>
     );
 };

@@ -59,12 +59,16 @@ export function AdvanceLogin() {
                 router.push(`?status=${USER_REG_STATUS.REGISTERED}&phoneNumber=${data.phoneNumber}`);
             } else if (registrationStatus === USER_REG_STATUS.OTP_VERIFIED) {
                 router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}&phoneNumber=${data.phoneNumber}`);
-            } else {
+            } else if (registrationStatus === USER_REG_STATUS.NOT_REGISTERED) {
                 sendOTP(data.phoneNumber).then((response) => {
                     router.push(`?status=${USER_REG_STATUS.NOT_REGISTERED}&phoneNumber=${data.phoneNumber}`);
                 });
+            } else {
+                toast({
+                    title: 'Error',
+                    description: 'User status not found',
+                });
             }
-
         }).catch((error) => {
             console.log(error.response.data.message);
             toast({
@@ -309,7 +313,7 @@ export function AdvanceLogin() {
                         </form>
                     }
                     <div className="mt-4 text-center text-sm">
-                       Go to Home Page{' '}
+                        Go to Home Page{' '}
                         <Link href={'/'} className="underline">
                             Home
                         </Link>
