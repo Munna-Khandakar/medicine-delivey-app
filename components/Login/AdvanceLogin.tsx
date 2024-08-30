@@ -60,7 +60,7 @@ export function AdvanceLogin() {
             } else if (registrationStatus === USER_REG_STATUS.OTP_VERIFIED) {
                 router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}&phoneNumber=${data.phoneNumber}`);
             } else if (registrationStatus === USER_REG_STATUS.NOT_REGISTERED) {
-                sendOTP(data.phoneNumber).then((response) => {
+                sendOTP(data.phoneNumber).then(() => {
                     router.push(`?status=${USER_REG_STATUS.NOT_REGISTERED}&phoneNumber=${data.phoneNumber}`);
                 });
             } else {
@@ -101,7 +101,7 @@ export function AdvanceLogin() {
             phoneNumber: data.phoneNumber,
             otpCode: data.otpCode,
         };
-        api.post('/otp/verify', otpPayload).then((response) => {
+        api.post('/otp/verify', otpPayload).then(() => {
             router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}`);
         }).catch((error) => {
             console.log(error.response.data.message);
@@ -112,7 +112,7 @@ export function AdvanceLogin() {
         });
     };
 
-    const onResitrationSubmit: SubmitHandler<Inputs> = async (data) => {
+    const onRegistrationSubmit: SubmitHandler<Inputs> = async (data) => {
         const otpPayload = {
             phoneNumber: data.phoneNumber,
             password: data.password,
@@ -275,7 +275,7 @@ export function AdvanceLogin() {
                     }
                     {
                         status === USER_REG_STATUS.OTP_VERIFIED &&
-                        <form onSubmit={handleSubmit(onResitrationSubmit)}>
+                        <form onSubmit={handleSubmit(onRegistrationSubmit)}>
                             <div className="grid gap-4">
                                 <div className="hidden">
                                     <Label htmlFor="phoneNumber">Phone Number</Label>

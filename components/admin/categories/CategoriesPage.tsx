@@ -2,7 +2,6 @@
 
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {Country} from '@/types/Country';
 import {Fragment, useEffect, useState} from 'react';
 import {SimpleTable} from '@/components/SimpleTable';
 import {Button} from '@/components/ui/button';
@@ -32,7 +31,6 @@ export const CategoriesPage = () => {
     const [openCategoryDeleteModal, setOpenCategoryDeleteModal] = useState(false);
     const {
         data,
-        error,
         isLoading,
         mutate,
     } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
@@ -41,7 +39,6 @@ export const CategoriesPage = () => {
         register,
         control,
         handleSubmit,
-        watch,
         setValue,
         reset,
         formState: {errors, isDirty},
@@ -124,6 +121,7 @@ export const CategoriesPage = () => {
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
+                        <TableHead>Product Count</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
                     </TableRow>
                 }
@@ -194,6 +192,7 @@ export const CategoriesPage = () => {
                         : data?.map((category) => (
                             <TableRow key={category.id}>
                                 <TableCell>{category.label}</TableCell>
+                                <TableCell>{category.totalProductCount}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -212,6 +211,7 @@ export const CategoriesPage = () => {
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Cancel this category'}
+                                                    disabled={category.totalProductCount > 0}
                                                     onClick={() => {
                                                         setSelectedCategory(category);
                                                         setOpenCategoryDeleteModal(true);

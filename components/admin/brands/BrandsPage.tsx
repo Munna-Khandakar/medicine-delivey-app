@@ -2,7 +2,6 @@
 
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {Country} from '@/types/Country';
 import {Fragment, useEffect, useState} from 'react';
 import {SimpleTable} from '@/components/SimpleTable';
 import {Button} from '@/components/ui/button';
@@ -29,7 +28,6 @@ export const BrandsPage = () => {
     const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
     const {
         data,
-        error,
         isLoading,
         mutate,
     } = useSWR<Brand[]>('brands', fetcher, {revalidateOnFocus: false});
@@ -37,7 +35,6 @@ export const BrandsPage = () => {
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         reset,
         formState: {errors, isDirty},
@@ -88,7 +85,7 @@ export const BrandsPage = () => {
             });
         }
     };
-    console.log(watch());
+
     useEffect(() => {
         if (selectedCountry) {
             reset(selectedCountry);
@@ -106,7 +103,7 @@ export const BrandsPage = () => {
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {
                             setOpenCountryFormModal(true);
-                            setSelectedCountry(null)
+                            setSelectedCountry(null);
                             reset({});
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
@@ -119,6 +116,7 @@ export const BrandsPage = () => {
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
+                        <TableHead>Product Count</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
                     </TableRow>
                 }
@@ -189,6 +187,7 @@ export const BrandsPage = () => {
                         : data?.map((brand) => (
                             <TableRow key={brand.id}>
                                 <TableCell>{brand.brandName}</TableCell>
+                                <TableCell>{brand.totalProductCount}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -207,6 +206,7 @@ export const BrandsPage = () => {
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Cancel this brand'}
+                                                    disabled={brand.totalProductCount > 0}
                                                     onClick={() => {
                                                         setSelectedCountry(brand);
                                                         setOpenCountryDeleteModal(true);

@@ -4,4 +4,5 @@ export type Category = {
     iconUrl: string;
     categorySlug: string;
     subCategories: string[];
+    totalProductCount: number;
 }

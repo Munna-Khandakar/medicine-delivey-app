@@ -28,7 +28,6 @@ export const CountriesPage = () => {
     const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
     const {
         data,
-        error,
         isLoading,
         mutate,
     } = useSWR<Country[]>('countries', fetcher, {revalidateOnFocus: false});
@@ -118,6 +117,7 @@ export const CountriesPage = () => {
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
+                        <TableHead>Product Count</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
                     </TableRow>
                 }
@@ -188,6 +188,7 @@ export const CountriesPage = () => {
                         : data?.map((country) => (
                             <TableRow key={country.id}>
                                 <TableCell>{country.countryName}</TableCell>
+                                <TableCell>{country.totalProductCount}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
@@ -206,6 +207,7 @@ export const CountriesPage = () => {
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Cancel this country'}
+                                                    disabled={country.totalProductCount > 0}
                                                     onClick={() => {
                                                         setSelectedCountry(country);
                                                         setOpenCountryDeleteModal(true);

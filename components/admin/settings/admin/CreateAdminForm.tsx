@@ -1,27 +1,20 @@
 'use client';
 
+import {useState} from 'react';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
+import {useRouter} from 'next/navigation';
 import {UserRole} from '@/types/enum/UserRole';
 import {Button} from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {USER_REG_STATUS} from '@/types/enum/UserResitrationStatus';
-import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import api from '@/lib/apiInstance';
 import {useToast} from '@/components/ui/use-toast';
-import {useRouter} from 'next/navigation';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
-import React from 'react';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
-
+import { Key } from "lucide-react"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 
 type Inputs = {
     phoneNumber: string
@@ -34,13 +27,14 @@ export const CreateAdminForm = () => {
 
     const {toast} = useToast();
     const router = useRouter();
-    const [userResitrationStatus, setUserResitrationStatus] = React.useState<USER_REG_STATUS | ''>('');
+    const [userResitrationStatus, setUserResitrationStatus] = useState<USER_REG_STATUS | ''>('');
 
     const {
         register,
         control,
         handleSubmit,
         getValues,
+        reset,
         formState: {errors}
     } = useForm<Inputs>();
 
@@ -88,10 +82,14 @@ export const CreateAdminForm = () => {
                     description: 'Sorry we can not create a new user with this phone number',
                 });
             } else if (registrationStatus === USER_REG_STATUS.OTP_VERIFIED) {
+                toast({
+                    title: 'OTP verified',
+                    description: 'This phone number is already verified',
+                });
                 setUserResitrationStatus(USER_REG_STATUS.OTP_VERIFIED);
             } else if (registrationStatus === USER_REG_STATUS.NOT_REGISTERED) {
                 setUserResitrationStatus(USER_REG_STATUS.NOT_REGISTERED);
-                sendOTP(data.phoneNumber).then((response) => {
+                sendOTP(data.phoneNumber).then(() => {
                     toast({
                         title: 'OTP send',
                         description: 'please check your phone for OTP',
@@ -104,6 +102,26 @@ export const CreateAdminForm = () => {
                 });
             }
 
+        }).catch((error) => {
+            console.log(error.response.data.message);
+            toast({
+                title: error.response.data.code,
+                description: error.response.data.message,
+            });
+        });
+    };
+
+    const onRegistrationSubmit: SubmitHandler<Inputs> = async (data) => {
+        const otpPayload = {
+            phoneNumber: data.phoneNumber,
+            password: data.phoneNumber,
+            role: UserRole.ADMIN,
+        };
+        api.post('/reg/login', otpPayload).then(() => {
+            toast({
+                title: 'Admin created',
+                description: 'Phone number is the password of the admin',
+            });
         }).catch((error) => {
             console.log(error.response.data.message);
             toast({
@@ -171,16 +189,43 @@ export const CreateAdminForm = () => {
                                         </InputOTP>
                                     )}
                                 />
-
                             </div>
-
+                        }
+                        {
+                            userResitrationStatus === USER_REG_STATUS.OTP_VERIFIED &&
+                            <div className="grid gap-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Alert>
+                                    <Key className="h-4 w-4" />
+                                    <AlertTitle>Thinking about password?</AlertTitle>
+                                    <AlertDescription>
+                                        Password is the phone number of the admin. Admin need to change his password
+                                    </AlertDescription>
+                                </Alert>
+                            </div>
                         }
                     </div>
                 </form>
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button variant="outline">Cancel</Button>
-                <Button onClick={handleSubmit(onSubmit)}>Deploy</Button>
+                <Button variant="outline" type={'button'}
+                        onClick={() => {
+                            reset();
+                            setUserResitrationStatus('');
+                            router.push('/admin/settings/admin');
+                        }}>Cancel</Button>
+                {
+                    userResitrationStatus === USER_REG_STATUS.NOT_REGISTERED &&
+                    <Button onClick={handleSubmit(otpVerify)}>Verify OTP</Button>
+                }
+                {
+                    userResitrationStatus === USER_REG_STATUS.OTP_VERIFIED &&
+                    <Button onClick={handleSubmit(onRegistrationSubmit)}>Create</Button>
+                }
+                {
+                    userResitrationStatus === '' &&
+                    <Button onClick={handleSubmit(onSubmit)}>Send OTP</Button>
+                }
             </CardFooter>
 
         </Card>

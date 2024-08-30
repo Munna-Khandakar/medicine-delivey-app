@@ -8,8 +8,8 @@ import {Separator} from '@/components/ui/separator';
 import {useCartStore} from '@/stores/cartStore';
 import {ProductType} from '@/types/ProductType';
 import api from '@/lib/apiInstance';
-import {LocalStorageUtils} from '@/utils/LocalStorageUtils';
 import {Cookie} from '@/utils/Cookie';
+import {User} from '@/types/User';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -17,8 +17,11 @@ export default function Bill() {
 
     const {items} = useCartStore();
     const today = new Date();
+    const [ownUserId, setOwnUserId] = useState<string | null>(null);
 
-    const {data, error, isLoading, mutate} = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+    const {data} = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+
+    const {data: user} = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
 
     const calculateSubTotal = () => {
         return items?.reduce((acc, item) => {
@@ -32,6 +35,11 @@ export default function Bill() {
     const calculateTotal = () => {
         return calculateSubTotal() + 70;
     };
+
+    useEffect(() => {
+        const id = Cookie.getMyUserId();
+        if (id) setOwnUserId(id);
+    }, []);
 
     return (
         <Card className="overflow-hidden">
@@ -98,9 +106,9 @@ export default function Bill() {
                     <div className="grid">
                         <div className="font-semibold">Shipping Information</div>
                         <address className="grid gap-0.5 not-italic text-muted-foreground">
-                            <span>{LocalStorageUtils?.getProfile()?.name}</span>
-                            <span>{Cookie.getPhoneFromToken()}</span>
-                            <span>{LocalStorageUtils?.getProfile()?.address}</span>
+                            <span>{user?.userName}</span>
+                            <span>{user?.phoneNumber}</span>
+                            <span>{user?.address}</span>
                         </address>
                     </div>
                 </div>

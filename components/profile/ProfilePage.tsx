@@ -30,7 +30,6 @@ export const ProfilePage = () => {
 
     const {
         data,
-        error,
         isLoading,
         mutate
     } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
@@ -43,9 +42,9 @@ export const ProfilePage = () => {
         formState: {errors, isDirty},
     } = useForm<Inputs>();
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const onSubmit: SubmitHandler<Inputs> =async (data) => {
         if (ownUserId) {
-            api.put(`/users/${ownUserId}`, data).then((response) => {
+            api.put(`/users/${ownUserId}`, data).then(() => {
                 mutate();
                 toast({
                     title: 'Successful',
@@ -54,7 +53,7 @@ export const ProfilePage = () => {
                 const redirect = LocalStorageUtils.getItem(LocalStorageKeys.REDIRECT);
                 if (redirect) {
                     LocalStorageUtils.removeItem(LocalStorageKeys.REDIRECT);
-                    router.push(redirect);
+                    router.push(redirect.replace(/['"]+/g, ''));
                 }
             }).catch((error) => {
                 toast({
