@@ -13,7 +13,7 @@ import {Input} from '@/components/ui/input';
 import {Checkbox} from '@/components/ui/checkbox';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
-import {UserRole} from '@/types/UserRole';
+import {UserRole} from '@/types/enum/UserRole';
 import './Signup.css';
 
 type Inputs = {

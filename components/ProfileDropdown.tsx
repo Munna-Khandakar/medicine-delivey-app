@@ -12,7 +12,7 @@ import {useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {User} from '@/types/User';
 import {Cookie} from '@/utils/Cookie';
-import {UserRole} from '@/types/UserRole';
+import {UserRole} from '@/types/enum/UserRole';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -40,7 +40,7 @@ export const ProfileDropdown = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>
-                    {data?.userName}
+                    {data?.userName || 'user name not set'}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem>
@@ -65,7 +65,7 @@ export const ProfileDropdown = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator/>
                 {
-                    data?.roles.includes(UserRole.ADMIN) &&
+                    Cookie.isAdmin() &&
                     <DropdownMenuItem>
                         <Link href={'/admin/dashboard'}>
                             Admin

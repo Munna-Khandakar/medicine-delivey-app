@@ -229,7 +229,7 @@ export const CategoriesPage = () => {
             <Modal isOpen={openCategoryFormModal} onClose={() => {
                 setSelectedCategory(null);
                 setOpenCategoryFormModal(false);
-            }} title={'Country Form'}>
+            }} title={'Category Form'}>
                 {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
@@ -245,20 +245,6 @@ export const CategoriesPage = () => {
                                     errors?.label && <ErrorLabel message={errors.label.message!}/>
                                 }
                             </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="categorySlug">Name</Label>
-                                <Input
-                                    id="categorySlug"
-                                    type="text"
-                                    placeholder="label"
-                                    {...register('categorySlug', {required: 'Please enter category slug'})}
-                                />
-                                {
-                                    errors?.categorySlug && <ErrorLabel message={errors.categorySlug.message!}/>
-                                }
-                            </div>
-
                             <div className="col-span-1">
                                 <Card className="overflow-hidden">
                                     <CardHeader>

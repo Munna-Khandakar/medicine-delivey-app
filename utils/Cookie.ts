@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode';
-import {UserRole} from '@/types/UserRole';
+import {UserRole} from '@/types/enum/UserRole';
 import {Token} from '@/types/Token';
 
 export class Cookie {

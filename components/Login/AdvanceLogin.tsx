@@ -13,17 +13,12 @@ import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {Cookie} from '@/utils/Cookie';
 import {InputOTP, InputOTPGroup, InputOTPSlot} from '@/components/ui/input-otp';
+import {USER_REG_STATUS} from '@/types/enum/UserResitrationStatus';
 
 type Inputs = {
     phoneNumber: string
     password: string
     otpCode: string
-}
-
-enum USER_REG_STATUS {
-    REGISTERED = 'REGISTERED',
-    NOT_REGISTERED = 'NOT_REGISTERED',
-    OTP_VERIFIED = 'OTP_VERIFIED'
 }
 
 export function AdvanceLogin() {
