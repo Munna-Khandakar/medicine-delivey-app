@@ -42,7 +42,6 @@ export function Orders() {
     const [selectedOrderId, setSelectedOrderId] = useState('');
     const {
         data,
-        error,
         isLoading,
         mutate
     } = useSWR<OrderResponse[]>(date ? `orders/within-date?startDate=${date?.from!.toISOString()}&endDate=${date.to?.toISOString()}` : null, fetcher, {revalidateOnFocus: false});
@@ -57,8 +56,8 @@ export function Orders() {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.name,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setSelectedOrderId('');
@@ -75,8 +74,8 @@ export function Orders() {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.name,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setSelectedOrderId('');
@@ -93,8 +92,8 @@ export function Orders() {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.name,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setSelectedOrderId('');
@@ -111,8 +110,8 @@ export function Orders() {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.name,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setSelectedOrderId('');

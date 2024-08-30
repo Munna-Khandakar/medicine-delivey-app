@@ -10,11 +10,12 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {Badge} from '@/components/ui/badge';
 import {User} from '@/types/User';
 import Link from 'next/link';
+import {UserRole} from '@/types/enum/UserRole';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function AdminPage() {
-    const {data, error, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
+    const {data, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
 
     const renderSkeletonRows = () => {
         return Array.from({length: 5}).map((_, index) => (
@@ -33,7 +34,8 @@ export function AdminPage() {
                 subTitle="Manage your admins from here."
                 actionItems={
                     <div className="relative">
-                        <Link className="gap-2 flex rounded-md bg-black text-white px-2 py-2 items-center" href={'/admin/settings/admin/new'}>
+                        <Link className="gap-2 flex rounded-md bg-black text-white px-2 py-2 items-center"
+                              href={'/admin/settings/admin/new'}>
                             <PlusCircle className="h-3.5 w-3.5"/>
                             <span className="hidden md:block whitespace-nowrap text-sm">
                                   Add Admin
@@ -50,12 +52,12 @@ export function AdminPage() {
                     </TableRow>
                 }
                 tableBody={
-                    isLoading ? renderSkeletonRows() : data?.map((product) => (
-                        <TableRow key={product.id}>
-                            <TableCell>{product.userName}</TableCell>
-                            <TableCell>{product.phoneNumber}</TableCell>
-                            <TableCell className="hidden md:table-cell">{product.address}</TableCell>
-                            <TableCell className="hidden md:table-cell"><Badge>Admin</Badge></TableCell>
+                    isLoading ? renderSkeletonRows() : data?.filter(user => user.role === UserRole.ADMIN).map((user) => (
+                        <TableRow key={user.id}>
+                            <TableCell>{user.userName}</TableCell>
+                            <TableCell>{user.phoneNumber}</TableCell>
+                            <TableCell className="hidden md:table-cell">{user.address}</TableCell>
+                            <TableCell className="hidden md:table-cell"><Badge>{user.role}</Badge></TableCell>
                         </TableRow>
                     ))
                 }

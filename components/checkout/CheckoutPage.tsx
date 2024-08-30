@@ -21,6 +21,7 @@ import Bill from '@/components/checkout/Bill';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
 import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
+import {ImageUploader} from '@/components/common/ImageUploader';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -29,6 +30,7 @@ export const CheckoutPage = () => {
     const {toast} = useToast();
     const router = useRouter();
     const [isOrderPlacing, setIsOrderPlacing] = useState(false);
+    const [imageUrl, setImageUrl] = useState<string>('');
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem, clearCart} = useCartStore();
@@ -65,7 +67,8 @@ export const CheckoutPage = () => {
                     productId: item.id,
                     quantity: item.quantity
                 };
-            })
+            }),
+            prescriptionUrl: imageUrl,
         };
         onSubmit(formData);
     };
@@ -182,6 +185,14 @@ export const CheckoutPage = () => {
                             })
                         }
                     </div>
+                    <h1 className="text-slate-800 font-semibold text-lg text-center md:text-start md:text-2xl mt-4">Upload
+                        Prescription</h1>
+                    <h2 className="text-slate-800 font-nromal text-sm text-start mb-4">This is an optional work. We keep
+                        prescription for safety</h2>
+                    <ImageUploader
+                        onUploadComplete={(url) => setImageUrl(url)}
+                        imageUrl={imageUrl}
+                    />
                 </div>
                 <div className="col-span-1 md:col-span-2">
                     <ScrollArea className="h-full md:h-[calc(100%-10rem)]">

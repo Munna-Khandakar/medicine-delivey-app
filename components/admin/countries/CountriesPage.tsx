@@ -53,10 +53,9 @@ export const CountriesPage = () => {
                 });
             });
         }).catch((error) => {
-            console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.name,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setOpenCountryFormModal(false);

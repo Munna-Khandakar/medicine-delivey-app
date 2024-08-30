@@ -8,6 +8,7 @@ import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
+import {useRouter} from 'next/navigation';
 
 type Inputs = {
     oldPassword: string;
@@ -17,27 +18,36 @@ type Inputs = {
 export const ResetPasswordPage = () => {
 
     const {toast} = useToast();
+    const router = useRouter();
 
     const {
         register,
         handleSubmit,
         reset,
+        setFocus,
+        setError,
         formState: {errors, isDirty},
     } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = (data) => {
-            api.post(`/auth/updatePassword`, data).then((response) => {
-                toast({
-                    title: 'Successful',
-                    description: 'Password updated successfully',
-                });
-                reset();
-            }).catch((error) => {
-                toast({
-                    title: error.response.data.code,
-                    description: error.response.data.message,
-                });
+        api.post(`/auth/update-password`, data).then(() => {
+            toast({
+                title: 'Successful',
+                description: 'Password updated successfully',
             });
+            reset();
+            router.back();
+        }).catch((error) => {
+            setFocus('oldPassword');
+            setError('oldPassword', {
+                type: 'manual',
+                message: error.response.data.message,
+            });
+            toast({
+                title: error.response.data.code,
+                description: error.response.data.message,
+            });
+        });
     };
 
     return (

@@ -83,7 +83,7 @@ export function AdvanceLogin() {
             Cookie.setToken(response.data.accessToken);
             Cookie.setRefreshToken(response.data.refreshToken);
             if (Cookie.isAdmin()) {
-                router.push('/admin');
+                router.push('/admin/dashboard');
             }
             router.push('/');
 
@@ -235,8 +235,8 @@ export function AdvanceLogin() {
                                     <Label htmlFor="fullname">OTP</Label>
                                     <p className="text-xs font-normal text-slate-500">Please check your phone
                                         for OTP. <span className="ml-4 text-end text-black" role="button"
-                                                       onClick={() => {
-                                                           sendOTP(phoneNumber as string);
+                                                       onClick={async () => {
+                                                           await sendOTP(phoneNumber as string);
                                                        }}>Resend</span></p>
                                     <Controller
                                         name="otpCode"

@@ -38,17 +38,6 @@ export class Cookie {
         return decodedToken.role === UserRole.USER;
     }
 
-    static getPhoneFromToken(): string {
-        const token = Cookies.get('token');
-        if (token) {
-            const decodedToken: Token = jwtDecode(token);
-            return decodedToken.aud;
-        } else {
-            return '';
-        }
-
-    }
-
     static getMyUserId(): string {
         const token = Cookies.get('token');
         if (token) {

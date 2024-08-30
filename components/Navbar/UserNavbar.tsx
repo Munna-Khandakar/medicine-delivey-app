@@ -54,7 +54,7 @@ export const UserNavbar = () => {
                 <div className="flex gap-4 items-center">
                     <CartComponent/>
                     {
-                        isMounted && Cookie.isUser()
+                        isMounted && Cookie.isLoggedIn()
                             ? <ProfileDropdown/>
                             : <Link href={'/login'}>Login</Link>
                     }

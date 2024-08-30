@@ -17,10 +17,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
 
     const {orderId} = props;
     const {
-        data: order,
-        error,
-        isLoading,
-        mutate
+        data: order
     } = useSWR<OrderResponse>(`orders/${orderId}`, fetcher, {revalidateOnFocus: false});
 
     const calculateSubTotal = () => {

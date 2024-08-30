@@ -11,5 +11,5 @@ export type User = {
     medicalHistory?: string;
     gender?: 'male' | 'female' | 'other';
     age?: number;
-    roles: UserRole[];
+    role: UserRole;
 }

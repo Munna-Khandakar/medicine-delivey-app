@@ -180,7 +180,9 @@ export const AdminHeader = () => {
                     <DropdownMenuItem onClick={()=>router.push('/admin/settings')}>Settings</DropdownMenuItem>
                     <DropdownMenuItem onClick={()=>router.push('/admin/settings/profile')}>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>router.push('/')}>Home</DropdownMenuItem>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem onClick={()=>router.push('/login')}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>

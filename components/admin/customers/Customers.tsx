@@ -1,26 +1,27 @@
 'use client';
 
-import { Fragment } from 'react';
-import { Search } from 'lucide-react';
-import { TableCell, TableHead, TableRow } from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { SimpleTable } from '@/components/SimpleTable';
+import {Fragment} from 'react';
+import {Search} from 'lucide-react';
+import {TableCell, TableHead, TableRow} from '@/components/ui/table';
+import {Input} from '@/components/ui/input';
+import {SimpleTable} from '@/components/SimpleTable';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import { User } from '@/types/User';
-import { Skeleton } from '@/components/ui/skeleton';
+import {User} from '@/types/User';
+import {Skeleton} from '@/components/ui/skeleton';
+import {UserRole} from '@/types/enum/UserRole';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Customers() {
-    const { data, error, isLoading } = useSWR<User[]>('users', fetcher, { revalidateOnFocus: false });
+    const {data, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
 
     const renderSkeletonRows = () => {
-        return Array.from({ length: 5 }).map((_, index) => (
+        return Array.from({length: 5}).map((_, index) => (
             <TableRow key={index}>
-                <TableCell><Skeleton className="h-4 w-3/4" /></TableCell>
-                <TableCell><Skeleton className="h-4 w-1/2" /></TableCell>
-                <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-full" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-3/4"/></TableCell>
+                <TableCell><Skeleton className="h-4 w-1/2"/></TableCell>
+                <TableCell className="hidden md:table-cell"><Skeleton className="h-4 w-full"/></TableCell>
             </TableRow>
         ));
     };
@@ -32,7 +33,7 @@ export function Customers() {
                 subTitle="Manage your customers and view their sales performance."
                 actionItems={
                     <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
                         <Input
                             type="search"
                             placeholder="Search..."
@@ -48,7 +49,7 @@ export function Customers() {
                     </TableRow>
                 }
                 tableBody={
-                    isLoading ? renderSkeletonRows() : data?.map((product) => (
+                    isLoading ? renderSkeletonRows() : data?.filter((product => product.role !== UserRole.ADMIN)).map((product) => (
                         <TableRow key={product.id}>
                             <TableCell>{product.userName}</TableCell>
                             <TableCell>{product.phoneNumber}</TableCell>

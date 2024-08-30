@@ -103,7 +103,6 @@ export const CreateAdminForm = () => {
             }
 
         }).catch((error) => {
-            console.log(error.response.data.message);
             toast({
                 title: error.response.data.code,
                 description: error.response.data.message,
@@ -118,12 +117,12 @@ export const CreateAdminForm = () => {
             role: UserRole.ADMIN,
         };
         api.post('/reg/login', otpPayload).then(() => {
+            router.push('/admin/settings/admin');
             toast({
                 title: 'Admin created',
                 description: 'Phone number is the password of the admin',
             });
         }).catch((error) => {
-            console.log(error.response.data.message);
             toast({
                 title: error.response.data.code,
                 description: error.response.data.message,
@@ -132,7 +131,7 @@ export const CreateAdminForm = () => {
     };
 
     return (
-        <Card className="">
+        <Card>
             <CardHeader>
                 <CardTitle>Create a new Admin</CardTitle>
                 <CardDescription>Admin need to change his password. Default password is his phone
