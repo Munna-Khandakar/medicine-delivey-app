@@ -4,7 +4,7 @@ import {Fragment, useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {useRouter} from 'next/navigation';
 import Image from 'next/image';
-import {Minus, Plus} from 'lucide-react';
+import {Loader, Minus, Plus} from 'lucide-react';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import {useToast} from '@/components/ui/use-toast';
 import {ScrollArea} from '@/components/ui/scroll-area';
@@ -28,6 +28,7 @@ export const CheckoutPage = () => {
 
     const {toast} = useToast();
     const router = useRouter();
+    const [isOrderPlacing, setIsOrderPlacing] = useState(false);
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem, clearCart} = useCartStore();
@@ -40,11 +41,10 @@ export const CheckoutPage = () => {
 
     const {
         data: user,
-        error: userError,
         isLoading: userLoading,
     } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
 
-    const proccedToOrder = () => {
+    const proceedToOrder = () => {
         if (user!.address == null || user!.userName == null) {
             LocalStorageUtils.setItem(LocalStorageKeys.REDIRECT, '/checkout');
             router.push('/profile');
@@ -71,6 +71,7 @@ export const CheckoutPage = () => {
     };
 
     const onSubmit = (data: any) => {
+        setIsOrderPlacing(true);
         api.post('/orders', data).then(() => {
             router.push('/order');
             clearCart();
@@ -84,6 +85,8 @@ export const CheckoutPage = () => {
                 title: error.name,
                 description: error.message,
             });
+        }).finally(() => {
+            setIsOrderPlacing(false);
         });
     };
 
@@ -190,9 +193,13 @@ export const CheckoutPage = () => {
                                 <h1 className="text-2xl">No Items In Your Cart</h1>
                             </div>
                             : <Button
-                                disabled={!user || userLoading}
-                                className="align-bottom w-full my-1 md:my-2" onClick={proccedToOrder}>
-                                Confirm Order
+                                disabled={!user || userLoading || isOrderPlacing}
+                                className="align-bottom w-full my-1 md:my-2"
+                                onClick={proceedToOrder}
+                            >
+                                {
+                                    isOrderPlacing ? <Loader/> : 'Confirm Order'
+                                }
                             </Button>
                     }
                 </div>
