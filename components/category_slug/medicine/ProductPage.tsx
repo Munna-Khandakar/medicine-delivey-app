@@ -1,11 +1,8 @@
 'use client';
 
-import {useCallback, useEffect, useState} from 'react';
 import {useParams} from 'next/navigation';
-import {MEDICINE} from '@/constants/Medicines';
 import {SimiliarProducts} from '@/components/category_slug/medicine/SimiliarProducts';
 import {ProductHero} from '@/components/category_slug/medicine/ProductHero';
-import {Medicine} from '@/types/Medicine';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
 import {ProductType} from '@/types/ProductType';
@@ -17,22 +14,12 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 export const ProductPage = () => {
 
     const {medicine_id} = useParams();
-    const [medicine, setMedicine] = useState<Medicine>();
 
     const {
         data,
         error,
         isLoading,
-        mutate
     } = useSWR<ProductType>(`products/${medicine_id}`, fetcher, {revalidateOnFocus: false});
-
-    const getMedicine = useCallback(() => {
-        return MEDICINE.find((medicine) => medicine.id === medicine_id);
-    }, [medicine_id]);
-
-    useEffect(() => {
-        setMedicine(getMedicine());
-    }, [setMedicine, getMedicine]);
 
     if (error) {
         return <div>Error...</div>;

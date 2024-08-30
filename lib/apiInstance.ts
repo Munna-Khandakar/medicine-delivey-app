@@ -1,11 +1,11 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { Cookie } from '@/utils/Cookie';
 
 interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
 }
 
-const backend_url: string = 'https://1893-61-247-182-213.ngrok-free.app/pharmatica';
+const backend_url: string = 'https://4a65-61-247-182-213.ngrok-free.app/pharmatica';
 
 const api: ApiInstance = axios.create({
     baseURL: `${backend_url}/api`,
