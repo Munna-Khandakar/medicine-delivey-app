@@ -355,9 +355,9 @@ export const ProductForm = (props: ProductFormProps) => {
             <div className="col-span-1">
                 <Card className="overflow-hidden">
                     <CardHeader>
-                        <CardTitle>Product Images</CardTitle>
+                        <CardTitle>Product Image</CardTitle>
                         <CardDescription>
-                            Lipsum dolor sit amet, consectetur adipiscing elit
+                           Upload image of the product
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

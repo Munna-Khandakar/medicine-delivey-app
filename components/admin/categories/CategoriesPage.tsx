@@ -12,11 +12,13 @@ import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import Modal from '@/components/Modal';
-import {SubmitHandler, useForm} from 'react-hook-form';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {Category} from '@/types/Category';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {ImageUploader} from '@/components/common/ImageUploader';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -24,9 +26,10 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 export const CategoriesPage = () => {
 
     const {toast} = useToast();
-    const [selectedCountry, setSelectedCountry] = useState<Category | null>();
-    const [openCountryFormModal, setOpenCountryFormModal] = useState(false);
-    const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>();
+    const [openCategoryFormModal, setOpenCategoryFormModal] = useState(false);
+    const [openCategoryDeleteModal, setOpenCategoryDeleteModal] = useState(false);
     const {
         data,
         error,
@@ -36,6 +39,7 @@ export const CategoriesPage = () => {
 
     const {
         register,
+        control,
         handleSubmit,
         watch,
         setValue,
@@ -44,14 +48,14 @@ export const CategoriesPage = () => {
     } = useForm<Category>();
 
     const onSubmit: SubmitHandler<Category> = (data) => {
-        const url = selectedCountry ? `/categories/${selectedCountry.id}` : '/categories';
-        const method = selectedCountry ? 'put' : 'post';
+        const url = selectedCategory ? `/categories/${selectedCategory.id}` : '/categories/create';
+        const method = selectedCategory ? 'put' : 'post';
 
         api[method](url, data).then(() => {
             mutate().then(() => {
                 toast({
                     title: 'Successful',
-                    description: `Categories ${selectedCountry ? 'updated' : 'added'} successfully`,
+                    description: `Categories ${selectedCategory ? 'updated' : 'added'} successfully`,
                 });
             });
         }).catch((error) => {
@@ -61,15 +65,15 @@ export const CategoriesPage = () => {
                 description: error.message,
             });
         }).finally(() => {
-            setOpenCountryFormModal(false);
-            setSelectedCountry(null);
+            setOpenCategoryFormModal(false);
+            setSelectedCategory(null);
             reset();
         });
     };
 
     const deleteCountry = () => {
-        if (selectedCountry) {
-            api.delete(`/categories/${selectedCountry.id}`).then(() => {
+        if (selectedCategory) {
+            api.delete(`/categories/${selectedCategory.id}`).then(() => {
                 mutate().then(() => {
                     toast({
                         title: 'Successful',
@@ -83,19 +87,20 @@ export const CategoriesPage = () => {
                     description: error.data.message,
                 });
             }).finally(() => {
-                setOpenCountryDeleteModal(false);
-                setSelectedCountry(null);
+                setOpenCategoryDeleteModal(false);
+                setSelectedCategory(null);
             });
         }
     };
-    console.log(watch());
+
     useEffect(() => {
-        if (selectedCountry) {
-            reset(selectedCountry);
+        if (selectedCategory) {
+            reset(selectedCategory);
+            setValue('iconUrl', selectedCategory.iconUrl);
         } else {
             reset({});
         }
-    }, [reset, selectedCountry, setValue]);
+    }, [reset, selectedCategory, setValue]);
 
     return (
         <Fragment>
@@ -105,8 +110,8 @@ export const CategoriesPage = () => {
                 actionItems={
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {
-                            setOpenCountryFormModal(true);
-                            setSelectedCountry(null)
+                            setOpenCategoryFormModal(true);
+                            setSelectedCategory(null)
                             reset({});
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
@@ -195,8 +200,8 @@ export const CategoriesPage = () => {
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Accept this category'}
                                                     onClick={() => {
-                                                        setSelectedCountry(category);
-                                                        setOpenCountryFormModal(true);
+                                                        setSelectedCategory(category);
+                                                        setOpenCategoryFormModal(true);
                                                     }}>
                                                 <Pencil size={15} color={'green'}/>
                                             </Button>
@@ -208,8 +213,8 @@ export const CategoriesPage = () => {
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Cancel this category'}
                                                     onClick={() => {
-                                                        setSelectedCountry(category);
-                                                        setOpenCountryDeleteModal(true);
+                                                        setSelectedCategory(category);
+                                                        setOpenCategoryDeleteModal(true);
                                                     }}>
                                                 <Trash size={15} color={'red'}/>
                                             </Button>
@@ -221,17 +226,17 @@ export const CategoriesPage = () => {
                         ))
                 }
             />
-            <Modal isOpen={openCountryFormModal} onClose={() => {
-                setSelectedCountry(null);
-                setOpenCountryFormModal(false);
+            <Modal isOpen={openCategoryFormModal} onClose={() => {
+                setSelectedCategory(null);
+                setOpenCategoryFormModal(false);
             }} title={'Country Form'}>
                 {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="label">Category Label</Label>
+                                <Label htmlFor="label">Name</Label>
                                 <Input
-                                    id="countryName"
+                                    id="label"
                                     type="text"
                                     placeholder="label"
                                     {...register('label', {required: 'Please enter category label'})}
@@ -240,6 +245,49 @@ export const CategoriesPage = () => {
                                     errors?.label && <ErrorLabel message={errors.label.message!}/>
                                 }
                             </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="categorySlug">Name</Label>
+                                <Input
+                                    id="categorySlug"
+                                    type="text"
+                                    placeholder="label"
+                                    {...register('categorySlug', {required: 'Please enter category slug'})}
+                                />
+                                {
+                                    errors?.categorySlug && <ErrorLabel message={errors.categorySlug.message!}/>
+                                }
+                            </div>
+
+                            <div className="col-span-1">
+                                <Card className="overflow-hidden">
+                                    <CardHeader>
+                                        <CardTitle>Icon</CardTitle>
+                                        <CardDescription>
+                                            Upload Icon for the category
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-2">
+                                            <Controller
+                                                name="iconUrl"
+                                                control={control}
+                                                render={({field}) => (
+                                                    <ImageUploader
+                                                        onUploadComplete={(url) => {
+                                                            field.onChange(url);
+                                                            setImageUrl(url);
+                                                        }}
+                                                        imageUrl={imageUrl}
+                                                    />
+                                                )}
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+
                             <Button variant={isDirty ? 'default' : 'secondary'} disabled={!isDirty} type="submit"
                                     className="w-full">
                                 Save
@@ -249,20 +297,20 @@ export const CategoriesPage = () => {
                 }
             </Modal>
 
-            <Modal isOpen={openCountryDeleteModal} onClose={() => {
-                setSelectedCountry(null);
-                setOpenCountryDeleteModal(false);
+            <Modal isOpen={openCategoryDeleteModal} onClose={() => {
+                setSelectedCategory(null);
+                setOpenCategoryDeleteModal(false);
             }} title={'Delete Country'}>
                 {
-                    selectedCountry
+                    selectedCategory
                     && <div>
                         <div className="text-lg font-normal">Are you sure you want to cancel this country?</div>
                         <div className="flex gap-2 mt-4">
                             <Button variant={'outline'} onClick={() => {
-                                setOpenCountryDeleteModal(false);
+                                setOpenCategoryDeleteModal(false);
                             }}>No</Button>
                             <Button onClick={() => {
-                                setOpenCountryDeleteModal(false);
+                                setOpenCategoryDeleteModal(false);
                                 deleteCountry();
                             }}>
                                 Yes</Button>

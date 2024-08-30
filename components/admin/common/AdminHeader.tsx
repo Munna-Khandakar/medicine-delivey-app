@@ -3,15 +3,8 @@
 import {Sheet, SheetContent, SheetTrigger} from '@/components/ui/sheet';
 import {Button} from '@/components/ui/button';
 import {useRouter} from 'next/navigation';
-import {Home, LineChart, Package, PanelLeft, ShoppingCart, Users} from 'lucide-react';
+import {Flag, Home, Package, PanelLeft, ShoppingCart, SquareMenu, Tag, Users} from 'lucide-react';
 import Link from 'next/link';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList, BreadcrumbPage,
-    BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
 import {Input} from '@/components/ui/input';
 import {
     DropdownMenu,
@@ -59,9 +52,19 @@ export const AdminHeader = () => {
             href: '/admin/customers',
         },
         {
-            icon: LineChart,
-            label: 'Analytics',
-            href: '/admin/analytics',
+            icon: Flag,
+            label: 'Countries',
+            href: '/admin/countries',
+        },
+        {
+            icon: SquareMenu,
+            label: 'Categories',
+            href: '/admin/categories',
+        },
+        {
+            icon: Tag,
+            label: 'Brands',
+            href: '/admin/brands',
         },
     ];
 
@@ -100,25 +103,25 @@ export const AdminHeader = () => {
                     </nav>
                 </SheetContent>
             </Sheet>
-            <Breadcrumb className="hidden md:flex">
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink asChild>
-                            <Link href="#">Dashboard</Link>
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator/>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink asChild>
-                            <Link href="#">Orders</Link>
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator/>
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>Recent Orders</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
+            {/*<Breadcrumb className="hidden md:flex">*/}
+            {/*    <BreadcrumbList>*/}
+            {/*        <BreadcrumbItem>*/}
+            {/*            <BreadcrumbLink asChild>*/}
+            {/*                <Link href="#">Dashboard</Link>*/}
+            {/*            </BreadcrumbLink>*/}
+            {/*        </BreadcrumbItem>*/}
+            {/*        <BreadcrumbSeparator/>*/}
+            {/*        <BreadcrumbItem>*/}
+            {/*            <BreadcrumbLink asChild>*/}
+            {/*                <Link href="#">Orders</Link>*/}
+            {/*            </BreadcrumbLink>*/}
+            {/*        </BreadcrumbItem>*/}
+            {/*        <BreadcrumbSeparator/>*/}
+            {/*        <BreadcrumbItem>*/}
+            {/*            <BreadcrumbPage>Recent Orders</BreadcrumbPage>*/}
+            {/*        </BreadcrumbItem>*/}
+            {/*    </BreadcrumbList>*/}
+            {/*</Breadcrumb>*/}
             <div className="relative ml-auto flex-1 md:grow-0">
                 <Input className="border w-[250px]"
                        placeholder="Type a command or search..."
@@ -130,7 +133,10 @@ export const AdminHeader = () => {
                     <CommandList>
                         <CommandEmpty>No results found.</CommandEmpty>
                         <CommandGroup heading="Settings">
-                            <CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
+                                router.push('/admin/settings/reset-password');
+                            }}>
                                 <GearIcon className="mr-2 h-4 w-4"/>
                                 <span>Change Password</span>
                             </CommandItem>
@@ -171,8 +177,8 @@ export const AdminHeader = () => {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Support</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>router.push('/admin/settings')}>Settings</DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=>router.push('/admin/settings/profile')}>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
