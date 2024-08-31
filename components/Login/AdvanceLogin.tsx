@@ -84,9 +84,9 @@ export function AdvanceLogin() {
             Cookie.setRefreshToken(response.data.refreshToken);
             if (Cookie.isAdmin()) {
                 router.push('/admin/dashboard');
+            } else {
+                router.push('/');
             }
-            router.push('/');
-
         }).catch((error) => {
             console.log(error.response.data.message);
             toast({
@@ -121,10 +121,10 @@ export function AdvanceLogin() {
             Cookie.setToken(response.data.accessToken);
             Cookie.setRefreshToken(response.data.refreshToken);
             if (Cookie.isAdmin()) {
-                router.push('/admin');
+                router.push('/admin/dashboard');
+            } else {
+                router.push('/');
             }
-            router.push('/');
-
         }).catch((error) => {
             console.log(error.response.data.message);
             toast({
