@@ -1,9 +1,10 @@
 'use client';
-import {Fragment} from 'react';
+import {Fragment, useEffect} from 'react';
 import Link from 'next/link';
 import {usePathname} from 'next/navigation';
 import {Home, Package, Settings, ShoppingCart, Users, Flag, SquareMenu, Tag} from 'lucide-react';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
+import {Cookie} from '@/utils/Cookie';
 
 const NavItems = [
     {
@@ -45,6 +46,12 @@ const NavItems = [
 export const AdminNavbar = () => {
 
     const pathName = usePathname();
+
+    useEffect(() => {
+        if (!Cookie.isAdmin()) {
+            window.location.href = '/login';
+        }
+    }, []);
 
     return (
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">

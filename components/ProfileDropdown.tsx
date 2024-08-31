@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import {useEffect} from 'react';
+import {useRouter} from 'next/navigation';
 import {
     DropdownMenu,
     DropdownMenuContent, DropdownMenuItem,
@@ -8,33 +9,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {CircleUserRound} from 'lucide-react';
 import api from '@/lib/apiInstance';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import useSWR from 'swr';
 import {User} from '@/types/User';
 import {Cookie} from '@/utils/Cookie';
-import {UserRole} from '@/types/enum/UserRole';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const ProfileDropdown = () => {
-
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
 
-    const {
-        data,
-        error,
-        isLoading,
-        mutate
-    } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
+    const {data} = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
 
     useEffect(() => {
         const id = Cookie.getMyUserId();
         if (id) setOwnUserId(id);
     }, []);
 
-
     return (
-        <DropdownMenu>
+        <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger asChild>
                 <CircleUserRound className="w-[26px]"/>
             </DropdownMenuTrigger>
@@ -43,40 +38,39 @@ export const ProfileDropdown = () => {
                     {data?.userName || 'user name not set'}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem>
-                    <Link href={'/order'}>
-                        Order
-                    </Link>
+                <DropdownMenuItem onClick={() => {
+                    setOpen(false);
+                    router.push('/order');
+                }}>
+                    Order
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Link href={'/history'}>
-                        History
-                    </Link>
+                <DropdownMenuItem onClick={() => {
+                    setOpen(false);
+                    router.push('/profile');
+                }}>
+                    Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Link href={'/profile'}>
-                        Profile
-                    </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    <Link href={'/reset-password'}>
-                        Reset Password
-                    </Link>
+                <DropdownMenuItem onClick={() => {
+                    setOpen(false);
+                    router.push('/reset-password');
+                }}>
+                    Reset Password
                 </DropdownMenuItem>
                 <DropdownMenuSeparator/>
-                {
-                    Cookie.isAdmin() &&
-                    <DropdownMenuItem>
-                        <Link href={'/admin/dashboard'}>
-                            Admin
-                        </Link>
+                {Cookie.isAdmin() && (
+                    <DropdownMenuItem onClick={() => {
+                        setOpen(false);
+                        router.push('/admin/dashboard');
+                    }}>
+                        Admin
                     </DropdownMenuItem>
-                }
+                )}
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem>
-                    <Link href={'/login'}>
-                        Logout
-                    </Link>
+                <DropdownMenuItem onClick={() => {
+                    setOpen(false);
+                    router.push('/login');
+                }}>
+                    Logout
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

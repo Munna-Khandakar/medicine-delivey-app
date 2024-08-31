@@ -1,3 +1,3 @@
 export default function page() {
-    return <div>afda</div>;
+    return <div>Check our brands in the medicine section</div>;
 }

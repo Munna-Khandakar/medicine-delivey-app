@@ -4,7 +4,7 @@ import {TooltipProvider} from '@/components/ui/tooltip';
 import {AdminHeader} from '@/components/admin/common/AdminHeader';
 
 export const metadata: Metadata = {
-    title: 'Medicine 24/7',
+    title: 'Admin | Pharmatic',
     description: 'Medicine 24/7',
 };
 

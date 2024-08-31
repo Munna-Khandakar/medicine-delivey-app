@@ -2,11 +2,10 @@
 import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import Image from 'next/image';
-import {Pencil, PlusCircle, Search, Trash} from 'lucide-react';
+import {Pencil, PlusCircle, Trash} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
-import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import Revital from '@/components/medicine/revital.webp';
 import Link from 'next/link';
@@ -28,7 +27,6 @@ export function Products() {
     const [selectedProductToDelete, setSelectedProductToDelete] = useState('');
     const {
         data,
-        error,
         isLoading,
         mutate
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
@@ -57,14 +55,14 @@ export function Products() {
                 subTitle={'Manage your products and view their sales performance.'}
                 actionItems={
                     <div className="flex justify-end items-center pb-2 w-full">
-                        <div className="relative ml-auto pr-2 flex-1 md:grow-0">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
-                            <Input
-                                type="search"
-                                placeholder="Search..."
-                                className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                            />
-                        </div>
+                        {/*<div className="relative ml-auto pr-2 flex-1 md:grow-0">*/}
+                        {/*    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>*/}
+                        {/*    <Input*/}
+                        {/*        type="search"*/}
+                        {/*        placeholder="Search..."*/}
+                        {/*        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         <Link href={'/admin/products/new'}
                               title="Add Product"
                               className="flex items-center justify-between bg-black text-white px-3 py-2 rounded h-8 gap-1">

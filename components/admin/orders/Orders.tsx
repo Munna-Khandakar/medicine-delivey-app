@@ -4,10 +4,9 @@ import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import {format} from 'date-fns';
 import {DateRange} from 'react-day-picker';
-import {Check, Eye, PackageCheck, Search, Truck, X} from 'lucide-react';
+import {Check, Eye, PackageCheck, Truck, X} from 'lucide-react';
 import {CalendarIcon} from '@radix-ui/react-icons';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
-import {Input} from '@/components/ui/input';
 import {SimpleTable} from '@/components/SimpleTable';
 import {OrderResponse} from '@/types/OrderResponse';
 import {Button} from '@/components/ui/button';
@@ -161,14 +160,14 @@ export function Orders() {
                                 />
                             </PopoverContent>
                         </Popover>
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
-                            <Input
-                                type="search"
-                                placeholder="Search..."
-                                className="w-full rounded-md bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                            />
-                        </div>
+                        {/*<div className="relative">*/}
+                        {/*    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>*/}
+                        {/*    <Input*/}
+                        {/*        type="search"*/}
+                        {/*        placeholder="Search..."*/}
+                        {/*        className="w-full rounded-md bg-background pl-8 md:w-[200px] lg:w-[336px]"*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                     </div>
                 }
                 tableHeader={

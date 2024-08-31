@@ -12,7 +12,7 @@ type CategoryCardProps = {
 export function CategoryCard(props: CategoryCardProps) {
     const {category} = props;
     return (
-        <Link href={`/${category.id}`} className="truncate border-0 min-w-fit">
+        <Link href={`/${category.id}`} className="truncate border-0 min-w-fit bg-white">
             <div className="flex flex-col items-center  w-[100px] md:w-[160px]">
                 <div
                     className="flex items-center justify-center rounded-lg p-2 border w-full h-[100px] md:h-[160px] hover:shadow">

@@ -64,7 +64,6 @@ export const ProductForm = (props: ProductFormProps) => {
     const {
         register,
         handleSubmit,
-        watch,
         control,
         setValue,
         reset,
@@ -75,7 +74,7 @@ export const ProductForm = (props: ProductFormProps) => {
         const url = product ? `/products/${product.productId}` : '/products/create';
         const method = product ? 'put' : 'post';
 
-        api[method](url, data).then((response) => {
+        api[method](url, data).then(() => {
             router.push('/admin/products');
             toast({
                 title: 'Successful',
@@ -99,7 +98,7 @@ export const ProductForm = (props: ProductFormProps) => {
             setValue('brandId', product.brand.id);
             setValue('countryId', product.country.id);
         }
-    }, [product, reset]);
+    }, [product, reset, setValue]);
 
 
     return (
@@ -357,7 +356,7 @@ export const ProductForm = (props: ProductFormProps) => {
                     <CardHeader>
                         <CardTitle>Product Image</CardTitle>
                         <CardDescription>
-                           Upload image of the product
+                            Upload image of the product
                         </CardDescription>
                     </CardHeader>
                     <CardContent>

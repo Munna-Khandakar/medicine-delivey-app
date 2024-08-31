@@ -25,7 +25,7 @@ export const CategorySection = () => {
     return (
         <section className="container mx-auto">
             <SectionLabel label={SECTION_LABEL}/>
-            <div className="flex flex-1 flex-nowrap no-scrollbar gap-2 items-center overflow-x-auto py-2">
+            <div className="flex flex-1 flex-nowrap no-scrollbar gap-4 items-center overflow-x-auto py-2">
                 {
                     categoriesError &&
                     <Alert variant="destructive">
