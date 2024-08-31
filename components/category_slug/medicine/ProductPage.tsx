@@ -5,6 +5,9 @@ import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {SectionLabel} from '@/components/SectionLabel';
+import {Fragment} from 'react';
+import 'react-quill/dist/quill.snow.css';
 
 type ProductPageProps = {
     data: ProductType | undefined,
@@ -17,8 +20,8 @@ export const ProductPage = (props: ProductPageProps) => {
     const {data, error, isLoading} = props;
 
     return (
-        <section className="container py-4 md:py-8 min-h-screen">
-            <div className="grid grid-cols-1 md:grid-cols-3">
+        <section className="container py-4 md:py-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 ">
                 <div className="col-span-1 md:col-span-2 pr-4">
                     {
                         error &&
@@ -61,7 +64,10 @@ export const ProductPage = (props: ProductPageProps) => {
                     }
 
                     <hr className="my-6"/>
-                    <SimiliarProducts/>
+                    <div className="mb-6">
+                        <SimiliarProducts/>
+                    </div>
+
                 </div>
                 <div className="pl-2 my-auto hidden md:block"
                      style={{
@@ -75,6 +81,18 @@ export const ProductPage = (props: ProductPageProps) => {
                         </ul>
                     </div>
                 </div>
+            </div>
+            <div>
+                {
+                    data?.description &&
+                    <Fragment>
+                        <SectionLabel label={'Description'}/>
+                        <div
+                            className="ql-editor"
+                            dangerouslySetInnerHTML={{__html: data.description}}/>
+                    </Fragment>
+                }
+
             </div>
         </section>
     );
