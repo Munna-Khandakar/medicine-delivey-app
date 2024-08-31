@@ -13,7 +13,7 @@ import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 const LABEL = 'Similar Products';
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const SimiliarProducts = () => {
+export const SimilarProducts = () => {
 
     const {category_id} = useParams();
 

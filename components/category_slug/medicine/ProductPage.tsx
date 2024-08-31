@@ -1,5 +1,5 @@
 'use client';
-import {SimiliarProducts} from '@/components/category_slug/medicine/SimiliarProducts';
+import {SimilarProducts} from '@/components/category_slug/medicine/SimilarProducts';
 import {ProductHero} from '@/components/category_slug/medicine/ProductHero';
 import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -65,7 +65,7 @@ export const ProductPage = (props: ProductPageProps) => {
 
                     <hr className="my-6"/>
                     <div className="mb-6">
-                        <SimiliarProducts/>
+                        <SimilarProducts/>
                     </div>
 
                 </div>
