@@ -1,9 +1,10 @@
 import {ChangeEvent, useState} from 'react';
-import {Upload} from 'lucide-react';
+import {Upload, X} from 'lucide-react';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
 import {ErrorResponse} from '@/types/ErrorResponse';
 import {ByteArray} from '@/constants/ByteArray';
+import {Button} from '@/components/ui/button';
 
 type ServerError = {
     response: {
@@ -18,6 +19,7 @@ type ImageUploaderProps = {
 
 export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) => {
     const {toast} = useToast();
+    const [showInput, setShowInput] = useState(false);
     const byteArray = ByteArray;
 
     const convertFileToByteArray = (file: File): Promise<Uint8Array> => {
@@ -41,16 +43,23 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
         };
     };
 
+    const createMultiPartFormData = (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return formData;
+    };
+
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (e.target.files) {
             const file = e.target.files[0];
             try {
-                const uint8Array = await convertFileToByteArray(file);
-                const byteArray = Array.from(uint8Array);
-                const formData = createFormData(byteArray, 'image/png', false);
+                // const uint8Array = await convertFileToByteArray(file);
+                // const byteArray = Array.from(uint8Array);
+                // const formData = createFormData(byteArray, 'image/png', false);
+                const formData = createMultiPartFormData(file);
                 const res = await uploadFile(formData);
-                onUploadComplete(res.data.fileUrl);
+                onUploadComplete(res.data.url);
             } catch (error) {
                 console.error('Error converting file to byte array:', error);
             }
@@ -59,7 +68,12 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
 
     const uploadFile = async (formData: any) => {
         try {
-            const res = await api.post('/settings/upload-file', formData);
+            // const res = await api.post('/settings/upload-file', formData);
+            const res = await api.post('/settings/file-upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
             return res;
         } catch (error) {
             const serverError = (error as ServerError).response.data;
@@ -68,12 +82,14 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
                 description: serverError.message,
             });
             throw error;
+        } finally {
+            setShowInput(false);
         }
     };
 
     return (
-        <div>
-            {imageUrl ? (
+        <div className="relative">
+            {imageUrl && !showInput ? (
                 <img src={imageUrl} alt="Uploaded" className="w-full h-auto"/>
             ) : (
                 <label htmlFor="fileId"
@@ -84,6 +100,15 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
                     <input type="file" id="fileId" className="hidden" onChange={handleFileChange}/>
                 </label>
             )}
+            {
+                imageUrl &&
+                <Button className="absolute -top-2 -right-2 rounded-full border-red-500 bg-red-100"
+                        size="icon" variant={'outline'} type="button"
+                        onClick={() => setShowInput(true)}>
+                    <X color={'red'}/>
+                </Button>
+            }
+          
         </div>
     );
 };

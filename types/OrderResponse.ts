@@ -15,6 +15,7 @@ export type OrderResponse = {
     paymentChannel: string;
     transactionId: string;
     orderDate: string;
+    prescriptionUrl?: string;
 }
 
 export type OrderItem = {

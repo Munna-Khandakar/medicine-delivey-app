@@ -1,9 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {Category} from '@/types/Category';
-import CategoryDemoIcon from './icon-category.png';
 
 type CategoryCardProps = {
     category: Category
@@ -27,9 +25,9 @@ export function CategoryCard(props: CategoryCardProps) {
                     {/*                 className="hover:scale-110 transition"*/}
                     {/*        />*/}
                     {/*}*/}
-                    <Image src={CategoryDemoIcon} alt={category.label}
-                           width={150} objectFit="contain" height={150}
-                           className="hover:scale-110 transition"
+                    <img src={category.iconUrl} alt={category.label}
+                           width={150}  height={150}
+                           className="hover:scale-110 transition object-contain"
                     />
 
                 </div>

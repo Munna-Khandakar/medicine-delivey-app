@@ -1,12 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Fragment} from 'react';
 import {ProductType} from '@/types/ProductType';
-import MedicineDemo from './medicine-demo.png';
 
 type ProductLongCardProps = {
     product: ProductType
@@ -21,9 +19,9 @@ export function ProductLongCard(props: ProductLongCardProps) {
             <div className="flex flex-col items-center w-[120px] md:w-[200px] gap-2">
                 <div
                     className="flex items-center justify-center w-full h-[120px] md:h-[200px]">
-                    <Image src={MedicineDemo} alt={product.productName}
-                           width={160} objectFit={'fill'}
-                           className="hover:scale-110 transition w-full  h-full"
+                    <img src={product.imageUrl} alt={product.productName}
+                           width={160}
+                           className="hover:scale-110 transition w-full  h-full object-fill"
                     />
                 </div>
                 <div>

@@ -93,6 +93,7 @@ export const CategoriesPage = () => {
     useEffect(() => {
         if (selectedCategory) {
             reset(selectedCategory);
+            setImageUrl(selectedCategory.iconUrl);
             setValue('iconUrl', selectedCategory.iconUrl);
         } else {
             reset({});
@@ -121,8 +122,9 @@ export const CategoriesPage = () => {
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
+                        <TableHead>Icon</TableHead>
                         <TableHead>Product Count</TableHead>
-                        <TableHead className="flex justify-end">Actions</TableHead>
+                        <TableHead>Actions</TableHead>
                     </TableRow>
                 }
                 tableBody={
@@ -192,8 +194,17 @@ export const CategoriesPage = () => {
                         : data?.map((category) => (
                             <TableRow key={category.id}>
                                 <TableCell>{category.label}</TableCell>
+                                <TableCell>
+                                    <img
+                                        alt="Product image"
+                                        className="aspect-square rounded-md object-cover"
+                                        height="64"
+                                        src={category.iconUrl}
+                                        width="64"
+                                    />
+                                </TableCell>
                                 <TableCell>{category.totalProductCount}</TableCell>
-                                <TableCell className="flex gap-1 justify-end">
+                                <TableCell >
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
@@ -211,6 +222,7 @@ export const CategoriesPage = () => {
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Cancel this category'}
+                                                    className="ml-1"
                                                     disabled={category.totalProductCount > 0}
                                                     onClick={() => {
                                                         setSelectedCategory(category);

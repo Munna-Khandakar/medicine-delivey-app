@@ -156,11 +156,11 @@ export function Products() {
                         : data?.map((product) => (
                             <TableRow key={product.productId}>
                                 <TableCell className="hidden sm:table-cell">
-                                    <Image
+                                    <img
                                         alt="Product image"
                                         className="aspect-square rounded-md object-cover"
                                         height="64"
-                                        src={Revital}
+                                        src={product.imageUrl}
                                         width="64"
                                     />
                                 </TableCell>

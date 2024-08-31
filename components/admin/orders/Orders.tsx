@@ -177,6 +177,7 @@ export function Orders() {
                         <TableHead className="hidden md:table-cell">Delivery Charge</TableHead>
                         <TableHead>Total Cost</TableHead>
                         <TableHead>Delivery Date</TableHead>
+                        <TableHead>Prescription</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
@@ -253,6 +254,19 @@ export function Orders() {
                                 <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
                                 <TableCell>{order.totalAmount}</TableCell>
                                 <TableCell>{order.deliveryDate}</TableCell>
+                                <TableCell>
+                                    {
+                                        !order.prescriptionUrl
+                                            ? <span className="text-muted-foreground">No Prescription</span>
+                                            : <img
+                                                alt="customr prescription"
+                                                className="aspect-square rounded-md object-cover"
+                                                height="64"
+                                                src={order.prescriptionUrl}
+                                                width="64"
+                                            />
+                                    }
+                                </TableCell>
                                 <TableCell>
                                     <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
                                         {order.status}
