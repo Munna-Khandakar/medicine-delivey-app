@@ -1,34 +1,35 @@
 'use client';
-
-import {useParams} from 'next/navigation';
 import {SimiliarProducts} from '@/components/category_slug/medicine/SimiliarProducts';
 import {ProductHero} from '@/components/category_slug/medicine/ProductHero';
-import api from '@/lib/apiInstance';
-import useSWR from 'swr';
 import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
+import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 
+type ProductPageProps = {
+    data: ProductType | undefined,
+    error: Error,
+    isLoading: boolean,
+};
 
-const fetcher = (url: string) => api.get(url).then((res) => res.data);
+export const ProductPage = (props: ProductPageProps) => {
 
-export const ProductPage = () => {
-
-    const {medicine_id} = useParams();
-
-    const {
-        data,
-        error,
-        isLoading,
-    } = useSWR<ProductType>(`products/${medicine_id}`, fetcher, {revalidateOnFocus: false});
-
-    if (error) {
-        return <div>Error...</div>;
-    }
+    const {data, error, isLoading} = props;
 
     return (
         <section className="container py-4 md:py-8 min-h-screen">
             <div className="grid grid-cols-1 md:grid-cols-3">
                 <div className="col-span-1 md:col-span-2 pr-4">
+                    {
+                        error &&
+                        <Alert variant="destructive">
+                            <ExclamationTriangleIcon className="h-4 w-4"/>
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                Sorry, there is something wrong with internet.
+                            </AlertDescription>
+                        </Alert>
+                    }
                     {
                         isLoading
                             ? <div className="flex gap-4 md:gap-8">

@@ -31,10 +31,9 @@ export const ProductHero = (props: ProductHeroProps) => {
                 <div>
                     <h1 className="text-base md:text-2xl font-medium leading-5 md:leading-9">{product?.productName}</h1>
                     {
-                        product?.description &&
+                        product?.brand &&
                         <Link
-                            // href={`/company/${product?.brand.id}`}
-                            href={"#"}
+                             href={`/by-brand/${product?.brand.id}`}
                             className="text-teal-900 font-normal text-xs md:text-sm leading-2 md:leading-7">Visit
                             all {product?.brand.brandName} Company &apos;s Product
                         </Link>
@@ -66,9 +65,9 @@ export const ProductHero = (props: ProductHeroProps) => {
                         <AddToCartButton medicineId={product?.productId as string} stock={product?.stock || 0}/>
                     </div>
                     <p className="text-xs text-slate-500">Inclusive of all taxes</p>
-                    <p className="text-xs text-slate-500 mt-4">
-                        Delivery by <b>Today, before 10:00 pm</b>
-                    </p>
+                    {/*<p className="text-xs text-slate-500 mt-4">*/}
+                    {/*    Delivery by <b>Today, before 10:00 pm</b>*/}
+                    {/*</p>*/}
                 </div>
             </div>
         </div>

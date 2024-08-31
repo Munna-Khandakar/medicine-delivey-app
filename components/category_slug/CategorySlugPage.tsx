@@ -29,8 +29,6 @@ export const CategorySlugPage = () => {
 
     const {
         data: categories,
-        error: categoriesError,
-        isLoading: categoriesLoading
     } = useSWR<Category[]>('categories', fetcher, { revalidateOnFocus: false });
 
     const getCategoryName = (categoryId: string) => {
@@ -42,7 +40,6 @@ export const CategorySlugPage = () => {
         data,
         error,
         isLoading,
-        mutate
     } = useSWR<ProductType[]>(`products/category/${categoryId}`, fetcher, { revalidateOnFocus: false });
 
     const sortProductsHighToLow = () => {
