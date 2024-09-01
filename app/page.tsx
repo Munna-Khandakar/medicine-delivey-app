@@ -20,6 +20,7 @@ export default function Home() {
             <TrendingNearYouSection/>
             <SelfAdvertisement/>
             <DealsOfTheDay/>
+            {/*<Video/>*/}
             <HealthArticles/>
             <WhyChooseUs/>
         </main>
