@@ -102,7 +102,7 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
             )}
             {
                 imageUrl &&
-                <Button className="absolute -top-2 -right-2 rounded-full border-red-500 bg-red-100"
+                <Button className="absolute -top-2 -right-2 rounded-full border-red-500 bg-red-50"
                         size="icon" variant={'outline'} type="button"
                         onClick={() => setShowInput(true)}>
                     <X color={'red'}/>

@@ -38,6 +38,7 @@ export function Orders() {
     const [openOrderCancelModal, setOpenOrderCancelModal] = useState(false);
     const [openOrderOntheWayModal, setOpenOrderOntheWayModal] = useState(false);
     const [openOrderCompleteModal, setOpenOrderCompleteModal] = useState(false);
+    const [openImageViewModal, setOpenImageViewModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState('');
     const {
         data,
@@ -258,186 +259,216 @@ export function Orders() {
                                     {
                                         !order.prescriptionUrl
                                             ? <span className="text-muted-foreground">No Prescription</span>
-                                            : <img
-                                                alt="customr prescription"
-                                                className="aspect-square rounded-md object-cover"
-                                                height="64"
-                                                src={order.prescriptionUrl}
-                                                width="64"
-                                            />
-                                    }
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
-                                        {order.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="flex gap-1">
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this order'}
-                                                    disabled={order.status === OrderStauts.ACCEPTED}
-                                                    onClick={() => {
-                                                        setSelectedOrderId(order.id);
-                                                        setOpenOrderAcceptModal(true);
-                                                    }}>
-                                                <Check size={15} color={'green'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'Accept this order'}</TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Cancel this order'}
-                                                    disabled={order.status === OrderStauts.FAILED}
-                                                    onClick={() => {
-                                                        setSelectedOrderId(order.id);
-                                                        setOpenOrderCancelModal(true);
-                                                    }}>
-                                                <X size={15} color={'red'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'Cancel this order'}</TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'on the way this order'}
-                                                    disabled={order.status === OrderStauts.ON_THE_WAY}
-                                                    onClick={() => {
-                                                        setSelectedOrderId(order.id);
-                                                        setOpenOrderOntheWayModal(true);
-                                                    }}>
-                                                <Truck size={15} color={'blue'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'On the way'}</TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Complete this order'}
-                                                    disabled={order.status === OrderStauts.COMPLETED}
-                                                    onClick={() => {
-                                                        setSelectedOrderId(order.id);
-                                                        setOpenOrderCompleteModal(true);
-                                                    }}>
-                                                <PackageCheck size={15} color={'green'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'Complete this order'}</TooltipContent>
-                                    </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                variant={'outline'} size={'icon'}
-                                                aria-label={'See this order'}
-                                                onClick={() => {
-                                                    setSelectedOrderId(order.id);
-                                                    setOpenOrderDetailsModal(true);
-                                                }}>
-                                                <Eye size={15}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'See this order'}</TooltipContent>
-                                    </Tooltip>
-                                </TableCell>
-                            </TableRow>
-                        ))
-                }
-            />
-            <Modal isOpen={openOrderDetailsModal} onClose={() => {
-                setSelectedOrderId('');
-                setOpenOrderDetailsModal(false);
-            }} title={'Oder Details'}>
-                {
-                    selectedOrderId
-                    && <OrderDetailsSLip orderId={selectedOrderId}/>
-                }
-            </Modal>
-            <Modal isOpen={openOrderAcceptModal} onClose={() => {
-                setSelectedOrderId('');
-                setOpenOrderAcceptModal(false);
-            }} title={'Accept Order'}>
-                {
-                    selectedOrderId
-                    && <div>
-                        <div className="text-lg font-normal">Are you sure you want to accept this order?</div>
-                        <div className="flex gap-2 mt-4">
-                            <Button variant={'outline'} onClick={() => {
-                                setOpenOrderAcceptModal(false);
-                            }}>Cancel</Button>
-                            <Button onClick={() => {
-                                setOpenOrderAcceptModal(false);
-                                acceptSelectedOrder();
-                            }}>Accept</Button>
-                        </div>
-                    </div>
-                }
-            </Modal>
+                                            : <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        className="w-fit h-fit p-0"
+                                                        variant='ghost'
+                                                        onClick={() => {
+                                                            setSelectedOrderId(order.id);
+                                                            setOpenImageViewModal(true);
+                                                        }}
+                                                    >
+                                                        <img
+                                                            alt="customr prescription"
+                                                            className="aspect-square rounded-md object-cover"
+                                                            height="64"
+                                                            src={order.prescriptionUrl}
+                                                            width="64"
+                                                        />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent>{'See Prescription'}</TooltipContent>
+                                            </Tooltip>
+                                                }
+                                            </TableCell>
+                                        <TableCell>
+                                        <Badge variant={order.status === OrderStauts.INITIATED ? 'default' : 'secondary'}>
+                                    {order.status}
+                                </Badge>
+                            </TableCell>
+                    <TableCell className="flex gap-1">
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                    <Button variant={'outline'} size={'icon'}
+                aria-label={'Accept this order'}
+                disabled={order.status === OrderStauts.ACCEPTED}
+                onClick={() => {
+                    setSelectedOrderId(order.id);
+                    setOpenOrderAcceptModal(true);
+                }}>
+                <Check size={15} color={'green'}/>
+            </Button>
+        </TooltipTrigger>
+    <TooltipContent>{'Accept this order'}</TooltipContent>;
+</Tooltip>
+    <Tooltip>
+        <TooltipTrigger asChild>
+            <Button variant={'outline'} size={'icon'}
+                    aria-label={'Cancel this order'}
+                    disabled={order.status === OrderStauts.FAILED}
+                    onClick={() => {
+                        setSelectedOrderId(order.id);
+                        setOpenOrderCancelModal(true);
+                    }}>
+                <X size={15} color={'red'}/>
+            </Button>
+        </TooltipTrigger>
+        <TooltipContent>{'Cancel this order'}</TooltipContent>
+    </Tooltip>;
+    <Tooltip>
+        <TooltipTrigger asChild>
+            <Button variant={'outline'} size={'icon'}
+                    aria-label={'on the way this order'}
+                    disabled={order.status === OrderStauts.ON_THE_WAY}
+                    onClick={() => {
+                        setSelectedOrderId(order.id);
+                        setOpenOrderOntheWayModal(true);
+                    }}>
+                <Truck size={15} color={'blue'}/>
+            </Button>
+        </TooltipTrigger>
+        <TooltipContent>{'On the way'}</TooltipContent>
+    </Tooltip>;
+    <Tooltip>
+        <TooltipTrigger asChild>
+            <Button variant={'outline'} size={'icon'}
+                    aria-label={'Complete this order'}
+                    disabled={order.status === OrderStauts.COMPLETED}
+                    onClick={() => {
+                        setSelectedOrderId(order.id);
+                        setOpenOrderCompleteModal(true);
+                    }}>
+                <PackageCheck size={15} color={'green'}/>
+            </Button>
+        </TooltipTrigger>
+        <TooltipContent>{'Complete this order'}</TooltipContent>
+    </Tooltip>;
+    <Tooltip>
+        <TooltipTrigger asChild>
+            <Button
+                variant={'outline'} size={'icon'}
+                aria-label={'See this order'}
+                onClick={() => {
+                    setSelectedOrderId(order.id);
+                    setOpenOrderDetailsModal(true);
+                }}>
+                <Eye size={15}/>
+            </Button>
+        </TooltipTrigger>
+        <TooltipContent>{'See this order'}</TooltipContent>
+    </Tooltip>;
+</TableCell>
+</TableRow>
+))
+}
+/>
+    <Modal isOpen={openOrderDetailsModal} onClose={() => {
+        setSelectedOrderId('');
+        setOpenOrderDetailsModal(false);
+    }} title={'Oder Details'}>
+        {
+            selectedOrderId
+            && <OrderDetailsSLip orderId={selectedOrderId}/>
+        }
+    </Modal>;
+    <Modal isOpen={openOrderAcceptModal} onClose={() => {
+        setSelectedOrderId('');
+        setOpenOrderAcceptModal(false);
+    }} title={'Accept Order'}>
+        {
+            selectedOrderId
+            && <div>
+                <div className="text-lg font-normal">Are you sure you want to accept this order?</div>
+                <div className="flex gap-2 mt-4">
+                    <Button variant={'outline'} onClick={() => {
+                        setOpenOrderAcceptModal(false);
+                    }}>Cancel</Button>
+                    <Button onClick={() => {
+                        setOpenOrderAcceptModal(false);
+                        acceptSelectedOrder();
+                    }}>Accept</Button>
+                </div>
+            </div>
+        }
+    </Modal>;
 
-            <Modal isOpen={openOrderOntheWayModal} onClose={() => {
+    <Modal isOpen={openOrderOntheWayModal} onClose={() => {
+        setSelectedOrderId('');
+        setOpenOrderOntheWayModal(false);
+    }} title={'On the way'}>
+        {
+            selectedOrderId
+            && <div>
+                <div className="text-lg font-normal">Are you sure you want to send this order?</div>
+                <div className="flex gap-2 mt-4">
+                    <Button variant={'outline'} onClick={() => {
+                        setOpenOrderOntheWayModal(false);
+                    }}>No</Button>
+                    <Button onClick={() => {
+                        setOpenOrderOntheWayModal(false);
+                        onTheWaySelectedOrder();
+                    }}>Yes</Button>
+                </div>
+            </div>
+        }
+    </Modal>;
+    <Modal isOpen={openOrderCancelModal} onClose={() => {
+        setSelectedOrderId('');
+        setOpenOrderCancelModal(false);
+    }} title={'Accept Order'}>
+        {
+            selectedOrderId
+            && <div>
+                <div className="text-lg font-normal">Are you sure you want to cancel this order?</div>
+                <div className="flex gap-2 mt-4">
+                    <Button variant={'outline'} onClick={() => {
+                        setOpenOrderCancelModal(false);
+                    }}>No</Button>
+                    <Button onClick={() => {
+                        setOpenOrderCancelModal(false);
+                        cancelSelectedOrder();
+                    }}>Yes</Button>
+                </div>
+            </div>
+        }
+    </Modal>;
+    <Modal isOpen={openOrderCompleteModal} onClose={() => {
+        setSelectedOrderId('');
+        setOpenOrderCompleteModal(false);
+    }} title={'Complete Order'}>
+        {
+            selectedOrderId
+            && <div>
+                <div className="text-lg font-normal">Is this order is complete?</div>
+                <div className="flex gap-2 mt-4">
+                    <Button variant={'outline'} onClick={() => {
+                        setOpenOrderCompleteModal(false);
+                    }}>No</Button>
+                    <Button onClick={() => {
+                        setOpenOrderCompleteModal(false);
+                        completeSelectedOrder();
+                    }}>Yes</Button>
+                </div>
+            </div>
+        }
+    </Modal>
+            <Modal isOpen={openImageViewModal} onClose={() => {
                 setSelectedOrderId('');
-                setOpenOrderOntheWayModal(false);
-            }} title={'On the way'}>
+                setOpenImageViewModal(false);
+            }} title={'View Prescription'}>
                 {
                     selectedOrderId
                     && <div>
-                        <div className="text-lg font-normal">Are you sure you want to send this order?</div>
-                        <div className="flex gap-2 mt-4">
-                            <Button variant={'outline'} onClick={() => {
-                                setOpenOrderOntheWayModal(false);
-                            }}>No</Button>
-                            <Button onClick={() => {
-                                setOpenOrderOntheWayModal(false);
-                                onTheWaySelectedOrder();
-                            }}>Yes</Button>
-                        </div>
-                    </div>
-                }
-            </Modal>
-            <Modal isOpen={openOrderCancelModal} onClose={() => {
-                setSelectedOrderId('');
-                setOpenOrderCancelModal(false);
-            }} title={'Accept Order'}>
-                {
-                    selectedOrderId
-                    && <div>
-                        <div className="text-lg font-normal">Are you sure you want to cancel this order?</div>
-                        <div className="flex gap-2 mt-4">
-                            <Button variant={'outline'} onClick={() => {
-                                setOpenOrderCancelModal(false);
-                            }}>No</Button>
-                            <Button onClick={() => {
-                                setOpenOrderCancelModal(false);
-                                cancelSelectedOrder();
-                            }}>Yes</Button>
-                        </div>
-                    </div>
-                }
-            </Modal>
-            <Modal isOpen={openOrderCompleteModal} onClose={() => {
-                setSelectedOrderId('');
-                setOpenOrderCompleteModal(false);
-            }} title={'Complete Order'}>
-                {
-                    selectedOrderId
-                    && <div>
-                        <div className="text-lg font-normal">Is this order is complete?</div>
-                        <div className="flex gap-2 mt-4">
-                            <Button variant={'outline'} onClick={() => {
-                                setOpenOrderCompleteModal(false);
-                            }}>No</Button>
-                            <Button onClick={() => {
-                                setOpenOrderCompleteModal(false);
-                                completeSelectedOrder();
-                            }}>Yes</Button>
-                        </div>
+                        <img
+                            alt="customr prescription"
+                            className="rounded-md object-cover"
+                            src={data?.find((order) => order.id === selectedOrderId)?.prescriptionUrl}
+                        />
                     </div>
                 }
             </Modal>
         </Fragment>
-    );
+    )
+        ;
 }
