@@ -108,7 +108,7 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
                     <X color={'red'}/>
                 </Button>
             }
-          
+
         </div>
     );
 };

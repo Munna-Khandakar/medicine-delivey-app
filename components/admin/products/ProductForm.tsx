@@ -40,7 +40,6 @@ export const ProductForm = (props: ProductFormProps) => {
     const {product} = props;
     const [date, setDate] = useState<Date>();
 
-    const [imageUrl, setImageUrl] = useState('');
     const {toast} = useToast();
     const router = useRouter();
     const {
@@ -66,6 +65,7 @@ export const ProductForm = (props: ProductFormProps) => {
         handleSubmit,
         control,
         setValue,
+        getValues,
         reset,
         formState: {errors, isDirty},
     } = useForm<ProductInput>();
@@ -91,8 +91,6 @@ export const ProductForm = (props: ProductFormProps) => {
 
     useEffect(() => {
         if (product) {
-            setDate(new Date(product.expires));
-            setImageUrl(product.imageUrl);
             reset(product);
             setValue('categoryId', product.category.id);
             setValue('brandId', product.brand.id);
@@ -360,21 +358,25 @@ export const ProductForm = (props: ProductFormProps) => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 mb-2">
                             <Controller
                                 name="imageUrl"
                                 control={control}
+                                rules={{ required: 'Please upload an image' }}
                                 render={({field}) => (
                                     <ImageUploader
                                         onUploadComplete={(url) => {
                                             field.onChange(url);
-                                            setImageUrl(url);
+                                            setValue('imageUrl', url);
                                         }}
-                                        imageUrl={imageUrl}
+                                        imageUrl={getValues('imageUrl')}
                                     />
                                 )}
                             />
                         </div>
+                        {
+                            errors?.imageUrl && <ErrorLabel message={errors.imageUrl.message!}/>
+                        }
                     </CardContent>
                 </Card>
                 <Button

@@ -19,13 +19,11 @@ import {Category} from '@/types/Category';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {ImageUploader} from '@/components/common/ImageUploader';
 
-
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const CategoriesPage = () => {
 
     const {toast} = useToast();
-    const [imageUrl, setImageUrl] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<Category | null>();
     const [openCategoryFormModal, setOpenCategoryFormModal] = useState(false);
     const [openCategoryDeleteModal, setOpenCategoryDeleteModal] = useState(false);
@@ -40,6 +38,7 @@ export const CategoriesPage = () => {
         control,
         handleSubmit,
         setValue,
+        getValues,
         reset,
         formState: {errors, isDirty},
     } = useForm<Category>();
@@ -93,7 +92,6 @@ export const CategoriesPage = () => {
     useEffect(() => {
         if (selectedCategory) {
             reset(selectedCategory);
-            setImageUrl(selectedCategory.iconUrl);
             setValue('iconUrl', selectedCategory.iconUrl);
         } else {
             reset({});
@@ -109,7 +107,7 @@ export const CategoriesPage = () => {
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {
                             setOpenCategoryFormModal(true);
-                            setSelectedCategory(null)
+                            setSelectedCategory(null);
                             reset({});
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
@@ -204,7 +202,7 @@ export const CategoriesPage = () => {
                                     />
                                 </TableCell>
                                 <TableCell>{category.totalProductCount}</TableCell>
-                                <TableCell >
+                                <TableCell>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
@@ -270,13 +268,14 @@ export const CategoriesPage = () => {
                                             <Controller
                                                 name="iconUrl"
                                                 control={control}
+                                                rules={{required: 'Please upload an icon'}}
                                                 render={({field}) => (
                                                     <ImageUploader
                                                         onUploadComplete={(url) => {
                                                             field.onChange(url);
-                                                            setImageUrl(url);
+                                                            setValue('iconUrl', url);
                                                         }}
-                                                        imageUrl={imageUrl}
+                                                        imageUrl={getValues('iconUrl')}
                                                     />
                                                 )}
                                             />
@@ -284,8 +283,6 @@ export const CategoriesPage = () => {
                                     </CardContent>
                                 </Card>
                             </div>
-
-
                             <Button variant={isDirty ? 'default' : 'secondary'} disabled={!isDirty} type="submit"
                                     className="w-full">
                                 Save
