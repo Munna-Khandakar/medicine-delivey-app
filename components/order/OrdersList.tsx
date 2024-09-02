@@ -29,13 +29,12 @@ export function OrdersList() {
 
     const {
         data,
-        error,
         isLoading,
         mutate
     } = useSWR<OrderResponse[]>(ownUserId ? `orders/user/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
 
-    const deleteOrder = (orderId: string) => {
-        api.delete(`/orders/${orderId}`).then((response) => {
+    const deleteOrder = async (orderId: string) => {
+        api.delete(`/orders/${orderId}`).then(() => {
             mutate();
             toast({
                 title: 'Deleted',
@@ -212,9 +211,9 @@ export function OrdersList() {
                             <Button variant={'outline'} onClick={() => {
                                 setOpenOrderDeleteModal(false);
                             }}>Cancel</Button>
-                            <Button onClick={() => {
+                            <Button onClick={async () => {
                                 setOpenOrderDeleteModal(false);
-                                deleteOrder(selectedOrderId);
+                                await deleteOrder(selectedOrderId);
                             }}>Delete</Button>
                         </div>
                     </div>
