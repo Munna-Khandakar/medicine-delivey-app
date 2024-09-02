@@ -150,16 +150,17 @@ export const CheckoutPage = () => {
                                                     <span
                                                         className={`${product?.discount ? 'line-through text-slate-400' : ''}`}> ৳{product?.price} </span>
                                                     {
-                                                        product?.discount &&
-                                                        <Fragment>
-                                                            <Badge variant="secondary" className="text-red-500">
-                                                                {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
-                                                                OFF
-                                                            </Badge>
-                                                            <br/>
-                                                            <span
-                                                                className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
-                                                        </Fragment>
+                                                        product?.discount ?
+                                                            <Fragment>
+                                                                <Badge variant="secondary" className="text-red-500">
+                                                                    {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
+                                                                    OFF
+                                                                </Badge>
+                                                                <br/>
+                                                                <span
+                                                                    className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
+                                                            </Fragment>
+                                                            : null
                                                     }
                                                 </div>
                                                 <div className="flex items-center gap-2 justify-center">

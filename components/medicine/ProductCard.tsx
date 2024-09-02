@@ -20,8 +20,8 @@ export function ProductCard(props: ProductCardProps) {
                 <div
                     className="flex items-center justify-center rounded-lg p-2 border w-full h-[120px] md:h-[200px] hover:shadow">
                     <img src={product.imageUrl} alt={product.productName}
-                           width={160}
-                           className="hover:scale-110 transition w-[100px] md:w-[160px] h-[100px] md:h-[160px] object-fill"
+                         width={160}
+                         className="hover:scale-110 transition w-[100px] md:w-[160px] h-[100px] md:h-[160px] object-fill"
                     />
                 </div>
                 <div>
@@ -33,14 +33,17 @@ export function ProductCard(props: ProductCardProps) {
                     MRP:
                         <span className={`${product?.discount ? 'line-through' : ''}`}>৳{product.price}</span>
                         {
-                            product?.discount &&
-                            <Fragment>
-                                <Badge variant="secondary" className="text-red-500">
-                                    {MedicineUtils.calculateDiscountPercentage(product.price, product.discount)}% OFF
-                                </Badge>
-                                <br/>
-                                <span className="font-bold text-slate-900">৳{product.price - product.discount}</span>
-                            </Fragment>
+                            product?.discount ?
+                                <Fragment>
+                                    <Badge variant="secondary" className="text-red-500">
+                                        {MedicineUtils.calculateDiscountPercentage(product.price, product.discount)}%
+                                        OFF
+                                    </Badge>
+                                    <br/>
+                                    <span
+                                        className="font-bold text-slate-900">৳{product.price - product.discount}</span>
+                                </Fragment>
+                                : null
                         }
                     </span>
                 </div>
