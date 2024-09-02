@@ -33,7 +33,7 @@ export const ProductHero = (props: ProductHeroProps) => {
                     {
                         product?.brand &&
                         <Link
-                             href={`/by-brand/${product?.brand.id}`}
+                            href={`/by-brand/${product?.brand.id}`}
                             className="text-teal-900 font-normal text-xs md:text-sm leading-2 md:leading-7">Visit
                             all {product?.brand.brandName} Company &apos;s Product
                         </Link>
@@ -50,16 +50,17 @@ export const ProductHero = (props: ProductHeroProps) => {
                                 ৳{product?.price}
                                 </span>
                             {
-                                product?.discount &&
-                                <Fragment>
-                                    <Badge variant="secondary" className="text-red-500">
-                                        {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
-                                        OFF
-                                    </Badge>
-                                    <br/>
-                                    <span
-                                        className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
-                                </Fragment>
+                                product?.discount ?
+                                    <Fragment>
+                                        <Badge variant="secondary" className="text-red-500">
+                                            {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
+                                            OFF
+                                        </Badge>
+                                        <br/>
+                                        <span
+                                            className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
+                                    </Fragment>
+                                    : null
                             }
                         </div>
                         <AddToCartButton medicineId={product?.productId as string} stock={product?.stock || 0}/>

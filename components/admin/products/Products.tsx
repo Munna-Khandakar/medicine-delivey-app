@@ -1,13 +1,11 @@
 'use client';
 import {Fragment, useState} from 'react';
 import useSWR from 'swr';
-import Image from 'next/image';
 import {Pencil, PlusCircle, Trash} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {SimpleTable} from '@/components/SimpleTable';
-import Revital from '@/components/medicine/revital.webp';
 import Link from 'next/link';
 import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
@@ -31,8 +29,8 @@ export function Products() {
         mutate
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
-    const deleteProduct = () => {
-        api.delete(`${'products'}/${selectedProductToDelete}`)
+    const deleteProduct = async () => {
+        api.delete(`products/${selectedProductToDelete}`)
             .then(() => {
                 mutate();
                 toast({
@@ -81,9 +79,8 @@ export function Products() {
                         <TableHead>Name</TableHead>
                         <TableHead className="hidden md:table-cell">Company</TableHead>
                         <TableHead>Price(BDT)</TableHead>
-                        <TableHead className="hidden md:table-cell">
-                            Category
-                        </TableHead>
+                        <TableHead className="hidden md:table-cell">Stock</TableHead>
+                        <TableHead className="hidden md:table-cell">Category</TableHead>
                         <TableHead>
                             <span className="sr-only">Actions</span>
                         </TableHead>
@@ -154,7 +151,7 @@ export function Products() {
                             </TableRow>
                         </Fragment>
                         : data?.map((product) => (
-                            <TableRow key={product.productId}>
+                            <TableRow key={product.productId} className={`${product.stock < 10 && 'bg-red-50'}`}>
                                 <TableCell className="hidden sm:table-cell">
                                     <img
                                         alt="Product image"
@@ -169,6 +166,7 @@ export function Products() {
                                 </TableCell>
                                 <TableCell className="hidden md:table-cell capitalize">{product.brand.brandName}</TableCell>
                                 <TableCell>{product.price}</TableCell>
+                                <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                                 <TableCell className="hidden md:table-cell">
                                     <Badge variant={'outline'}>
                                         {product.category.label}
@@ -180,7 +178,7 @@ export function Products() {
                                             <Button variant={'outline'} size={'icon'}
                                                     aria-label={'Delete'}
                                                     onClick={() => {
-                                                        router.push(`/admin/products/${product.productId}`)
+                                                        router.push(`/admin/products/${product.productId}`);
                                                     }}>
                                                 <Pencil size={15} color={'green'}/>
                                             </Button>

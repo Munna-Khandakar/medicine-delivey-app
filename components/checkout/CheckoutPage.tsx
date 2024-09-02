@@ -85,8 +85,8 @@ export const CheckoutPage = () => {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.code,
+                description: error.response.data.message,
             });
         }).finally(() => {
             setIsOrderPlacing(false);

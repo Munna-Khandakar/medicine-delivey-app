@@ -1,18 +1,18 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import useSWR from 'swr';
 import {useForm, SubmitHandler, Controller} from 'react-hook-form';
 import dynamic from 'next/dynamic';
+import {useRouter} from 'next/navigation';
 
 const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
 import {format} from 'date-fns';
 import {CalendarIcon} from '@radix-ui/react-icons';
-
 import {cn} from '@/lib/utils';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Calendar} from '@/components/ui/calendar';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
@@ -20,9 +20,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {ImageUploader} from '@/components/common/ImageUploader';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import api from '@/lib/apiInstance';
-import useSWR from 'swr';
 import {useToast} from '@/components/ui/use-toast';
-import {useRouter} from 'next/navigation';
 import {Category} from '@/types/Category';
 import {ProductInput, ProductType} from '@/types/ProductType';
 import 'react-quill/dist/quill.snow.css';
@@ -91,7 +89,14 @@ export const ProductForm = (props: ProductFormProps) => {
 
     useEffect(() => {
         if (product) {
-            reset(product);
+            reset();
+            setValue('productName', product.productName);
+            setValue('description', product.description);
+            setValue('price', product.price);
+            setValue('discount', product.discount);
+            setValue('stock', product.stock);
+            setValue('expires', product.expires);
+            setValue('imageUrl', product.imageUrl);
             setValue('categoryId', product.category.id);
             setValue('brandId', product.brand.id);
             setValue('countryId', product.country.id);
@@ -362,7 +367,7 @@ export const ProductForm = (props: ProductFormProps) => {
                             <Controller
                                 name="imageUrl"
                                 control={control}
-                                rules={{ required: 'Please upload an image' }}
+                                rules={{required: 'Please upload an image'}}
                                 render={({field}) => (
                                     <ImageUploader
                                         onUploadComplete={(url) => {

@@ -131,7 +131,6 @@ export function OrdersList() {
                                                     </TooltipTrigger>
                                                     <TooltipContent>{'Delete this order'}</TooltipContent>
                                                 </Tooltip>
-
                                             }
                                             {
                                                 order.status === OrderStauts.ACCEPTED &&
@@ -142,7 +141,7 @@ export function OrdersList() {
                                                             size="icon" variant={'outline'}
                                                             aria-label={'can not delete order'}
                                                         >
-                                                            <Trash color={"grey"}/>
+                                                            <Trash color={'#808080'}/>
                                                         </Button>
                                                     </TooltipTrigger>
                                                     <TooltipContent>{'Accepted order can not be deleted'}</TooltipContent>
