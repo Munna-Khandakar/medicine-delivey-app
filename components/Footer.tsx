@@ -1,11 +1,10 @@
 'use client';
 import {usePathname} from 'next/navigation';
 import Image from 'next/image';
-import Logo from '@/public/logo.png';
+import Logo from '@/public/fullLogo.png';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
 import {Category} from '@/types/Category';
-import {Skeleton} from '@/components/ui/skeleton';
 
 const SOCIAL_LINKS = {
     FACEBOOK: 'https://www.facebook.com/profile.php?id=61562212855960&mibextid=ZbWKwL',
@@ -159,7 +158,8 @@ export const Footer = () => {
             <div className="flex flex-wrap max-md:flex-col gap-4">
                 <ul className="md:flex md:space-x-6 max-md:space-y-2">
                     <li>
-                        <a href="/terms-condition" className="hover:text-white text-gray-300 text-sm">Terms & Condition</a>
+                        <a href="/terms-condition" className="hover:text-white text-gray-300 text-sm">Terms &
+                            Condition</a>
                     </li>
                     <li>
                         <a href="/privacy-policy" className="hover:text-white text-gray-300 text-sm">Privacy
@@ -170,10 +170,9 @@ export const Footer = () => {
                     </li>
                 </ul>
 
-                <p className="text-gray-300 text-sm md:ml-auto">Copyright © 2024<a href="#"
-                                                                                   target="_blank"
-                                                                                   className="hover:underline mx-1">Medicine
-                    24/7</a>All
+                <p className="text-gray-300 text-sm md:ml-auto">
+                    Copyright © 2024
+                    <a href="/" target="_blank" className="hover:underline mx-1">Pharmatic.</a>All
                     Rights Reserved.</p>
             </div>
         </footer>

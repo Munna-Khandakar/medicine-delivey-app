@@ -137,7 +137,7 @@ export const CheckoutPage = () => {
                                 return (
                                     <div className="flex items-center justify-start border p-4 rounded-xl gap-2"
                                          key={index}>
-                                        <Image src={MedicineDemo} alt={product?.productName || 'description'}
+                                        <img src={product?.imageUrl} alt={product?.productName || 'description'}
                                                className="w-[80px]"/>
                                         <div className="w-full">
                                             <div>

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import {Search} from 'lucide-react';
 import {ProfileDropdown} from '@/components/ProfileDropdown';
 import Icon from '@/public/icon.png';
-import IconText from '@/public/textIcon.png';
+import IconText from '@/public/text-logo.png';
 import {CartComponent} from '@/components/Navbar/CartComponent';
 import {Input} from '../ui/input';
 import {Cookie} from '@/utils/Cookie';
