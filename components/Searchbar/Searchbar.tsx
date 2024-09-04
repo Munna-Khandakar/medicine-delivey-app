@@ -75,8 +75,7 @@ export const Searchbar = () => {
                     <h2 className="p-2 text-2xl text-center md:text-6xl font-medium bg-clip-text text-transparent bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-500 via-teal-500 to-green-500">
                         What are you looking for ?
                     </h2>
-                    <p className="text-xs text-center md:text-sm mt-0 md:mt-2 text-gray-500">Search for medicines, healthcare
-                        products and more at one place</p>
+                    <p className="text-xs text-center md:text-lg mt-0 md:mt-2 text-gray-500">এক জায়গায় ঔষধ এবং স্বাস্থ্যসেবা পণ্য কিছু খুঁজুন </p>
                 </div>
                     <div ref={searchInputRef}
                          className="border border-teal-500 rounded-2xl py-2 my-2 md:my-4 w-full max-w-lg bg-white"
