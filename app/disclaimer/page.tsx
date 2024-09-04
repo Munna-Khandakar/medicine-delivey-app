@@ -1,7 +1,7 @@
 
 export default function DisclaimerPage() {
     return (
-        <div className="bg-gray-100 min-h-screen p-8">
+        <div className="bg-gray-100 min-h-screen p-8 text-justify">
             <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
                 <h1 className="text-4xl font-bold text-center gradient-text mb-8">Disclaimer</h1>
                 <div className="mb-6">

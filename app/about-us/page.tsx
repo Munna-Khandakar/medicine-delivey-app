@@ -1,6 +1,6 @@
 export default function AboutUsPage() {
     return (
-        <div className="bg-gray-100 min-h-screen p-8">
+        <div className="bg-gray-100 min-h-screen p-8 text-justify">
             <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
                 <h1 className="text-4xl font-bold text-center mb-8 gradient-text">About Us</h1>
                 <p className="text-lg text-gray-700 mb-6">
@@ -39,7 +39,7 @@ export default function AboutUsPage() {
                     </blockquote>
                     <p className="text-right text-teal-600 font-semibold">
                         Engr. Dibosh Kanti Das<br/>
-                        B.Sc. in Mechanical & Aeronautical Engineering, SNU (Korea)<br/>
+                        B.Sc. in Mechanical & Aerospace Engineering, SNU (Korea)<br/>
                         Founder & Finance Director, Pharmatic
                     </p>
                 </div>

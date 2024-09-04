@@ -1,13 +1,11 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {Fragment} from 'react';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {AddToCartButton} from '@/components/AddToCartButton';
 import {ProductType} from '@/types/ProductType';
-import MedicineDemo from '../../medicine/medicine-demo.png';
 
 type ProductHeroProps = {
     product: ProductType
@@ -21,10 +19,10 @@ export const ProductHero = (props: ProductHeroProps) => {
         <div className="flex gap-4 md:gap-8">
             <div
                 className="h-[180px] md:h-[250px] w-[180px] md:w-[250px] rounded-lg p-4 border items-center flex justify-center">
-                <Image
-                    src={MedicineDemo} alt={product?.productName}
-                    className="w-full h-full hover:scale-110 transition"
-                    width={220} height={220} objectFit={'contain'}
+                <img
+                    src={product.imageUrl} alt={product?.productName}
+                    className="w-full h-full object-contain hover:scale-110 transition"
+                    width={220} height={220}
                 />
             </div>
             <div className="flex flex-col justify-between w-full">
@@ -53,7 +51,7 @@ export const ProductHero = (props: ProductHeroProps) => {
                                 product?.discount ?
                                     <Fragment>
                                         <Badge variant="secondary" className="text-red-500">
-                                            {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
+                                            {MedicineUtils.calculateDiscountPercentage(product.price, product.discount)}%
                                             OFF
                                         </Badge>
                                         <br/>

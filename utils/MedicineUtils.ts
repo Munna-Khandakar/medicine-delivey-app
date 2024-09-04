@@ -2,7 +2,7 @@ import {OrderItem} from '@/types/OrderResponse';
 
 export class MedicineUtils {
     static calculateDiscountPercentage(price: number, discount: number) {
-        return (price * discount / 100);
+        return (100 * discount / price);
     }
 
     static getNamesFromOrderItems(orderItems: OrderItem[]) {
