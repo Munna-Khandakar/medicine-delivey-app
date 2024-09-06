@@ -123,7 +123,11 @@ export function AdvanceLogin() {
             if (Cookie.isAdmin()) {
                 router.push('/admin/dashboard');
             } else {
-                router.push('/');
+                router.push('/profile');
+                toast({
+                    title: 'Account Registration Successful',
+                    description: 'Please complete your profile',
+                });
             }
         }).catch((error) => {
             console.log(error.response.data.message);

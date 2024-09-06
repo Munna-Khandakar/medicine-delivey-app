@@ -6,6 +6,8 @@ import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {AddToCartButton} from '@/components/AddToCartButton';
 import {ProductType} from '@/types/ProductType';
+import MedicineDemo from '@/components/medicine/medicine-demo.png';
+import Image from 'next/image';
 
 type ProductHeroProps = {
     product: ProductType
@@ -19,11 +21,15 @@ export const ProductHero = (props: ProductHeroProps) => {
         <div className="flex gap-4 md:gap-8">
             <div
                 className="h-[180px] md:h-[250px] w-[180px] md:w-[250px] rounded-lg p-4 border items-center flex justify-center">
-                <img
-                    src={product.imageUrl} alt={product?.productName}
-                    className="w-full h-full object-contain hover:scale-110 transition"
-                    width={220} height={220}
-                />
+                {
+                    product.imageUrl
+                        ? <img
+                            src={product.imageUrl} alt={product?.productName}
+                            className="w-full h-full object-contain hover:scale-110 transition"
+                            width={220} height={220}
+                        />
+                        : <Image src={MedicineDemo} alt={'medicine demo image'}/>
+                }
             </div>
             <div className="flex flex-col justify-between w-full">
                 <div>

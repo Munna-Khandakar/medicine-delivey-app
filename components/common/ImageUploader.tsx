@@ -3,7 +3,6 @@ import {Upload, X} from 'lucide-react';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
 import {ErrorResponse} from '@/types/ErrorResponse';
-import {ByteArray} from '@/constants/ByteArray';
 import {Button} from '@/components/ui/button';
 
 type ServerError = {
@@ -20,7 +19,6 @@ type ImageUploaderProps = {
 export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) => {
     const {toast} = useToast();
     const [showInput, setShowInput] = useState(false);
-    const byteArray = ByteArray;
 
     const convertFileToByteArray = (file: File): Promise<Uint8Array> => {
         return new Promise((resolve, reject) => {

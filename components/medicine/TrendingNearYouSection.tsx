@@ -20,7 +20,6 @@ export const TrendingNearYouSection = () => {
         data,
         error,
         isLoading,
-        mutate
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     return (

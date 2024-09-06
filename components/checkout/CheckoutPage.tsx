@@ -137,8 +137,14 @@ export const CheckoutPage = () => {
                                 return (
                                     <div className="flex items-center justify-start border p-4 rounded-xl gap-2"
                                          key={index}>
-                                        <img src={product?.imageUrl} alt={product?.productName || 'description'}
-                                               className="w-[80px]"/>
+                                        {
+                                            product?.imageUrl == null
+                                                ?
+                                                <Image src={MedicineDemo} alt={product?.productName || 'description'}/>
+                                                :
+                                                <img src={product?.imageUrl} alt={product?.productName || 'description'}
+                                                     className="w-[80px]"/>
+                                        }
                                         <div className="w-full">
                                             <div>
                                                 <h1 className="text-sm  font-medium leading-5 ">{product?.productName}</h1>

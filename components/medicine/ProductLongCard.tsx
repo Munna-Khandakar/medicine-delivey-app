@@ -5,6 +5,8 @@ import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Fragment} from 'react';
 import {ProductType} from '@/types/ProductType';
+import MedicineDemo from '@/components/medicine/medicine-demo.png';
+import Image from 'next/image';
 
 type ProductLongCardProps = {
     product: ProductType
@@ -19,10 +21,15 @@ export function ProductLongCard(props: ProductLongCardProps) {
             <div className="flex flex-col items-center w-[120px] md:w-[200px] gap-2">
                 <div
                     className="flex items-center justify-center w-full h-[120px] md:h-[200px]">
-                    <img src={product.imageUrl} alt={product.productName}
-                         width={160}
-                         className="hover:scale-110 transition w-full  h-full object-fill"
-                    />
+                    {
+                        product.imageUrl
+                            ? <img
+                                src={product.imageUrl} alt={product.productName}
+                                className="w-full h-full object-fill hover:scale-110 transition"
+                                width={160}
+                            />
+                            : <Image src={MedicineDemo} alt={'medicine demo image'}/>
+                    }
                 </div>
                 <div>
                     <span

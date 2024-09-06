@@ -5,6 +5,8 @@ import {Fragment} from 'react';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {ProductType} from '@/types/ProductType';
+import MedicineDemo from './medicine-demo.png';
+import Image from 'next/image';
 
 type ProductCardProps = {
     product: ProductType
@@ -19,10 +21,14 @@ export function ProductCard(props: ProductCardProps) {
             <div className="flex flex-col  w-[120px] md:w-[200px] gap-2">
                 <div
                     className="flex items-center justify-center rounded-lg p-2 border w-full h-[120px] md:h-[200px] hover:shadow">
-                    <img src={product.imageUrl} alt={product.productName}
-                         width={160}
-                         className="hover:scale-110 transition w-[100px] md:w-[160px] h-[100px] md:h-[160px] object-fill"
-                    />
+                    {
+                        product.imageUrl
+                            ? <img src={product.imageUrl} alt={product.productName}
+                                   width={160}
+                                   className="hover:scale-110 transition w-[100px] md:w-[160px] h-[100px] md:h-[160px] object-fill"
+                            />
+                            : <Image src={MedicineDemo} alt={'medicine demo image'}/>
+                    }
                 </div>
                 <div>
                     <span
