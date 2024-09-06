@@ -4,7 +4,7 @@ import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import {format} from 'date-fns';
 import {DateRange} from 'react-day-picker';
-import {Check, Eye, PackageCheck, Truck, X} from 'lucide-react';
+import {Check, Download, Eye, PackageCheck, Truck, X} from 'lucide-react';
 import {CalendarIcon} from '@radix-ui/react-icons';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {SimpleTable} from '@/components/SimpleTable';
@@ -357,6 +357,26 @@ export function Orders() {
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>{'See this order'}</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                variant={'outline'} size={'icon'}
+                                                aria-label={'Download Cash Memo'}
+                                                onClick={() => {
+                                                    const pdfLink = 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf';
+                                                    const link = document.createElement('a');
+                                                    link.href = pdfLink;
+                                                    link.download = 'CashMemo.pdf';
+                                                    document.body.appendChild(link);
+                                                    link.click();
+                                                    document.body.removeChild(link);
+                                                }}
+                                            >
+                                                <Download size={15}/>
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Download Cash Memo'}</TooltipContent>
                                     </Tooltip>
                                 </TableCell>
                             </TableRow>

@@ -100,7 +100,7 @@ export const ProductForm = (props: ProductFormProps) => {
             setValue('categoryId', product.category.id);
             setValue('brandId', product.brand.id);
             setValue('countryId', product.country.id);
-            setValue('strength', product.strength);
+            setValue('composition', product.composition);
         }
     }, [product, reset, setValue]);
 
@@ -134,16 +134,16 @@ export const ProductForm = (props: ProductFormProps) => {
                                 }
                             </div>
                             <div className="grid gap-3">
-                                <Label htmlFor="strength">Strength</Label>
+                                <Label htmlFor="strength">Composition</Label>
                                 <Input
                                     id="strength"
                                     type="text"
                                     className="w-full"
-                                    placeholder="strength"
-                                    {...register('strength', {required: 'Strength of the medicine is required'})}
+                                    placeholder="composition"
+                                    {...register('composition')}
                                 />
                                 {
-                                    errors?.strength && <ErrorLabel message={errors.strength.message!}/>
+                                    errors?.composition && <ErrorLabel message={errors.composition.message!}/>
                                 }
                             </div>
                             <div className="grid gap-3">
@@ -395,7 +395,6 @@ export const ProductForm = (props: ProductFormProps) => {
                             <Controller
                                 name="imageUrl"
                                 control={control}
-                                rules={{required: 'Please upload an image'}}
                                 render={({field}) => (
                                     <ImageUploader
                                         onUploadComplete={(url) => {
