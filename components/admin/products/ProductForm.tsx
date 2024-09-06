@@ -100,6 +100,7 @@ export const ProductForm = (props: ProductFormProps) => {
             setValue('categoryId', product.category.id);
             setValue('brandId', product.brand.id);
             setValue('countryId', product.country.id);
+            setValue('strength', product.strength);
         }
     }, [product, reset, setValue]);
 
@@ -126,10 +127,23 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="text"
                                     className="w-full"
                                     placeholder="medicine name"
-                                    {...register('productName', {required: 'Please enter your phone number'})}
+                                    {...register('productName', {required: 'Product name is required'})}
                                 />
                                 {
                                     errors?.productName && <ErrorLabel message={errors.productName.message!}/>
+                                }
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="strength">Strength</Label>
+                                <Input
+                                    id="strength"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="strength"
+                                    {...register('strength', {required: 'Strength of the medicine is required'})}
+                                />
+                                {
+                                    errors?.strength && <ErrorLabel message={errors.strength.message!}/>
                                 }
                             </div>
                             <div className="grid gap-3">
@@ -166,9 +180,10 @@ export const ProductForm = (props: ProductFormProps) => {
                                 <Input
                                     id="price"
                                     type="number"
+                                    step="0.01"
                                     className="w-full"
                                     placeholder="BDT"
-                                    {...register('price', {required: 'Please enter your phone number'})}
+                                    {...register('price', {required: 'Please enter the price'})}
                                 />
                                 {
                                     errors?.price && <ErrorLabel message={errors.price.message!}/>
@@ -181,7 +196,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="number"
                                     className="w-full"
                                     placeholder="BDT"
-                                    {...register('discount', {required: 'Please enter your phone number'})}
+                                    {...register('discount')}
                                 />
                                 {
                                     errors?.discount && <ErrorLabel message={errors.discount.message!}/>
@@ -194,7 +209,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="number"
                                     className="w-full"
                                     placeholder=""
-                                    {...register('stock', {required: 'Please enter your phone number'})}
+                                    {...register('stock', {required: 'Please enter the stock amount'})}
                                 />
                                 {
                                     errors?.stock && <ErrorLabel message={errors.stock.message!}/>
@@ -222,6 +237,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     <Controller
                                         name="categoryId"
                                         control={control}
+                                        rules={{required: 'Please select a category'}}
                                         render={({field: {value, onChange}}) => {
                                             const selectedCategory = categories.find(category => category.id === value);
                                             return (
@@ -241,7 +257,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                         }}
                                     />
                                 }
-
+                                {
+                                    errors?.categoryId && <ErrorLabel message={errors.categoryId.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="countryOfOrigin">Country</Label>
@@ -256,6 +274,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     <Controller
                                         name="countryId"
                                         control={control}
+                                        rules={{required: 'Please select a country'}}
                                         render={({field: {value, onChange}}) => {
                                             const selectedCountry = countries.find(country => country.id === value);
                                             return (
@@ -278,7 +297,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                         }}
                                     />
                                 }
-
+                                {
+                                    errors?.countryId && <ErrorLabel message={errors.countryId.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="brand">Brand</Label>
@@ -293,6 +314,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     <Controller
                                         name="brandId"
                                         control={control}
+                                        rules={{required: 'Please select a brand'}}
                                         render={({field: {value, onChange}}) => {
                                             const selectedBrand = brands.find(brand => brand.id === value);
                                             return (
@@ -314,7 +336,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                         }}
                                     />
                                 }
-
+                                {
+                                    errors?.brandId && <ErrorLabel message={errors.brandId.message!}/>
+                                }
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="subcategory">Expires In (Date)</Label>
@@ -335,6 +359,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                         <Controller
                                             name="expires"
                                             control={control}
+                                            rules={{required: 'Expiry date is required'}}
                                             render={({field: {onChange}}) => (
                                                 <Calendar
                                                     mode="single"
@@ -349,6 +374,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                         />
                                     </PopoverContent>
                                 </Popover>
+                                {
+                                    errors?.expires && <ErrorLabel message={errors.expires.message!}/>
+                                }
                             </div>
                         </div>
                     </CardContent>

@@ -173,7 +173,7 @@ export function Orders() {
                 }
                 tableHeader={
                     <TableRow>
-                        <TableHead>Transaction Id</TableHead>
+                        <TableHead>Order Id</TableHead>
                         <TableHead className="hidden md:table-cell">Items</TableHead>
                         <TableHead className="hidden md:table-cell">Delivery Charge</TableHead>
                         <TableHead>Total Cost</TableHead>

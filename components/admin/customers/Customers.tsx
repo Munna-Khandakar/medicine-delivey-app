@@ -8,6 +8,8 @@ import useSWR from 'swr';
 import {User} from '@/types/User';
 import {Skeleton} from '@/components/ui/skeleton';
 import {UserRole} from '@/types/enum/UserRole';
+import {Search} from 'lucide-react';
+import {Input} from '@/components/ui/input';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -29,29 +31,41 @@ export function Customers() {
             <SimpleTable
                 title="Customers"
                 subTitle="Manage your customers and view their sales performance."
-                // actionItems={
-                //     <div className="relative">
-                //         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
-                //         <Input
-                //             type="search"
-                //             placeholder="Search..."
-                //             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-                //         />
-                //     </div>
-                // }
+                actionItems={
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
+                        <Input
+                            type="search"
+                            placeholder="Search with phone number"
+                            className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+                        />
+                    </div>
+                }
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Phone</TableHead>
+                        <TableHead>Phone(ID)</TableHead>
                         <TableHead className="hidden md:table-cell">Address</TableHead>
                     </TableRow>
                 }
                 tableBody={
-                    isLoading ? renderSkeletonRows() : data?.filter((product => product.role !== UserRole.ADMIN)).map((product) => (
-                        <TableRow key={product.id}>
-                            <TableCell>{product.userName}</TableCell>
-                            <TableCell>{product.phoneNumber}</TableCell>
-                            <TableCell className="hidden md:table-cell">{product.address}</TableCell>
+                    isLoading ? renderSkeletonRows() : data?.filter((user => user.role !== UserRole.ADMIN)).map((user) => (
+                        <TableRow key={user.id}>
+                            <TableCell>
+                               <div className="flex items-center justify-start gap-2">
+                                   {
+                                       user?.profilePictureUrl &&
+                                       <img
+                                           src={user?.profilePictureUrl}
+                                           alt={`${user.userName} avatar`}
+                                           className=" h-8 w-8 rounded-full"
+                                       />
+                                   }
+                                   {user.userName}
+                               </div>
+                            </TableCell>
+                            <TableCell>{user.phoneNumber}</TableCell>
+                            <TableCell className="hidden md:table-cell">{user.address}</TableCell>
                         </TableRow>
                     ))
                 }

@@ -3,7 +3,7 @@ import {UserRole} from '@/types/enum/UserRole';
 export type User = {
     id: string;
     userName: string;
-    profilePictureUrl?: string;
+    profilePictureUrl: string;
     phoneNumber: string;
     email: string;
     address: string;

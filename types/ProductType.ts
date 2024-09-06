@@ -16,7 +16,8 @@ export type ProductType = {
     productId: string;
     productName: string;
     stock: number;
-    brand: Brand
+    brand: Brand;
+    strength: string;
 }
 
 export type ProductInput = {
@@ -33,4 +34,5 @@ export type ProductInput = {
     ingredients: string;
     stock: number;
     coupons: string[];
+    strength: string;
 }

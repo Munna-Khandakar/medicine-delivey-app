@@ -1,6 +1,6 @@
 'use client';
 import {useEffect, useState} from 'react';
-import {SubmitHandler, useForm} from 'react-hook-form';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -14,11 +14,7 @@ import useSWR from 'swr';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
 import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
-
-type Inputs = {
-    userName: string;
-    address: string;
-}
+import {ImageUploader} from '@/components/common/ImageUploader';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -36,13 +32,15 @@ export const ProfilePage = () => {
 
     const {
         register,
+        control,
         handleSubmit,
         setValue,
+        getValues,
         reset,
-        formState: {errors, isDirty},
-    } = useForm<Inputs>();
+        formState: {errors, isDirty, isSubmitting},
+    } = useForm<User>();
 
-    const onSubmit: SubmitHandler<Inputs> =async (data) => {
+    const onSubmit: SubmitHandler<User> = async (data) => {
         if (ownUserId) {
             api.put(`/users/${ownUserId}`, data).then(() => {
                 mutate();
@@ -75,6 +73,8 @@ export const ProfilePage = () => {
             reset();
             setValue('userName', data.userName);
             setValue('address', data.address);
+            setValue('phoneNumber', data.phoneNumber);
+            setValue('profilePictureUrl', data.profilePictureUrl);
         }
     }, [data, setValue, reset]);
 
@@ -90,6 +90,23 @@ export const ProfilePage = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-3">
+
+                        <Label htmlFor="userName">Profile Picture</Label>
+                        <div className={'w-[10rem] mx-auto'}>
+                            <Controller
+                                name="profilePictureUrl"
+                                control={control}
+                                render={({field}) => (
+                                    <ImageUploader
+                                        onUploadComplete={(url) => {
+                                            field.onChange(url);
+                                            setValue('profilePictureUrl', url);
+                                        }}
+                                        imageUrl={getValues('profilePictureUrl')}
+                                    />
+                                )}
+                            />
+                        </div>
                         <Label htmlFor="userName">Name</Label>
                         {
                             isLoading
@@ -104,6 +121,22 @@ export const ProfilePage = () => {
                         }
                         {
                             errors?.userName && <ErrorLabel message={errors.userName.message!}/>
+                        }
+                        <Label htmlFor="phoneNumber">Phone</Label>
+                        {
+                            isLoading
+                                ? <Skeleton className="w-full h-[2rem] rounded"/>
+                                : <Input
+                                    id="phoneNumber"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="address"
+                                    disabled={true}
+                                    {...register('phoneNumber', {required: 'Please enter your address'})}
+                                />
+                        }
+                        {
+                            errors?.address && <ErrorLabel message={errors.address.message!}/>
                         }
                         <Label htmlFor="address">Address</Label>
                         {
@@ -122,9 +155,16 @@ export const ProfilePage = () => {
                         }
                     </CardContent>
                     <CardFooter className="border-t px-6 py-4 justify-end">
-                        <Button type={isDirty ? 'submit' : 'button'} variant={isDirty ? 'default' : 'outline'}>
-                            Save
-                        </Button>
+                        {
+                            isSubmitting
+                                ? <Button type={'button'} variant={'default'}>
+                                    Loading...
+                                </Button>
+                                :
+                                <Button type={isDirty ? 'submit' : 'button'} variant={isDirty ? 'default' : 'outline'}>
+                                    Save
+                                </Button>
+                        }
                     </CardFooter>
                 </form>
             </Card>
