@@ -8,19 +8,25 @@ import {SelfAdvertisement} from '@/components/SelfAdvertisement/SelfAdvertisemen
 import {DealsOfTheDay} from '@/components/DealsOfTheDay/DealsOfTheDay';
 import {HealthArticles} from '@/components/HealthArticle/HealthArticles';
 import {WhyChooseUs} from '@/components/WhyChooseUs/WhyChooseUs.';
+import {VideoPlayer} from '@/components/VideoSection/VideoPlayer';
 
 export default function Home() {
     return (
         <main className="flex flex-col space-y-6 md:space-y-16">
             <Searchbar/>
             <CategorySection/>
+            <VideoPlayer
+                videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725700369279_V2.mp4"
+            />
             <Promo/>
             <OrderWithPrescription/>
             <NewLaunchSection/>
             <TrendingNearYouSection/>
             <SelfAdvertisement/>
             <DealsOfTheDay/>
-            {/*<Video/>*/}
+            <VideoPlayer
+                videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725699442600_V1.mp4"
+            />
             <HealthArticles/>
             <WhyChooseUs/>
         </main>
