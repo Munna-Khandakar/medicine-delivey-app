@@ -1,32 +1,30 @@
 'use client';
 
-import {Fragment, useEffect, useState} from 'react';
+import { useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {useRouter} from 'next/navigation';
-import Image from 'next/image';
-import {Loader, Minus, Plus} from 'lucide-react';
+import {Loader} from 'lucide-react';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import {useToast} from '@/components/ui/use-toast';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {useCartStore} from '@/stores/cartStore';
-import {Badge} from '@/components/ui/badge';
-import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Button} from '@/components/ui/button';
 import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
-import MedicineDemo from '../medicine/medicine-demo.png';
 import Bill from '@/components/checkout/Bill';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
 import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
 import {ImageUploader} from '@/components/common/ImageUploader';
-import {Label} from '@/components/ui/label';
+import {DeliveryType} from '@/types/DeliveryType';
+import {CheckoutCartCard} from '@/components/medicine/CheckoutCartCard';
+import {DeliveryCard} from '@/components/medicine/DeliveryCard';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-const deliveryTypes = [
+const deliveryTypes: DeliveryType[] = [
     {
         id: 1,
         name: 'Regular Delivery',
@@ -43,7 +41,7 @@ const deliveryTypes = [
         id: 3,
         name: 'Courier Delivery',
         description: 'Estimate Delivery 2-3 working day',
-        charge: 100,
+        charge: 200,
     }
 ];
 
@@ -52,7 +50,7 @@ export const CheckoutPage = () => {
     const {toast} = useToast();
     const router = useRouter();
     const [isOrderPlacing, setIsOrderPlacing] = useState(false);
-    const [deliveryType, setDeliveryType] = useState<number>(1);
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType>(deliveryTypes[0]);
     const [imageUrl, setImageUrl] = useState<string>('');
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
@@ -92,6 +90,8 @@ export const CheckoutPage = () => {
                 };
             }),
             prescriptionUrl: imageUrl,
+            deliveryType: selectedDeliveryType.id,
+            deliveryCharge: selectedDeliveryType.charge,
         };
         onSubmit(formData);
     };
@@ -157,61 +157,19 @@ export const CheckoutPage = () => {
                             </Alert>
                         }
                         {
-                            items.map((item, index) => {
+                            items.map((item) => {
                                 const product = data?.find(med => med.productId === item.id);
-                                return (
-                                    <div className="flex items-center justify-start border px-4 py-2 rounded-xl gap-2"
-                                         key={index}>
-                                        {
-                                            product?.imageUrl == null
-                                                ?
-                                                <Image src={MedicineDemo} alt={product?.productName || 'description'}/>
-                                                :
-                                                <img src={product?.imageUrl} alt={product?.productName || 'description'}
-                                                     className="w-[80px] rounded-md"/>
-                                        }
-                                        <div className="w-full flex flex-col md:flex-row justify-between">
-                                            <div>
-                                                <h1 className="text-sm  font-medium leading-5 ">{product?.productName}</h1>
-                                                <div>
-                                                    <span className="text-slate-900 font-bold text-xs"> MRP:</span>
-                                                    <span
-                                                        className={`${product?.discount ? 'line-through text-slate-400' : ''}`}> ৳{product?.price} </span>
-                                                    {
-                                                        product?.discount ?
-                                                            <Fragment>
-                                                                <Badge variant="secondary" className="text-red-500">
-                                                                    {MedicineUtils.calculateDiscountPercentage(product?.price, product.discount)}%
-                                                                    OFF
-                                                                </Badge>
-                                                                <br/>
-                                                                <span
-                                                                    className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
-                                                            </Fragment>
-                                                            : null
-                                                    }
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2 justify-start md:justify-end">
-                                                <Button size="icon" variant="outline" className="text-xs"
-                                                        onClick={() => {
-                                                            decrementItem(item.id);
-                                                        }}>
-                                                    <Minus/>
-                                                </Button>
-                                                <Badge variant="secondary"
-                                                       className="text-slate-900 rounded">
-                                                    {item.quantity}
-                                                </Badge>
-                                                <Button size="icon" variant="outline" className="text-xs"
-                                                        onClick={() => {
-                                                            incrementItem(item.id);
-                                                        }}>
-                                                    <Plus/>
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>);
+                                if (product) {
+                                    return (
+                                        <CheckoutCartCard
+                                            key={item.id}
+                                            product={product}
+                                            item={item}
+                                            incrementItem={incrementItem}
+                                            decrementItem={decrementItem}
+                                        />
+                                    );
+                                }
                             })
                         }
                     </div>
@@ -230,17 +188,14 @@ export const CheckoutPage = () => {
                             adjust this delivery charge if necessary. You will be notified of any changes.</h2>
                         <div className="flex flex-col md:flex-row gap-2">
                             {
-                                deliveryTypes.map((delivery)=>{
+                                deliveryTypes.map((delivery) => {
                                     return (
-                                        <div
+                                        <DeliveryCard
                                             key={delivery.id}
-                                            onClick={() => setDeliveryType(delivery.id)}
-                                            className={`${deliveryType === delivery.id ? "border-2 border-teal-500 bg-teal-50":"border"} px-2 py-3 h-[5rem] w-fit rounded-md items-center flex flex-col justify-center`}
-                                        >
-                                            <Label className="mb-2">{delivery.name}</Label>
-                                            <span className="text-xs">{delivery.description}</span>
-                                            <span className="text-xs">Charge ৳{delivery.charge}</span>
-                                        </div>
+                                            delivery={delivery}
+                                            selectedDeliveryType={selectedDeliveryType}
+                                            setDeliveryType={setSelectedDeliveryType}
+                                        />
                                     );
                                 })
                             }
@@ -250,7 +205,7 @@ export const CheckoutPage = () => {
                 </div>
                 <div className="col-span-1 md:col-span-2">
                     <ScrollArea className="h-full md:h-[calc(100%-10rem)]">
-                        <Bill/>
+                        <Bill deliveyType={selectedDeliveryType}/>
                     </ScrollArea>
                     {
                         getItemsQuantityCount() < 1

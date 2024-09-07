@@ -10,10 +10,17 @@ import {ProductType} from '@/types/ProductType';
 import api from '@/lib/apiInstance';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
+import {DeliveryType} from '@/types/DeliveryType';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export default function Bill() {
+type BillProps = {
+    deliveyType: DeliveryType;
+};
+
+export default function Bill(props: BillProps) {
+
+    const {deliveyType} = props;
 
     const {items} = useCartStore();
     const today = new Date();
@@ -33,7 +40,7 @@ export default function Bill() {
     };
 
     const calculateTotal = () => {
-        return calculateSubTotal() + 70;
+        return calculateSubTotal() + deliveyType.charge;
     };
 
     useEffect(() => {
@@ -89,7 +96,7 @@ export default function Bill() {
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>৳20</span>
+                            <span>৳{deliveyType.charge}</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Vat</span>
