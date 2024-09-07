@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import {Fragment} from 'react';
+import {Fragment, useEffect, useState} from 'react';
 import {Badge} from '@/components/ui/badge';
 import {MedicineUtils} from '@/utils/MedicineUtils';
-import {AddToCartButton} from '@/components/AddToCartButton';
 import {ProductType} from '@/types/ProductType';
 import MedicineDemo from '@/components/medicine/medicine-demo.png';
 import Image from 'next/image';
+import {ProductQuantityInput} from '@/components/category_slug/medicine/ProductQuantityInput';
+import {useCartStore} from '@/stores/cartStore';
 
 type ProductHeroProps = {
     product: ProductType
@@ -16,6 +17,16 @@ type ProductHeroProps = {
 export const ProductHero = (props: ProductHeroProps) => {
 
     const {product} = props;
+    const {getCartItemById} = useCartStore();
+    const [quantity, setQuantity] = useState(0);
+
+    useEffect(() => {
+        const item = getCartItemById(product.productId);
+        if (item) {
+            setQuantity(item.quantity);
+        }
+    }, [getCartItemById, setQuantity, product.productId]);
+
 
     return (
         <div className="flex gap-4 md:gap-8">
@@ -34,6 +45,7 @@ export const ProductHero = (props: ProductHeroProps) => {
             <div className="flex flex-col justify-between w-full">
                 <div>
                     <h1 className="text-base md:text-2xl font-medium leading-5 md:leading-9">{product?.productName}</h1>
+                    <p className="text-xs md:text-sm text-slate-400">{product?.composition}</p>
                     {
                         product?.brand &&
                         <Link
@@ -51,7 +63,7 @@ export const ProductHero = (props: ProductHeroProps) => {
                                 MRP:
                                 </span>
                             <span className={`${product?.discount ? 'line-through text-slate-400' : ''}`}>
-                                ৳{product?.price}
+                                ৳{product?.price} <span className="text-sm text-slate-400">per piece</span>
                                 </span>
                             {
                                 product?.discount ?
@@ -67,12 +79,17 @@ export const ProductHero = (props: ProductHeroProps) => {
                                     : null
                             }
                         </div>
-                        <AddToCartButton medicineId={product?.productId as string} stock={product?.stock || 0}/>
+                        <ProductQuantityInput
+                            stock={product?.stock || 0}
+                            medicineId={product?.productId as string}
+                            getSelectedQuantity={setQuantity}
+                        />
                     </div>
+                    {
+                        quantity &&
+                        <p className="text-xs text-slate-500">{`Price of ${quantity} piece is ৳${quantity * (product?.price - product?.discount)}`}</p>
+                    }
                     <p className="text-xs text-slate-500">Inclusive of all taxes</p>
-                    {/*<p className="text-xs text-slate-500 mt-4">*/}
-                    {/*    Delivery by <b>Today, before 10:00 pm</b>*/}
-                    {/*</p>*/}
                 </div>
             </div>
         </div>

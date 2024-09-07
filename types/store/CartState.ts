@@ -8,4 +8,5 @@ export interface CartState {
     decrementItem: (id: string) => void;
     removeItem: (id: string) => void;
     clearCart: () => void;
+    getCartItemById: (id: string) => CartItem | undefined;
 }
