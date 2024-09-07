@@ -1,6 +1,6 @@
 'use client';
 
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
 
 type VideoPlayerProps = {
@@ -9,17 +9,20 @@ type VideoPlayerProps = {
 
 export const VideoPlayer = (props: VideoPlayerProps) => {
     const { videoSrc } = props;
-    const [screenSize, setScreenSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+    const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
 
     const updateScreenSize = () => {
         setScreenSize({ width: window.innerWidth, height: window.innerHeight });
     };
 
     useEffect(() => {
-        window.addEventListener('resize', updateScreenSize);
-        return () => {
-            window.removeEventListener('resize', updateScreenSize);
-        };
+        if (typeof window !== 'undefined') {
+            updateScreenSize();
+            window.addEventListener('resize', updateScreenSize);
+            return () => {
+                window.removeEventListener('resize', updateScreenSize);
+            };
+        }
     }, []);
 
     const playerHeight = screenSize.width < 768 ? '360px' : '500px';
