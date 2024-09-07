@@ -66,7 +66,20 @@ export const ProductForm = (props: ProductFormProps) => {
         getValues,
         reset,
         formState: {errors, isDirty},
-    } = useForm<ProductInput>();
+    } = useForm<ProductInput>({
+        defaultValues: {
+            productName: '',
+            description: '',
+            price: 0.00,
+            discount: 0.00,
+            stock: 0,
+            imageUrl: '',
+            categoryId: '',
+            brandId: '',
+            countryId: '',
+            composition: '',
+        }
+    });
 
     const onSubmit: SubmitHandler<ProductInput> = (data) => {
         const url = product ? `/products/${product.productId}` : '/products/create';
@@ -196,6 +209,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="number"
                                     className="w-full"
                                     placeholder="BDT"
+                                    defaultValue={0.00}
                                     {...register('discount')}
                                 />
                                 {

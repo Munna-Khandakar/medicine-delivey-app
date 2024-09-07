@@ -22,6 +22,7 @@ import {Calendar} from '@/components/ui/calendar';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {cn} from '@/lib/utils';
 import api from '@/lib/apiInstance';
+import {DownloadPdfButton} from '@/components/common/DownloadPdfButton';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -360,21 +361,9 @@ export function Orders() {
                                     </Tooltip>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button
-                                                variant={'outline'} size={'icon'}
-                                                aria-label={'Download Cash Memo'}
-                                                onClick={() => {
-                                                    const pdfLink = 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf';
-                                                    const link = document.createElement('a');
-                                                    link.href = pdfLink;
-                                                    link.download = 'CashMemo.pdf';
-                                                    document.body.appendChild(link);
-                                                    link.click();
-                                                    document.body.removeChild(link);
-                                                }}
-                                            >
-                                                <Download size={15}/>
-                                            </Button>
+                                            <DownloadPdfButton
+                                                url={'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'}
+                                            />
                                         </TooltipTrigger>
                                         <TooltipContent>{'Download Cash Memo'}</TooltipContent>
                                     </Tooltip>
