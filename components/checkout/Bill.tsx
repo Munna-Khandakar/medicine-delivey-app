@@ -89,7 +89,7 @@ export default function Bill() {
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>৳70</span>
+                            <span>৳20</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Vat</span>

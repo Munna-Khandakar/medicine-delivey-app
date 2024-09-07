@@ -96,8 +96,16 @@ export const CartComponent = () => {
 
                                     return (
                                         <div className="flex items-center justify-start gap-2" key={index}>
-                                            <Image src={MedicineDemo} alt={product?.productName || 'descriptioon'}
-                                                   className="w-[80px]"/>
+                                            {
+                                                product?.imageUrl
+                                                    ? <img src={product.imageUrl}
+                                                           className="w-[80px]"
+                                                           alt={product?.productName || 'description'}/>
+                                                    : <Image src={MedicineDemo}
+                                                             alt={product?.productName || 'description'}
+                                                             className="w-[80px]"/>
+                                            }
+
                                             <div className="w-full">
                                                 <div>
                                                     <h1 className="text-sm  font-medium leading-5 ">{product?.productName}</h1>
