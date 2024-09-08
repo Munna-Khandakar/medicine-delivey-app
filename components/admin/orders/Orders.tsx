@@ -23,6 +23,7 @@ import {MedicineUtils} from '@/utils/MedicineUtils';
 import {cn} from '@/lib/utils';
 import api from '@/lib/apiInstance';
 import {DownloadPdfButton} from '@/components/common/DownloadPdfButton';
+import {Input} from '@/components/ui/input';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -40,6 +41,8 @@ export function Orders() {
     const [openOrderOntheWayModal, setOpenOrderOntheWayModal] = useState(false);
     const [openOrderCompleteModal, setOpenOrderCompleteModal] = useState(false);
     const [openImageViewModal, setOpenImageViewModal] = useState(false);
+    const [openDeliveryChargeModal, setOpenDeliveryChargeModal] = useState(false);
+    const [deliveryCharge, setDeliveryCharge] = useState(0);
     const [selectedOrderId, setSelectedOrderId] = useState('');
     const {
         data,
@@ -116,6 +119,26 @@ export function Orders() {
             });
         }).finally(() => {
             setSelectedOrderId('');
+        });
+    };
+
+    const updateSelectedDeliveyCharge = () => {
+        api.put(`orders/${selectedOrderId}`, {deliveryCharge: deliveryCharge}).then(() => {
+            toast({
+                title: 'Success',
+                description: 'Delivery Charge Updated',
+            });
+            mutate();
+        }).catch((error) => {
+            console.log(error);
+            toast({
+                title: error.response.data.code,
+                description: error.response.data.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+            setDeliveryCharge(0);
+            setOpenDeliveryChargeModal(false);
         });
     };
 
@@ -253,7 +276,24 @@ export function Orders() {
                                 <TableCell>{order.transactionId}</TableCell>
                                 <TableCell
                                     className="hidden md:table-cell">{MedicineUtils.getNamesFromOrderItems(order.orderItems)}</TableCell>
-                                <TableCell className="hidden md:table-cell">{order.deliveryCharge}</TableCell>
+                                <TableCell>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                className="w-fit h-fit p-0"
+                                                variant="ghost"
+                                                onClick={() => {
+                                                    setSelectedOrderId(order.id);
+                                                    setDeliveryCharge(order.deliveryCharge);
+                                                    setOpenDeliveryChargeModal(true);
+                                                }}
+                                            >
+                                                {order.deliveryCharge}
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{'Adjust Delivery Charege'}</TooltipContent>
+                                    </Tooltip>
+                                </TableCell>
                                 <TableCell>{order.totalAmount}</TableCell>
                                 <TableCell>{order.deliveryDate}</TableCell>
                                 <TableCell>
@@ -477,7 +517,25 @@ export function Orders() {
                     </div>
                 }
             </Modal>
+            <Modal isOpen={openDeliveryChargeModal} onClose={() => {
+                setSelectedOrderId('');
+                setOpenDeliveryChargeModal(false);
+            }} title={'Update Delivery Charge'}>
+                {
+                    selectedOrderId
+                    &&
+                    <div className="flex gap-2">
+                        <Input
+                            type="number"
+                            value={deliveryCharge}
+                            onChange={(e) => setDeliveryCharge(+e.target.value)}
+                            className="w-full rounded-md bg-background p-2"
+                            placeholder="Enter delivery charge"
+                        />
+                        <Button onClick={updateSelectedDeliveyCharge}>Update</Button>
+                    </div>
+                }
+            </Modal>
         </Fragment>
-    )
-        ;
+    );
 }

@@ -38,7 +38,7 @@ export function AdvanceLogin() {
     } = useForm<Inputs>();
 
     const sendOTP = async (phoneNumber: string) => {
-        return api.post('/otp/send', {phoneNumber})
+        return api.post('/otp/send', {phoneNumber: phoneNumber.trim()})
             .then((response) => {
                 console.log(response);
                 return true;
@@ -98,8 +98,8 @@ export function AdvanceLogin() {
 
     const otpVerify: SubmitHandler<Inputs> = async (data) => {
         const otpPayload = {
-            phoneNumber: data.phoneNumber,
-            otpCode: data.otpCode,
+            phoneNumber: data.phoneNumber.trim(),
+            otpCode: data.otpCode.trim(),
         };
         api.post('/otp/verify', otpPayload).then(() => {
             router.push(`?status=${USER_REG_STATUS.OTP_VERIFIED}`);
@@ -114,8 +114,8 @@ export function AdvanceLogin() {
 
     const onRegistrationSubmit: SubmitHandler<Inputs> = async (data) => {
         const otpPayload = {
-            phoneNumber: data.phoneNumber,
-            password: data.password,
+            phoneNumber: data.phoneNumber.trim(),
+            password: data.password.trim(),
         };
         api.post('/reg/login', otpPayload).then((response) => {
             Cookie.setToken(response.data.accessToken);
