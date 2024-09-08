@@ -5,7 +5,7 @@ interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
 }
 
-const backend_url: string = 'https://2973-61-247-182-213.ngrok-free.app/pharmatica';
+const backend_url: string = 'https://3489-61-247-182-213.ngrok-free.app/pharmatica';
 
 const api: ApiInstance = axios.create({
     baseURL: `${backend_url}/api`,
