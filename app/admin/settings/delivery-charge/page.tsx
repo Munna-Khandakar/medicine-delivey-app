@@ -1,7 +1,7 @@
-export default function page(){
-    return(
-        <div>
-            <h1>Delivery Charge Page</h1>
-        </div>
-    )
+import {DeliveryCharges} from '@/components/admin/settings/delivery/DeliveryCharges';
+
+export default function page() {
+    return (
+        <DeliveryCharges/>
+    );
 }

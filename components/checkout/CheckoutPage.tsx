@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import useSWR from 'swr';
 import {useRouter} from 'next/navigation';
 import {Loader} from 'lucide-react';
@@ -27,21 +27,21 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 const deliveryTypes: DeliveryType[] = [
     {
         id: 1,
-        name: 'Regular Delivery',
+        title: 'Regular Delivery',
         description: 'Estimate Delivery 30 mins',
-        charge: 20,
+        rate: 20,
     },
     {
         id: 2,
-        name: 'Urgent Delivery',
+        title: 'Urgent Delivery',
         description: 'Estimate Delivery 24 hrs',
-        charge: 100,
+        rate: 100,
     },
     {
         id: 3,
-        name: 'Courier Delivery',
+        title: 'Courier Delivery',
         description: 'Estimate Delivery 2-3 working day',
-        charge: 200,
+        rate: 200,
     }
 ];
 
@@ -67,6 +67,12 @@ export const CheckoutPage = () => {
         isLoading: userLoading,
     } = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
 
+    const {
+        data: deliveryOptions,
+        isLoading: deliveryOptionsLoading,
+        error: deliveryOptionsError,
+    } = useSWR<DeliveryType[]>('/delivery-options', fetcher, {revalidateOnFocus: false});
+
     const proceedToOrder = () => {
         if (user!.address == null || user!.userName == null) {
             LocalStorageUtils.setItem(LocalStorageKeys.REDIRECT, '/checkout');
@@ -91,7 +97,7 @@ export const CheckoutPage = () => {
             }),
             prescriptionUrl: imageUrl,
             deliveryType: selectedDeliveryType.id,
-            deliveryCharge: selectedDeliveryType.charge,
+            deliveryCharge: selectedDeliveryType.rate,
         };
         onSubmit(formData);
     };
@@ -188,16 +194,21 @@ export const CheckoutPage = () => {
                             adjust this delivery charge if necessary. You will be notified of any changes.</h2>
                         <div className="flex flex-col md:flex-row gap-2">
                             {
-                                deliveryTypes.map((delivery) => {
-                                    return (
+                                deliveryOptionsLoading
+                                    ? <div
+                                        className="border px-2 py-3 h-[5rem] w-full md:w-fit rounded-md items-center flex flex-col justify-center">
+                                        <Skeleton className="mb-2 h-4 w-3/4"/>
+                                        <Skeleton className="h-3 w-1/2"/>
+                                        <Skeleton className="h-3 w-1/4"/>
+                                    </div>
+                                    : deliveryOptions?.map((delivery) => (
                                         <DeliveryCard
                                             key={delivery.id}
                                             delivery={delivery}
                                             selectedDeliveryType={selectedDeliveryType}
                                             setDeliveryType={setSelectedDeliveryType}
                                         />
-                                    );
-                                })
+                                    ))
                             }
                         </div>
 

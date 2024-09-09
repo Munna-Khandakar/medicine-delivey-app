@@ -1,6 +1,6 @@
 export type DeliveryType = {
     id: number,
-    name: string,
+    title: string,
     description: string,
-    charge: number,
+    rate: number,
 }

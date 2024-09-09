@@ -6,7 +6,7 @@ import {Country} from '@/types/Country';
 import {Fragment, useEffect, useState} from 'react';
 import {SimpleTable} from '@/components/SimpleTable';
 import {Button} from '@/components/ui/button';
-import {Pencil, PlusCircle, Trash} from 'lucide-react';
+import {Pencil, PlusCircle} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -16,40 +16,39 @@ import {SubmitHandler, useForm} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
+import {DeliveryType} from '@/types/DeliveryType';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const CountriesPage = () => {
+export const DeliveryCharges = () => {
 
     const {toast} = useToast();
-    const [selectedCountry, setSelectedCountry] = useState<Country | null>();
+    const [selectedDelivery, setSelectedDelivery] = useState<DeliveryType | null>();
     const [openCountryFormModal, setOpenCountryFormModal] = useState(false);
-    const [openCountryDeleteModal, setOpenCountryDeleteModal] = useState(false);
     const {
         data,
         isLoading,
         mutate,
-    } = useSWR<Country[]>('countries', fetcher, {revalidateOnFocus: false});
+    } = useSWR<DeliveryType[]>('/delivery-options', fetcher, {revalidateOnFocus: false});
 
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         reset,
         formState: {errors, isDirty},
-    } = useForm<Country>();
+    } = useForm<DeliveryType>();
 
-    const onSubmit: SubmitHandler<Country> = (data) => {
-        const url = selectedCountry ? `/countries/${selectedCountry.id}` : '/countries';
-        const method = selectedCountry ? 'put' : 'post';
+    const onSubmit: SubmitHandler<DeliveryType> = (data) => {
+        const url = selectedDelivery ? `/delivery-options/${selectedDelivery.id}` : '/delivery-options';
+        const method = selectedDelivery ? 'put' : 'post';
 
         api[method](url, data).then(() => {
             mutate().then(() => {
                 toast({
                     title: 'Successful',
-                    description: `Product ${selectedCountry ? 'updated' : 'added'} successfully`,
+                    description: `Product ${selectedDelivery ? 'updated' : 'added'} successfully`,
                 });
             });
         }).catch((error) => {
@@ -59,56 +58,34 @@ export const CountriesPage = () => {
             });
         }).finally(() => {
             setOpenCountryFormModal(false);
-            setSelectedCountry(null);
+            setSelectedDelivery(null);
             reset();
         });
     };
 
-    const deleteCountry = () => {
-        if (selectedCountry) {
-            api.delete(`/countries/${selectedCountry.id}`).then(() => {
-                mutate().then(() => {
-                    toast({
-                        title: 'Successful',
-                        description: 'Country deleted successfully',
-                    });
-                });
-            }).catch((error) => {
-                console.log(error);
-                toast({
-                    title: error.data.name,
-                    description: error.data.message,
-                });
-            }).finally(() => {
-                setOpenCountryDeleteModal(false);
-                setSelectedCountry(null);
-            });
-        }
-    };
-
     useEffect(() => {
-        if (selectedCountry) {
-            reset(selectedCountry);
+        if (selectedDelivery) {
+            reset(selectedDelivery);
         } else {
             reset({});
         }
-    }, [reset, selectedCountry, setValue]);
+    }, [reset, selectedDelivery, setValue]);
 
     return (
         <Fragment>
             <SimpleTable
-                title="Country"
-                subTitle="List of all countries"
+                title="Delivery Options"
+                subTitle="List of all delivery options"
                 actionItems={
                     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
                         <Button className="gap-2" onClick={() => {
                             setOpenCountryFormModal(true);
-                            setSelectedCountry(null)
+                            setSelectedDelivery(null);
                             reset({});
                         }}>
                             <PlusCircle className="h-3.5 w-3.5"/>
                             <span className="hidden md:block whitespace-nowrap text-sm">
-                                  Add Country
+                                  Add Delivery
                             </span>
                         </Button>
                     </div>
@@ -116,7 +93,8 @@ export const CountriesPage = () => {
                 tableHeader={
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Product Count</TableHead>
+                        <TableHead>Rate</TableHead>
+                        <TableHead>Description</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
                     </TableRow>
                 }
@@ -184,17 +162,18 @@ export const CountriesPage = () => {
                                 </TableCell>
                             </TableRow>
                         </Fragment>
-                        : data?.map((country) => (
-                            <TableRow key={country.id}>
-                                <TableCell>{country.countryName}</TableCell>
-                                <TableCell>{country.totalProductCount}</TableCell>
+                        : data?.map((delivery) => (
+                            <TableRow key={delivery.id}>
+                                <TableCell>{delivery.title}</TableCell>
+                                <TableCell>{delivery.rate}</TableCell>
+                                <TableCell>{delivery.description}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this country'}
+                                                    aria-label={'Accept this delivery'}
                                                     onClick={() => {
-                                                        setSelectedCountry(country);
+                                                        setSelectedDelivery(delivery);
                                                         setOpenCountryFormModal(true);
                                                     }}>
                                                 <Pencil size={15} color={'green'}/>
@@ -202,42 +181,52 @@ export const CountriesPage = () => {
                                         </TooltipTrigger>
                                         <TooltipContent>{'Edit'}</TooltipContent>
                                     </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Cancel this country'}
-                                                    disabled={country.totalProductCount > 0}
-                                                    onClick={() => {
-                                                        setSelectedCountry(country);
-                                                        setOpenCountryDeleteModal(true);
-                                                    }}>
-                                                <Trash size={15} color={'red'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'Delete'}</TooltipContent>
-                                    </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))
                 }
             />
             <Modal isOpen={openCountryFormModal} onClose={() => {
-                setSelectedCountry(null);
+                setSelectedDelivery(null);
                 setOpenCountryFormModal(false);
             }} title={'Country Form'}>
                 {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="countryName">Country Name</Label>
+                                <Label htmlFor="title">Delivery Title</Label>
                                 <Input
-                                    id="countryName"
+                                    id="title"
                                     type="text"
-                                    placeholder="country"
-                                    {...register('countryName', {required: 'Please enter country name'})}
+                                    placeholder="description"
+                                    {...register('title', {required: 'Please enter title'})}
                                 />
                                 {
-                                    errors?.countryName && <ErrorLabel message={errors.countryName.message!}/>
+                                    errors?.title && <ErrorLabel message={errors.title.message!}/>
+                                }
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="rate">Delivery Rate</Label>
+                                <Input
+                                    id="rate"
+                                    type="number"
+                                    placeholder="rate"
+                                    {...register('rate', {required: 'Please enter rate'})}
+                                />
+                                {
+                                    errors?.rate && <ErrorLabel message={errors.rate.message!}/>
+                                }
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Input
+                                    id="description"
+                                    type="text"
+                                    placeholder="title"
+                                    {...register('description', {required: 'Please enter description'})}
+                                />
+                                {
+                                    errors?.description && <ErrorLabel message={errors.description.message!}/>
                                 }
                             </div>
                             <Button variant={isDirty ? 'default' : 'secondary'} disabled={!isDirty} type="submit"
@@ -246,28 +235,6 @@ export const CountriesPage = () => {
                             </Button>
                         </div>
                     </form>
-                }
-            </Modal>
-
-            <Modal isOpen={openCountryDeleteModal} onClose={() => {
-                setSelectedCountry(null);
-                setOpenCountryDeleteModal(false);
-            }} title={'Delete Country'}>
-                {
-                    selectedCountry
-                    && <div>
-                        <div className="text-lg font-normal">Are you sure you want to cancel this country?</div>
-                        <div className="flex gap-2 mt-4">
-                            <Button variant={'outline'} onClick={() => {
-                                setOpenCountryDeleteModal(false);
-                            }}>No</Button>
-                            <Button onClick={() => {
-                                setOpenCountryDeleteModal(false);
-                                deleteCountry();
-                            }}>
-                                Yes</Button>
-                        </div>
-                    </div>
                 }
             </Modal>
         </Fragment>

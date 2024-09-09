@@ -40,7 +40,7 @@ export default function Bill(props: BillProps) {
     };
 
     const calculateTotal = () => {
-        return calculateSubTotal() + deliveyType.charge;
+        return calculateSubTotal() + deliveyType.rate;
     };
 
     useEffect(() => {
@@ -96,7 +96,7 @@ export default function Bill(props: BillProps) {
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
-                            <span>৳{deliveyType.charge}</span>
+                            <span>৳{deliveyType.rate}</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Vat</span>
