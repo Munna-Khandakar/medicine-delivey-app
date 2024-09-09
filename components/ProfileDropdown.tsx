@@ -31,7 +31,11 @@ export const ProfileDropdown = () => {
     return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger asChild>
-                <CircleUserRound className="w-[26px]"/>
+                {
+                    data?.profilePictureUrl
+                        ? <img src={data.profilePictureUrl} alt="profile" className="w-[2rem] h-[2rem] object-cover rounded-full shadow border "/>
+                        : <CircleUserRound className="w-[26px]"/>
+                }
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>

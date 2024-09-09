@@ -32,7 +32,7 @@ api.interceptors.request.use(
 const refreshToken = async () => {
     try {
         const response = await axios.post(`${backend_url}/api/refresh-token`, {
-            refreshToken: Cookie.getRefreshToken(),
+            "refresh-token": Cookie.getRefreshToken(),
         });
         Cookie.setToken(response.data.accessToken);
         return response.data.accessToken;

@@ -24,7 +24,7 @@ export const CheckoutCartCard = (props: CheckoutCartCardProps) => {
             {
                 product?.imageUrl == null
                     ?
-                    <Image src={MedicineDemo} alt={product?.productName || 'description'}/>
+                    <Image src={MedicineDemo} width={80} alt={product?.productName || 'description'}/>
                     :
                     <img src={product?.imageUrl} alt={product?.productName || 'description'}
                          className="w-[80px] rounded-md"/>

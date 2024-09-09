@@ -40,7 +40,9 @@ export default function Bill(props: BillProps) {
     };
 
     const calculateTotal = () => {
-        return calculateSubTotal() + deliveyType.rate;
+        const deliveryRate = parseFloat(String(deliveyType.rate));
+        const subTotal = calculateSubTotal();
+        return subTotal + deliveryRate;
     };
 
     useEffect(() => {

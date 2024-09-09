@@ -131,6 +131,12 @@ export const CheckoutPage = () => {
         setIsMounted(true);
     }, []);
 
+    useEffect(() => {
+        if (deliveryOptions) {
+            setSelectedDeliveryType(deliveryOptions[0]);
+        }
+    }, [deliveryOptions]);
+
     if (!isMounted) {
         return <div className="h-screen"></div>;
     }
