@@ -14,7 +14,7 @@ import useSWR from 'swr';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
 import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
-import {ImageUploader} from '@/components/common/ImageUploader';
+import {FileUploader} from '@/components/common/FileUploader';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -97,12 +97,12 @@ export const ProfilePage = () => {
                                 name="profilePictureUrl"
                                 control={control}
                                 render={({field}) => (
-                                    <ImageUploader
+                                    <FileUploader
                                         onUploadComplete={(url) => {
                                             field.onChange(url);
                                             setValue('profilePictureUrl', url);
                                         }}
-                                        imageUrl={getValues('profilePictureUrl')}
+                                        fileUrl={getValues('profilePictureUrl')}
                                     />
                                 )}
                             />

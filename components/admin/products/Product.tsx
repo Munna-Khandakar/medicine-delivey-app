@@ -15,9 +15,7 @@ export const Product = () => {
 
     const {
         data,
-        error,
-        isLoading,
-        mutate
+        isLoading
     } = useSWR<ProductType>(product_id ? `products/${product_id}` : null, fetcher, {revalidateOnFocus: false});
 
     return (

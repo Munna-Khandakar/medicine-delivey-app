@@ -1,4 +1,4 @@
-import {ChangeEvent, useState} from 'react';
+import {ChangeEvent, Fragment, useState} from 'react';
 import {Upload, X} from 'lucide-react';
 import {useToast} from '@/components/ui/use-toast';
 import api from '@/lib/apiInstance';
@@ -11,12 +11,18 @@ type ServerError = {
     };
 };
 
-type ImageUploaderProps = {
+type FileUploaderProps = {
     onUploadComplete: (fileUrl: string) => void;
-    imageUrl: string;
+    fileUrl: string;
+    fileType?: string;
+    placeholder?: string;
 };
 
-export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) => {
+export const FileUploader = (props: FileUploaderProps) => {
+
+
+    const {onUploadComplete, fileUrl, fileType = 'image', placeholder = 'Upload Image'} = props;
+
     const {toast} = useToast();
     const [showInput, setShowInput] = useState(false);
 
@@ -87,19 +93,27 @@ export const ImageUploader = ({onUploadComplete, imageUrl}: ImageUploaderProps) 
 
     return (
         <div className="relative">
-            {imageUrl && !showInput ? (
-                <img src={imageUrl} alt="Uploaded" className="w-full h-auto"/>
+            {fileUrl && !showInput ? (
+                <Fragment>
+                    {
+                        fileType === 'image' && <img src={fileUrl} alt="Uploaded" className="w-full h-auto"/>
+                    }
+                    {
+                        fileType === 'file' && <a href={fileUrl}>{fileUrl}</a>
+                    }
+
+                </Fragment>
             ) : (
                 <label htmlFor="fileId"
                        className="border border-dashed rounded-xl flex flex-col h-[100px] items-center justify-center cursor-pointer p-1"
                 >
                     <Upload className="h-4 w-4 text-muted-foreground"/>
-                    <p className="text-xs mt-2 text-slate-500 text-center">upload image</p>
+                    <p className="text-xs mt-2 text-slate-500 text-center">{placeholder}</p>
                     <input type="file" id="fileId" className="hidden" onChange={handleFileChange}/>
                 </label>
             )}
             {
-                imageUrl &&
+                fileUrl &&
                 <Button className="absolute -top-2 -right-2 rounded-full border-red-500 bg-red-50"
                         size="icon" variant={'outline'} type="button"
                         onClick={() => setShowInput(true)}>

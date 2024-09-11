@@ -17,7 +17,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Calendar} from '@/components/ui/calendar';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {ImageUploader} from '@/components/common/ImageUploader';
+import {FileUploader} from '@/components/common/FileUploader';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import api from '@/lib/apiInstance';
 import {useToast} from '@/components/ui/use-toast';
@@ -94,8 +94,8 @@ export const ProductForm = (props: ProductFormProps) => {
         }).catch((error) => {
             console.log(error);
             toast({
-                title: error.name,
-                description: error.message,
+                title: error.response.data.code,
+                description: error.response.data.message,
             });
         });
     };
@@ -410,12 +410,12 @@ export const ProductForm = (props: ProductFormProps) => {
                                 name="imageUrl"
                                 control={control}
                                 render={({field}) => (
-                                    <ImageUploader
+                                    <FileUploader
                                         onUploadComplete={(url) => {
                                             field.onChange(url);
                                             setValue('imageUrl', url);
                                         }}
-                                        imageUrl={getValues('imageUrl')}
+                                        fileUrl={getValues('imageUrl')}
                                     />
                                 )}
                             />

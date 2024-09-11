@@ -17,7 +17,7 @@ import Bill from '@/components/checkout/Bill';
 import {Cookie} from '@/utils/Cookie';
 import {User} from '@/types/User';
 import {LocalStorageKeys, LocalStorageUtils} from '@/utils/LocalStorageUtils';
-import {ImageUploader} from '@/components/common/ImageUploader';
+import {FileUploader} from '@/components/common/FileUploader';
 import {DeliveryType} from '@/types/DeliveryType';
 import {CheckoutCartCard} from '@/components/medicine/CheckoutCartCard';
 import {DeliveryCard} from '@/components/medicine/DeliveryCard';
@@ -187,9 +187,9 @@ export const CheckoutPage = () => {
                         Prescription</h1>
                     <h2 className="text-slate-500 font-nromal text-xs text-start mb-4">This is an optional work. We keep
                         prescription for safety</h2>
-                    <ImageUploader
+                    <FileUploader
                         onUploadComplete={(url) => setImageUrl(url)}
-                        imageUrl={imageUrl}
+                        fileUrl={imageUrl}
                     />
                     <div>
                         <h1 className="text-slate-800 font-semibold text-sm text-start md:text-base mt-4">Choose

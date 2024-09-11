@@ -17,7 +17,7 @@ import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
 import {Category} from '@/types/Category';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {ImageUploader} from '@/components/common/ImageUploader';
+import {FileUploader} from '@/components/common/FileUploader';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -270,12 +270,12 @@ export const CategoriesPage = () => {
                                                 control={control}
                                                 rules={{required: 'Please upload an icon'}}
                                                 render={({field}) => (
-                                                    <ImageUploader
+                                                    <FileUploader
                                                         onUploadComplete={(url) => {
                                                             field.onChange(url);
                                                             setValue('iconUrl', url);
                                                         }}
-                                                        imageUrl={getValues('iconUrl')}
+                                                        fileUrl={getValues('iconUrl')}
                                                     />
                                                 )}
                                             />

@@ -1,7 +1,7 @@
 'use client';
 import {Fragment, useState} from 'react';
 import useSWR from 'swr';
-import {Pencil, PlusCircle, Trash} from 'lucide-react';
+import {Pencil, PlusCircle, Trash, File} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
@@ -52,15 +52,15 @@ export function Products() {
                 title={'Products'}
                 subTitle={'Manage your products and view their sales performance.'}
                 actionItems={
-                    <div className="flex justify-end items-center pb-2 w-full">
-                        {/*<div className="relative ml-auto pr-2 flex-1 md:grow-0">*/}
-                        {/*    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>*/}
-                        {/*    <Input*/}
-                        {/*        type="search"*/}
-                        {/*        placeholder="Search..."*/}
-                        {/*        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"*/}
-                        {/*    />*/}
-                        {/*</div>*/}
+                    <div className="flex justify-end items-center pb-2 w-full gap-2">
+                        <Link href={'/admin/products/batch-upload'}
+                              title="Add Product"
+                              className="flex items-center justify-between bg-slate-200 border border-slate-300 text-black px-3 py-2 rounded h-8 gap-1">
+                            <File className="h-3.5 w-3.5"/>
+                            <span className="hidden md:block whitespace-nowrap text-sm">
+                                  Batch Product Upload
+                            </span>
+                        </Link>
                         <Link href={'/admin/products/new'}
                               title="Add Product"
                               className="flex items-center justify-between bg-black text-white px-3 py-2 rounded h-8 gap-1">
