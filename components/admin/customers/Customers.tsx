@@ -1,6 +1,6 @@
 'use client';
 
-import {Fragment} from 'react';
+import {Fragment, useState} from 'react';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {SimpleTable} from '@/components/SimpleTable';
 import api from '@/lib/apiInstance';
@@ -16,7 +16,20 @@ import Link from 'next/link';
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Customers() {
+    const [search, setSearch] = useState('');
     const {data, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
+
+    const onSearch = () => {
+        api.get(`/users/phone-number/${search}`).then((response) => {
+            console.log(response);
+        }).catch((error) => {
+            console.log(error);
+
+        }).finally(() => {
+
+        });
+    };
+
 
     const renderSkeletonRows = () => {
         return Array.from({length: 5}).map((_, index) => (
@@ -38,6 +51,9 @@ export function Customers() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
                         <Input
                             type="search"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && onSearch()}
                             placeholder="Search with phone number"
                             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
                         />
@@ -61,7 +77,7 @@ export function Customers() {
                                         <img
                                             src={user?.profilePictureUrl}
                                             alt={`${user.userName} avatar`}
-                                            className=" h-8 w-8 rounded-full"
+                                            className="h-8 w-8 rounded-full shadow"
                                         />
                                     }
                                     {user.userName}

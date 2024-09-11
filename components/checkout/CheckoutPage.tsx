@@ -70,7 +70,6 @@ export const CheckoutPage = () => {
     const {
         data: deliveryOptions,
         isLoading: deliveryOptionsLoading,
-        error: deliveryOptionsError,
     } = useSWR<DeliveryType[]>('/delivery-options', fetcher, {revalidateOnFocus: false});
 
     const proceedToOrder = () => {
@@ -96,8 +95,7 @@ export const CheckoutPage = () => {
                 };
             }),
             prescriptionUrl: imageUrl,
-            deliveryType: selectedDeliveryType.id,
-            deliveryCharge: selectedDeliveryType.rate,
+            deliveryOptionId: selectedDeliveryType.id,
         };
         onSubmit(formData);
     };
