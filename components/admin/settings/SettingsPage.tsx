@@ -1,10 +1,10 @@
-import { Truck, ShieldCheck, Key, User} from 'lucide-react';
+import {Truck, ShieldCheck, Key, User, Megaphone} from 'lucide-react';
 import Link from 'next/link';
 import {Fragment} from 'react';
 import {SectionLabel} from '@/components/SectionLabel';
 
 
-export const SettingsPage = ()=>{
+export const SettingsPage = () => {
     const NavItems = [
         {
             icon: User,
@@ -26,11 +26,16 @@ export const SettingsPage = ()=>{
             label: 'Delivery Charge',
             href: '/admin/settings/delivery-charge',
         },
+        {
+            icon: Megaphone,
+            label: 'Announcement',
+            href: '/admin/settings/announcement',
+        }
     ];
 
     return (
         <Fragment>
-            <SectionLabel label={"Settings"}/>
+            <SectionLabel label={'Settings'}/>
             <div className="flex flex-col md:flex-row gap-2">
                 {
                     NavItems.map((item, index) => (
@@ -39,7 +44,7 @@ export const SettingsPage = ()=>{
                               className="flex flex-col items-center justify-center bg-white h-[6rem] md:h-[12rem] w-full md:w-[12rem]
                            hover:scale-105 transition shadow  py-2 px-4 cursor-pointer border rounded-md"
                         >
-                            <item.icon className="w-6 h-6 mr-2"/>
+                            <item.icon className="w-6 h-6 mr-2 hover:scale-110 hover:text-teal-600 transition"/>
                             <span className="mt-2 text-bold text-sm text-slate-600">{item.label}</span>
                         </Link>
                     ))
@@ -48,4 +53,4 @@ export const SettingsPage = ()=>{
         </Fragment>
 
     );
-}
+};

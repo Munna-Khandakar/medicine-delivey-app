@@ -1,53 +1,54 @@
 'use client';
 
-import api from '@/lib/apiInstance';
-import useSWR from 'swr';
 import {Fragment, useEffect, useState} from 'react';
+import useSWR from 'swr';
+import {Controller, SubmitHandler, useForm} from 'react-hook-form';
+import api from '@/lib/apiInstance';
 import {SimpleTable} from '@/components/SimpleTable';
 import {Button} from '@/components/ui/button';
-import {Pencil, PlusCircle} from 'lucide-react';
-import {Input} from '@/components/ui/input';
+import {Pencil} from 'lucide-react';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import Modal from '@/components/Modal';
-import {SubmitHandler, useForm} from 'react-hook-form';
 import {useToast} from '@/components/ui/use-toast';
 import {Label} from '@/components/ui/label';
 import {ErrorLabel} from '@/components/common/ErrorLabel';
-import {DeliveryType} from '@/types/DeliveryType';
-
+import {Announcement} from '@/types/Announcement';
+import {Textarea} from '@/components/ui/textarea';
+import {Switch} from '@/components/ui/switch';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const DeliveryCharges = () => {
+export const Announcements = () => {
 
     const {toast} = useToast();
-    const [selectedDelivery, setSelectedDelivery] = useState<DeliveryType | null>();
-    const [openCountryFormModal, setOpenCountryFormModal] = useState(false);
+    const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>();
+    const [openAnnouncementFormModal, setOpenAnnouncementFormModal] = useState(false);
     const {
         data,
         isLoading,
         mutate,
-    } = useSWR<DeliveryType[]>('/delivery-options', fetcher, {revalidateOnFocus: false});
+    } = useSWR<Announcement>(`/announcement/${1}`, fetcher, {revalidateOnFocus: false});
 
     const {
         register,
+        control,
         handleSubmit,
         setValue,
         reset,
         formState: {errors, isDirty},
-    } = useForm<DeliveryType>();
+    } = useForm<Announcement>();
 
-    const onSubmit: SubmitHandler<DeliveryType> = (data) => {
-        const url = selectedDelivery ? `/delivery-options/${selectedDelivery.id}` : '/delivery-options';
-        const method = selectedDelivery ? 'put' : 'post';
+    const onSubmit: SubmitHandler<Announcement> = (data) => {
+        const url = selectedAnnouncement ? `/announcement/${selectedAnnouncement.id}` : '/delivery-options';
+        const method = selectedAnnouncement ? 'put' : 'post';
 
         api[method](url, data).then(() => {
             mutate().then(() => {
                 toast({
                     title: 'Successful',
-                    description: `Product ${selectedDelivery ? 'updated' : 'added'} successfully`,
+                    description: `Announcement ${selectedAnnouncement ? 'updated' : 'added'} successfully`,
                 });
             });
         }).catch((error) => {
@@ -56,43 +57,41 @@ export const DeliveryCharges = () => {
                 description: error.response.data.message,
             });
         }).finally(() => {
-            setOpenCountryFormModal(false);
-            setSelectedDelivery(null);
+            setOpenAnnouncementFormModal(false);
+            setSelectedAnnouncement(null);
             reset();
         });
     };
 
     useEffect(() => {
-        if (selectedDelivery) {
-            reset(selectedDelivery);
+        if (selectedAnnouncement) {
+            reset(selectedAnnouncement);
         } else {
             reset({});
         }
-    }, [reset, selectedDelivery, setValue]);
+    }, [reset, selectedAnnouncement, setValue]);
 
     return (
         <Fragment>
             <SimpleTable
-                title="Delivery Options"
-                subTitle="List of all delivery options"
-                actionItems={
-                    <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
-                        <Button className="gap-2" onClick={() => {
-                            setOpenCountryFormModal(true);
-                            setSelectedDelivery(null);
-                            reset({});
-                        }}>
-                            <PlusCircle className="h-3.5 w-3.5"/>
-                            <span className="hidden md:block whitespace-nowrap text-sm">
-                                  Add Delivery
-                            </span>
-                        </Button>
-                    </div>
-                }
+                title="Announcements"
+                subTitle="Your Announcement Options"
+                // actionItems={
+                //     <div className="ml-auto pr-2 gap-1 flex flex-1 md:grow-0">
+                //         <Button className="gap-2" onClick={() => {
+                //             setOpenCountryFormModal(true);
+                //             setSelectedAnnouncement(null);
+                //             reset({});
+                //         }}>
+                //             <PlusCircle className="h-3.5 w-3.5"/>
+                //             <span className="hidden md:block whitespace-nowrap text-sm">
+                //                   Add Delivery
+                //             </span>
+                //         </Button>
+                //     </div>
+                // }
                 tableHeader={
                     <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Rate</TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
                     </TableRow>
@@ -161,66 +160,54 @@ export const DeliveryCharges = () => {
                                 </TableCell>
                             </TableRow>
                         </Fragment>
-                        : data?.map((delivery) => (
-                            <TableRow key={delivery.id}>
-                                <TableCell>{delivery.title}</TableCell>
-                                <TableCell>{delivery.rate}</TableCell>
-                                <TableCell>{delivery.description}</TableCell>
-                                <TableCell className="flex gap-1 justify-end">
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this delivery'}
-                                                    onClick={() => {
-                                                        setSelectedDelivery(delivery);
-                                                        setOpenCountryFormModal(true);
-                                                    }}>
-                                                <Pencil size={15} color={'green'}/>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{'Edit'}</TooltipContent>
-                                    </Tooltip>
-                                </TableCell>
-                            </TableRow>
-                        ))
+                        : data &&
+                        <TableRow key={data.id}>
+                            <TableCell>{data.description}</TableCell>
+                            <TableCell className="flex gap-1 justify-end">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant={'outline'} size={'icon'}
+                                                aria-label={'Accept this delivery'}
+                                                onClick={() => {
+                                                    setSelectedAnnouncement(data);
+                                                    setOpenAnnouncementFormModal(true);
+                                                }}>
+                                            <Pencil size={15} color={'green'}/>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>{'Edit'}</TooltipContent>
+                                </Tooltip>
+                            </TableCell>
+                        </TableRow>
                 }
             />
-            <Modal isOpen={openCountryFormModal} onClose={() => {
-                setSelectedDelivery(null);
-                setOpenCountryFormModal(false);
-            }} title={'Country Form'}>
+            <Modal isOpen={openAnnouncementFormModal} onClose={() => {
+                setSelectedAnnouncement(null);
+                setOpenAnnouncementFormModal(false);
+            }} title={'Announcement Form'}>
                 {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="title">Delivery Title</Label>
-                                <Input
-                                    id="title"
-                                    type="text"
-                                    placeholder="description"
-                                    {...register('title', {required: 'Please enter title'})}
+                                <Controller
+                                    control={control}
+                                    name="enabled"
+                                    render={({field: {onChange, value}}) => (
+                                      <div className="flex justify-between">
+                                            <Label htmlFor="enabled">Enabled</Label>
+                                            <Switch
+                                                id="enabled"
+                                                checked={value}
+                                                onChange={onChange}
+                                            />
+                                      </div>
+                                    )}
                                 />
-                                {
-                                    errors?.title && <ErrorLabel message={errors.title.message!}/>
-                                }
-                            </div>
-                            <div className="grid gap-2">
-                                <Label htmlFor="rate">Delivery Rate</Label>
-                                <Input
-                                    id="rate"
-                                    type="number"
-                                    placeholder="rate"
-                                    {...register('rate', {required: 'Please enter rate'})}
-                                />
-                                {
-                                    errors?.rate && <ErrorLabel message={errors.rate.message!}/>
-                                }
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="description">Description</Label>
-                                <Input
+                                <Textarea
                                     id="description"
-                                    type="text"
                                     placeholder="title"
                                     {...register('description', {required: 'Please enter description'})}
                                 />
