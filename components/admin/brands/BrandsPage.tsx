@@ -115,6 +115,7 @@ export const BrandsPage = () => {
                 }
                 tableHeader={
                     <TableRow>
+                        <TableHead>ID</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Product Count</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
@@ -186,6 +187,7 @@ export const BrandsPage = () => {
                         </Fragment>
                         : data?.map((brand) => (
                             <TableRow key={brand.id}>
+                                <TableCell>{brand.id}</TableCell>
                                 <TableCell>{brand.brandName}</TableCell>
                                 <TableCell>{brand.totalProductCount}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">

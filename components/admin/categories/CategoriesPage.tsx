@@ -119,6 +119,7 @@ export const CategoriesPage = () => {
                 }
                 tableHeader={
                     <TableRow>
+                        <TableHead>ID</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Icon</TableHead>
                         <TableHead>Product Count</TableHead>
@@ -191,6 +192,7 @@ export const CategoriesPage = () => {
                         </Fragment>
                         : data?.map((category) => (
                             <TableRow key={category.id}>
+                                <TableCell>{category.id}</TableCell>
                                 <TableCell>{category.label}</TableCell>
                                 <TableCell>
                                     <img

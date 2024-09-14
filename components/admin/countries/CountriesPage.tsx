@@ -35,7 +35,6 @@ export const CountriesPage = () => {
     const {
         register,
         handleSubmit,
-        watch,
         setValue,
         reset,
         formState: {errors, isDirty},
@@ -115,6 +114,7 @@ export const CountriesPage = () => {
                 }
                 tableHeader={
                     <TableRow>
+                        <TableHead>ID</TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Product Count</TableHead>
                         <TableHead className="flex justify-end">Actions</TableHead>
@@ -186,6 +186,7 @@ export const CountriesPage = () => {
                         </Fragment>
                         : data?.map((country) => (
                             <TableRow key={country.id}>
+                                <TableCell>{country.id}</TableCell>
                                 <TableCell>{country.countryName}</TableCell>
                                 <TableCell>{country.totalProductCount}</TableCell>
                                 <TableCell className="flex gap-1 justify-end">
