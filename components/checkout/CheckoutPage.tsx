@@ -80,10 +80,15 @@ export const CheckoutPage = () => {
                 title: 'Name and Address Required',
                 description: 'Please Update your profile to complete this order',
             });
+        } else if (user?.deactivated === 'true') {
+            router.push('/login');
+            toast({
+                title: 'Account Deactivated',
+                description: 'Please contact support to reactivate your account',
+            });
         } else {
             placeOrder();
         }
-
     };
 
     const placeOrder = () => {
