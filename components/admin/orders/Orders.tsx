@@ -423,7 +423,7 @@ export function Orders() {
                     selectedOrderId
                     && <OrderDetailsSLip orderId={selectedOrderId}/>
                 }
-            </Modal>;
+            </Modal>
             <Modal isOpen={openOrderAcceptModal} onClose={() => {
                 setSelectedOrderId('');
                 setOpenOrderAcceptModal(false);
@@ -443,7 +443,7 @@ export function Orders() {
                         </div>
                     </div>
                 }
-            </Modal>;
+            </Modal>
 
             <Modal isOpen={openOrderOntheWayModal} onClose={() => {
                 setSelectedOrderId('');
@@ -464,7 +464,7 @@ export function Orders() {
                         </div>
                     </div>
                 }
-            </Modal>;
+            </Modal>
             <Modal isOpen={openOrderCancelModal} onClose={() => {
                 setSelectedOrderId('');
                 setOpenOrderCancelModal(false);
@@ -484,7 +484,7 @@ export function Orders() {
                         </div>
                     </div>
                 }
-            </Modal>;
+            </Modal>
             <Modal isOpen={openOrderCompleteModal} onClose={() => {
                 setSelectedOrderId('');
                 setOpenOrderCompleteModal(false);
