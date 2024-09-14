@@ -14,21 +14,28 @@ import {
 } from '@/components/ui/card';
 import {ChartConfig, ChartContainer} from '@/components/ui/chart';
 
-const chartData = [
-    {browser: 'safari', visitors: 300, fill: 'var(--color-safari)'},
-];
+type CirularChartProps = {
+    length: number;
+    label: string;
+}
 
-const chartConfig = {
-    visitors: {
-        label: 'Visitors',
-    },
-    safari: {
-        label: 'Safari',
-        color: 'hsl(var(--chart-2))',
-    },
-} satisfies ChartConfig;
+export function CirularChart(props: CirularChartProps) {
+    const {length, label} = props;
 
-export function TotalSalesChart() {
+    const chartData = [
+        {browser: 'safari', visitors: length, fill: 'var(--color-safari)'},
+    ];
+
+    const chartConfig = {
+        visitors: {
+            label: 'Visitors',
+        },
+        safari: {
+            label: 'Safari',
+            color: 'hsl(var(--chart-2))',
+        },
+    } satisfies ChartConfig;
+
     return (
         <Card className="flex flex-col">
             <CardContent className="flex-1 pb-0">
@@ -74,7 +81,7 @@ export function TotalSalesChart() {
                                                     y={(viewBox.cy || 0) + 24}
                                                     className="fill-muted-foreground"
                                                 >
-                                                    Sales
+                                                    {label}
                                                 </tspan>
                                             </text>
                                         );
