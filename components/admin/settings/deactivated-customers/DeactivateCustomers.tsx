@@ -16,7 +16,7 @@ import {useRouter} from 'next/navigation';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export function Customers() {
+export function DeactivatedCustomers() {
     const [search, setSearch] = useState('');
     const router = useRouter();
     const {data, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
@@ -45,8 +45,8 @@ export function Customers() {
     return (
         <Fragment>
             <SimpleTable
-                title="Customers"
-                subTitle="Manage your customers and view their sales performance."
+                title="Deactivated Customers"
+                subTitle="Manage your deactivated customers"
                 actionItems={
                     <div className="relative">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"/>
@@ -69,7 +69,7 @@ export function Customers() {
                     </TableRow>
                 }
                 tableBody={
-                    isLoading ? renderSkeletonRows() : data?.filter((user => user.role !== UserRole.ADMIN && user.deactivated === 'false')).map((user) => (
+                    isLoading ? renderSkeletonRows() : data?.filter((user => user.role !== UserRole.ADMIN && user.deactivated === 'true')).map((user) => (
                         <TableRow key={user.id}>
                             <TableCell>
                                 <div className="flex items-center justify-start gap-2">

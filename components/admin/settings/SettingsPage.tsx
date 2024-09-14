@@ -1,4 +1,4 @@
-import {Truck, ShieldCheck, Key, User, Megaphone} from 'lucide-react';
+import {Truck, ShieldCheck, Key, User, Megaphone, UserX} from 'lucide-react';
 import Link from 'next/link';
 import {Fragment} from 'react';
 import {SectionLabel} from '@/components/SectionLabel';
@@ -15,6 +15,11 @@ export const SettingsPage = () => {
             icon: ShieldCheck,
             label: 'Admins',
             href: '/admin/settings/admin',
+        },
+        {
+            icon: UserX,
+            label: 'Deactivated Customers',
+            href: '/admin/settings/deactivated-customers',
         },
         {
             icon: Key,
@@ -36,7 +41,7 @@ export const SettingsPage = () => {
     return (
         <Fragment>
             <SectionLabel label={'Settings'}/>
-            <div className="flex flex-col md:flex-row gap-2">
+            <div className="flex flex-col md:flex-row gap-2 flex-wrap">
                 {
                     NavItems.map((item, index) => (
                         <Link key={index}

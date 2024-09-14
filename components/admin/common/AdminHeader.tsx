@@ -177,12 +177,12 @@ export const AdminHeader = () => {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem onClick={()=>router.push('/admin/settings')}>Settings</DropdownMenuItem>
-                    <DropdownMenuItem onClick={()=>router.push('/admin/settings/profile')}>Profile</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/admin/settings')}>Settings</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/admin/settings/profile')}>Profile</DropdownMenuItem>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem onClick={()=>router.push('/')}>Home</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/')}>Home</DropdownMenuItem>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem onClick={()=>router.push('/login')}>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push('/login')}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>
