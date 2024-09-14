@@ -33,7 +33,8 @@ export const ProfileDropdown = () => {
             <DropdownMenuTrigger asChild>
                 {
                     data?.profilePictureUrl
-                        ? <img src={data.profilePictureUrl} alt="profile" className="w-[2rem] h-[2rem] object-cover rounded-full shadow border "/>
+                        ? <img src={data.profilePictureUrl} alt="profile"
+                               className="w-[2rem] h-[2rem] object-cover rounded-full shadow border "/>
                         : <CircleUserRound className="w-[26px]"/>
                 }
             </DropdownMenuTrigger>
@@ -47,6 +48,12 @@ export const ProfileDropdown = () => {
                     router.push('/order');
                 }}>
                     Order
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => {
+                    setOpen(false);
+                    router.push('/history');
+                }}>
+                    History
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => {
                     setOpen(false);

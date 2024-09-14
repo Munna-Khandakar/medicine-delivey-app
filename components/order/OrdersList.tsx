@@ -62,7 +62,7 @@ export function OrdersList() {
                 <CardHeader>
                     <CardTitle>Orders</CardTitle>
                     <CardDescription>
-                        {`You have ${data?.length ? data.length : 0} active orders.`}
+                        {`You have ${data?.filter(order => order.status !== OrderStauts.COMPLETED && order.status !== OrderStauts.FAILED).length ? data?.filter(order => order.status !== OrderStauts.COMPLETED && order.status !== OrderStauts.FAILED).length : 0} active orders.`}
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="grid gap-4">
@@ -83,7 +83,7 @@ export function OrdersList() {
                         )
                     }
                     {
-                        data?.length === 0
+                        data?.filter(order => order.status !== OrderStauts.COMPLETED && order.status !== OrderStauts.FAILED)?.length === 0
                             ?
                             <div className="text-center text-muted-foreground">
                                 <Image src={NoOrderImg} alt={'no order'}/>
@@ -91,7 +91,7 @@ export function OrdersList() {
                             </div>
                             : <div className="flex flex-col gap-2">
                                 {
-                                    data?.map((order, index) => (
+                                    data?.filter(order => order.status !== OrderStauts.COMPLETED && order.status !== OrderStauts.FAILED).map((order, index) => (
                                         <div
                                             key={index}
                                             className="flex py-3 px-2 justify-between items-center rounded-md shadow hover:bg-slate-50"
@@ -133,7 +133,6 @@ export function OrdersList() {
                                             }
                                             {
                                                 order.status === OrderStauts.ACCEPTED &&
-
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Button
@@ -161,7 +160,6 @@ export function OrdersList() {
                                                     </TooltipTrigger>
                                                     <TooltipContent>{'On the way'}</TooltipContent>
                                                 </Tooltip>
-
                                             }
                                             {
                                                 order.status === OrderStauts.COMPLETED &&
