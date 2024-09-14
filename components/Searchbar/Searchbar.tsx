@@ -9,12 +9,14 @@ import {Button} from '@/components/ui/button';
 import {Skeleton} from '@/components/ui/skeleton';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import {SearchResultCard} from '@/components/Searchbar/SearchResultCard';
+import {ReactFastMarquee} from '@/components/common/ReactFastMarquee';
 import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
+import {Announcement} from '@/types/Announcement';
 import './searchbar.css';
-import {ReactFastMarquee} from '@/components/common/ReactFastMarquee';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
+const DEFAULT_ANNOUNCEMENT_ID = 1;
 
 export const Searchbar = () => {
     const searchInputRef = useRef<HTMLDivElement>(null);
@@ -27,18 +29,10 @@ export const Searchbar = () => {
 
     const {data, isLoading} = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
-    useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (showDropdown && searchInputRef.current && !searchInputRef.current.contains(event.target)) {
-                setShowDropdown(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [showDropdown]);
+    const {
+        data: announcement,
+        isLoading: announcementIsLoading,
+    } = useSWR<Announcement>(`/announcement/${DEFAULT_ANNOUNCEMENT_ID}`, fetcher, {revalidateOnFocus: false});
 
     const gotoSearchPage = () => {
         if (searchQuery === '') return;
@@ -62,6 +56,19 @@ export const Searchbar = () => {
         }
     }, [data, setProducts]);
 
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (showDropdown && searchInputRef.current && !searchInputRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showDropdown]);
+
     return (
         <div>
             <div
@@ -78,9 +85,16 @@ export const Searchbar = () => {
                     </h2>
                     <p className="text-xs text-center md:text-lg mt-0 md:mt-2 text-gray-500">এক জায়গায় ঔষধ এবং
                         স্বাস্থ্যসেবা পণ্য অর্ডার করতে সার্চ করুন </p>
-                    <ReactFastMarquee
-                        announcement={'এক জায়গায় ঔষধ এবং স্বাস্থ্যসেবা পণ্য অর্ডার করতে সার্চ করুন '}
-                    />
+                    {
+                        announcementIsLoading && <Skeleton className="h-8 w-full"/>
+                    }
+                    {
+                        !announcementIsLoading && announcement && announcement.enabled &&
+                        <ReactFastMarquee
+                            announcement={announcement.description}
+                        />
+
+                    }
                 </div>
                 <div ref={searchInputRef}
                      className="border border-teal-500 rounded-2xl py-2 my-2 md:my-4 w-full max-w-lg bg-white"

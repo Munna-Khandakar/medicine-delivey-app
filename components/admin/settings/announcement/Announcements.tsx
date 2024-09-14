@@ -19,6 +19,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {Switch} from '@/components/ui/switch';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
+const DEFAULT_ANNOUNCEMENT_ID = 1;
 
 export const Announcements = () => {
 
@@ -29,7 +30,7 @@ export const Announcements = () => {
         data,
         isLoading,
         mutate,
-    } = useSWR<Announcement>(`/announcement/${1}`, fetcher, {revalidateOnFocus: false});
+    } = useSWR<Announcement>(`/announcement/${DEFAULT_ANNOUNCEMENT_ID}`, fetcher, {revalidateOnFocus: false});
 
     const {
         register,
@@ -41,7 +42,7 @@ export const Announcements = () => {
     } = useForm<Announcement>();
 
     const onSubmit: SubmitHandler<Announcement> = (data) => {
-        const url = selectedAnnouncement ? `/announcement/${selectedAnnouncement.id}` : '/delivery-options';
+        const url = selectedAnnouncement ? `/announcement/${DEFAULT_ANNOUNCEMENT_ID}` : '/delivery-options';
         const method = selectedAnnouncement ? 'put' : 'post';
 
         api[method](url, data).then(() => {
@@ -193,14 +194,14 @@ export const Announcements = () => {
                                     control={control}
                                     name="enabled"
                                     render={({field: {onChange, value}}) => (
-                                      <div className="flex justify-between">
+                                        <div className="flex justify-between">
                                             <Label htmlFor="enabled">Enabled</Label>
                                             <Switch
                                                 id="enabled"
                                                 checked={value}
-                                                onChange={onChange}
+                                                onCheckedChange={onChange}
                                             />
-                                      </div>
+                                        </div>
                                     )}
                                 />
                             </div>

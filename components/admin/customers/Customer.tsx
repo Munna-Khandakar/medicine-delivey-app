@@ -1,39 +1,44 @@
 'use client';
 
-import {useParams} from 'next/navigation';
-import api from '@/lib/apiInstance';
-import useSWR from 'swr';
-import {OrderResponse} from '@/types/OrderResponse';
-import {SimpleTable} from '@/components/SimpleTable';
-import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
-import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Fragment, useState} from 'react';
+import useSWR from 'swr';
+import {useParams} from 'next/navigation';
+import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {SimpleTable} from '@/components/SimpleTable';
+import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {Skeleton} from '@/components/ui/skeleton';
-import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {Badge} from '@/components/ui/badge';
-import {OrderStauts} from '@/types/enum/OrderStauts';
 import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import {Button} from '@/components/ui/button';
 import Modal from '@/components/Modal';
 import {DownloadPdfButton} from '@/components/common/DownloadPdfButton';
-import {User} from '@/types/User';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
+import {useToast} from '@/components/ui/use-toast';
+import {OrderResponse} from '@/types/OrderResponse';
+import {MedicineUtils} from '@/utils/MedicineUtils';
+import {User} from '@/types/User';
+import {OrderStauts} from '@/types/enum/OrderStauts';
+import api from '@/lib/apiInstance';
+import {ProfileCardLoader} from '@/components/admin/customers/ProfileCardLoader';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const Customer = () => {
 
     const {customer_id} = useParams();
+    const {toast} = useToast();
     const [selectedOrderId, setSelectedOrderId] = useState('');
     const [openImageViewModal, setOpenImageViewModal] = useState(false);
+    const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
 
     const {
         data: userData,
         isLoading: userIsLoading,
-        error: userError
+        error: userError,
+        mutate: userMutate
     } = useSWR<User>(customer_id ? `users/${customer_id}` : null, fetcher, {revalidateOnFocus: false});
 
     const {
@@ -42,6 +47,26 @@ export const Customer = () => {
         error: customerOrdersError
     } = useSWR<OrderResponse[]>(customer_id ? `orders/user/${customer_id}` : null, fetcher, {revalidateOnFocus: false});
 
+
+    const toggleUserDeactivationStatus = async () => {
+        api.put(`/users/${customer_id}`, {
+            deactivated: userData?.deactivated === 'true' ? 'false' : 'true'
+        }).then(() => {
+            userMutate();
+            toast({
+                title: 'Updated',
+                description: 'User Status Updated successfully',
+            });
+        }).catch((error) => {
+            console.error(error);
+            toast({
+                title: error.response.data.code,
+                description: error.response.data.message,
+            });
+        }).finally(() => {
+            setSelectedOrderId('');
+        });
+    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -192,50 +217,64 @@ export const Customer = () => {
                 }
             </div>
             <div className="col-span-1">
-                <Card className="rounded">
-                    <CardHeader>
-                        <CardTitle>Profile</CardTitle>
-                        <CardDescription>
-                            Used to identify your store in the marketplace.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-3">
-                        <Label htmlFor="userName">Profile Picture</Label>
-                        <div className={'w-[6rem] rounded-full h-[6rem] mx-auto border'}>
-                            <img src={userData?.profilePictureUrl}/>
-                        </div>
-                        <Label htmlFor="userName">Name</Label>
-                        <Input
-                            id="userName"
-                            type="text"
-                            className="w-full"
-                            placeholder="User Name"
-                            disabled={true}
-                            value={userData?.userName}
-                        />
+                {
+                    userIsLoading ? <div><ProfileCardLoader/></div>
+                        : <Card className="rounded">
+                            <CardHeader>
+                                <CardTitle>Profile</CardTitle>
+                                <CardDescription>
+                                    Used to identify your store in the marketplace.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col gap-3">
+                                <Label htmlFor="userName">Profile Picture</Label>
+                                <div className={'w-[6rem] rounded-full h-[6rem] mx-auto border'}>
+                                    <img src={userData?.profilePictureUrl}/>
+                                </div>
+                                <Label htmlFor="userName">Name</Label>
+                                <Input
+                                    id="userName"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="User Name"
+                                    disabled={true}
+                                    value={userData?.userName}
+                                />
 
-                        <Label htmlFor="phoneNumber">Phone</Label>
-                        <Input
-                            id="phoneNumber"
-                            type="text"
-                            className="w-full"
-                            placeholder="phone number"
-                            disabled={true}
-                            value={userData?.phoneNumber}
-                        />
+                                <Label htmlFor="phoneNumber">Phone</Label>
+                                <Input
+                                    id="phoneNumber"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="phone number"
+                                    disabled={true}
+                                    value={userData?.phoneNumber}
+                                />
 
-                        <Label htmlFor="address">Address</Label>
-                        <Input
-                            id="address"
-                            type="text"
-                            className="w-full"
-                            placeholder="address"
-                            disabled={true}
-                            value={userData?.address}
-                        />
+                                <Label htmlFor="address">Address</Label>
+                                <Input
+                                    id="address"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="address"
+                                    disabled={true}
+                                    value={userData?.address}
+                                />
+                            </CardContent>
+                            <CardFooter className="justify-end">
+                                <Button variant={userData?.deactivated === 'true' ? 'default' : 'destructive'}
+                                        onClick={() => setOpenDeactivateModal(true)}
+                                >
+                                    {
+                                        userData?.deactivated === 'true'
+                                            ? 'Activate'
+                                            : 'Deactivate'
+                                    }
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                }
 
-                    </CardContent>
-                </Card>
             </div>
             <Modal isOpen={openImageViewModal} onClose={() => {
                 setSelectedOrderId('');
@@ -251,6 +290,31 @@ export const Customer = () => {
                         />
                     </div>
                 }
+            </Modal>
+            <Modal isOpen={openDeactivateModal} onClose={() => {
+                setOpenDeactivateModal(false);
+            }} title={'Deactivate User'}>
+                <div>
+                    <div className="text-lg font-normal">Are you sure you want to delete this order?</div>
+                    <div className="flex gap-2 mt-4">
+                        <Button variant={'outline'} onClick={() => {
+
+                        }}>Cancel</Button>
+                        <Button
+                            variant={userData?.deactivated === 'true' ? 'default' : 'destructive'}
+                            onClick={async () => {
+                                await toggleUserDeactivationStatus();
+                                setSelectedOrderId('');
+                                setOpenDeactivateModal(false);
+                            }}>
+                            {
+                                userData?.deactivated === 'true'
+                                    ? 'Activate'
+                                    : 'Deactivate'
+                            }
+                        </Button>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

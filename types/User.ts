@@ -12,4 +12,5 @@ export type User = {
     gender?: 'male' | 'female' | 'other';
     age?: number;
     role: UserRole;
+    deactivated: 'true' | 'false'
 }

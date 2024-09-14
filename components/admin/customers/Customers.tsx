@@ -1,32 +1,33 @@
 'use client';
 
 import {Fragment, useState} from 'react';
-import {TableCell, TableHead, TableRow} from '@/components/ui/table';
-import {SimpleTable} from '@/components/SimpleTable';
-import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {User} from '@/types/User';
-import {Skeleton} from '@/components/ui/skeleton';
-import {UserRole} from '@/types/enum/UserRole';
-import {Eye, Search} from 'lucide-react';
-import {Input} from '@/components/ui/input';
-import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
 import Link from 'next/link';
+import {Eye, Search} from 'lucide-react';
+import {TableCell, TableHead, TableRow} from '@/components/ui/table';
+import {Tooltip, TooltipContent, TooltipTrigger} from '@/components/ui/tooltip';
+import {SimpleTable} from '@/components/SimpleTable';
+import {Skeleton} from '@/components/ui/skeleton';
+import {Input} from '@/components/ui/input';
+import {UserRole} from '@/types/enum/UserRole';
+import api from '@/lib/apiInstance';
+import {User} from '@/types/User';
+import {useRouter} from 'next/navigation';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export function Customers() {
     const [search, setSearch] = useState('');
+    const router = useRouter();
     const {data, isLoading} = useSWR<User[]>('users', fetcher, {revalidateOnFocus: false});
 
     const onSearch = () => {
         api.get(`/users/phone-number/${search}`).then((response) => {
-            console.log(response);
+            router.push(`/admin/customers/${response.data.id}`);
         }).catch((error) => {
             console.log(error);
-
         }).finally(() => {
-
+            setSearch('');
         });
     };
 

@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { Cookie } from '@/utils/Cookie';
+import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import {Cookie} from '@/utils/Cookie';
 
 interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
@@ -12,7 +12,7 @@ const api: ApiInstance = axios.create({
     headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        "ngrok-skip-browser-warning": "true",
+        'ngrok-skip-browser-warning': 'true',
     },
 });
 
@@ -31,10 +31,11 @@ api.interceptors.request.use(
 
 const refreshToken = async () => {
     try {
-        const response = await axios.post(`${backend_url}/api/refresh-token`, {
-            "refresh-token": Cookie.getRefreshToken(),
+        const response = await axios.post(`${backend_url}/api/auth/refresh-token`, {
+            'refreshToken': Cookie.getRefreshToken(),
         });
         Cookie.setToken(response.data.accessToken);
+        Cookie.setRefreshToken(response.data.refreshToken);
         return response.data.accessToken;
     } catch (error) {
         console.error('Failed to refresh token', error);
