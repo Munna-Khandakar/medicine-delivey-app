@@ -13,6 +13,7 @@ import Modal from '@/components/Modal';
 import OrderDetailsSLip from '@/components/admin/common/OrderDetailsSLip';
 import {useToast} from '@/components/ui/use-toast';
 import {useRouter} from 'next/navigation';
+import {Skeleton} from '@/components/ui/skeleton';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -54,6 +55,10 @@ export const OngoingOrders = () => {
         });
     };
 
+    if (isLoading) {
+        return <OngoingOrdersLoader/>;
+    }
+
     return (
         <Fragment>
             <Card>
@@ -61,7 +66,7 @@ export const OngoingOrders = () => {
                     Initiated Orders
                 </CardHeader>
                 <CardContent>
-                    <ul className="space-y-2 ">
+                    <ul className="space-y-2 max-h-[14rem] overflow-y-scroll">
                         {
                             data?.filter((order) => order.status === OrderStauts.INITIATED).map((order) => (
                                 <li key={order.id}
@@ -143,5 +148,36 @@ export const OngoingOrders = () => {
                 }
             </Modal>
         </Fragment>
+    );
+};
+
+const OngoingOrdersLoader = () => {
+    return (
+        <Card>
+            <CardHeader className="text-2xl font-semibold">
+                <Skeleton className="h-6 w-1/4"/>
+            </CardHeader>
+            <CardContent>
+                <ul className="space-y-2">
+                    {Array.from({length: 5}).map((_, index) => (
+                        <li key={index} className="hover:bg-slate-50 flex p-1 gap-2 justify-between rounded-md">
+                            <div>
+                                <Skeleton className="h-4 w-20"/>
+                                <Skeleton className="h-4 w-32 mt-1"/>
+                            </div>
+                            <div className="space-x-2 flex">
+                                <Skeleton className="h-8 w-8"/>
+                                <Skeleton className="h-8 w-8"/>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </CardContent>
+            <CardFooter>
+                <div className="flex justify-end">
+                    <Skeleton className="h-10 w-24"/>
+                </div>
+            </CardFooter>
+        </Card>
     );
 };
