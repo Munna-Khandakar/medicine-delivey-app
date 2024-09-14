@@ -201,7 +201,7 @@ export function Orders() {
                         <TableHead className="hidden md:table-cell">Items</TableHead>
                         <TableHead className="hidden md:table-cell">Delivery Charge</TableHead>
                         <TableHead>Total Cost</TableHead>
-                        <TableHead>Delivery Date</TableHead>
+                        {/*<TableHead>Delivery Date</TableHead>*/}
                         <TableHead>Prescription</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Actions</TableHead>
@@ -295,7 +295,7 @@ export function Orders() {
                                     </Tooltip>
                                 </TableCell>
                                 <TableCell>{order.totalAmount}</TableCell>
-                                <TableCell>{order.deliveryDate}</TableCell>
+                                {/*<TableCell>{order.deliveryDate}</TableCell>*/}
                                 <TableCell>
                                     {
                                         !order.prescriptionUrl
@@ -402,11 +402,14 @@ export function Orders() {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <DownloadPdfButton
-                                                url={'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'}
+                                                disabled={!order.receiptUrl}
+                                                url={order.receiptUrl}
                                             />
                                         </TooltipTrigger>
                                         <TooltipContent>{'Download Cash Memo'}</TooltipContent>
                                     </Tooltip>
+
+
                                 </TableCell>
                             </TableRow>
                         ))

@@ -11,7 +11,7 @@ import NoOrderImg from './no-order.svg';
 import Image from 'next/image';
 import {MedicineUtils} from '@/utils/MedicineUtils';
 import {Button} from '@/components/ui/button';
-import {ReceiptText, Trash, Truck} from 'lucide-react';
+import {Printer, ReceiptText, Trash, Truck} from 'lucide-react';
 import {OrderStauts} from '@/types/enum/OrderStauts';
 import Modal from '@/components/Modal';
 import {useToast} from '@/components/ui/use-toast';
@@ -82,7 +82,7 @@ export function Historys() {
                     {
                         data?.filter(order => order.status === OrderStauts.COMPLETED || order.status === OrderStauts.FAILED)?.length === 0
                             ?
-                            <div className="text-center text-muted-foreground">
+                            <div className="text-muted-foreground flex flex-col items-center justify-center">
                                 <Image src={NoOrderImg} alt={'no order'}/>
                                 <p>No orders so far</p>
                             </div>
@@ -164,11 +164,12 @@ export function Historys() {
                                                     <TooltipTrigger asChild>
                                                         <Link
                                                             className="p-1 rounded-md border"
-                                                            href={`/order/${order.id}`}>
-                                                            <ReceiptText/>
+                                                            target={'_blank'}
+                                                            href={order.receiptUrl}>
+                                                            <Printer/>
                                                         </Link>
                                                     </TooltipTrigger>
-                                                    <TooltipContent>{'See Receipt'}</TooltipContent>
+                                                    <TooltipContent>{'Cash Memo'}</TooltipContent>
                                                 </Tooltip>
                                             }
                                             {

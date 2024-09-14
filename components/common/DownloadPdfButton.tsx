@@ -4,16 +4,18 @@ import {Download} from 'lucide-react';
 
 type  DownloadPdfButtonProps = {
     url:string
+    disabled:boolean
 }
 
 export const DownloadPdfButton = (props:DownloadPdfButtonProps) => {
 
-    const {url} = props;
+    const {url, disabled} = props;
 
     return (
         <Button
             variant={'outline'} size={'icon'}
             aria-label={'Download Cash Memo'}
+            disabled={disabled}
             onClick={() => {
                 const pdfLink = url;
                 const link = document.createElement('a');

@@ -84,8 +84,7 @@ export function OrdersList() {
                     }
                     {
                         data?.filter(order => order.status !== OrderStauts.COMPLETED && order.status !== OrderStauts.FAILED)?.length === 0
-                            ?
-                            <div className="text-center text-muted-foreground">
+                            ? <div className="text-muted-foreground flex flex-col items-center justify-center">
                                 <Image src={NoOrderImg} alt={'no order'}/>
                                 <p>No orders found</p>
                             </div>
@@ -111,58 +110,58 @@ export function OrdersList() {
                                                     <p className="text-sm">{order.totalAmount} BDT</p>
                                                 </div>
                                             </div>
-                                            {
-                                                //order can be deleted only if it is in INITIATED state
-                                                order.status === OrderStauts.INITIATED
-                                                &&
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            size="icon" variant={'outline'}
-                                                            aria-label={'Delete Order'}
-                                                            onClick={() => {
-                                                                setSelectedOrderId(order.id);
-                                                                setOpenOrderDeleteModal(true);
-                                                            }}
-                                                        >
-                                                            <Trash/>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>{'Delete this order'}</TooltipContent>
-                                                </Tooltip>
-                                            }
-                                            {
-                                                order.status === OrderStauts.ACCEPTED &&
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            size="icon" variant={'outline'}
-                                                            aria-label={'can not delete order'}
-                                                        >
-                                                            <Trash color={'#808080'}/>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>{'Accepted order can not be deleted'}</TooltipContent>
-                                                </Tooltip>
-                                            }
-                                            {
-                                                order.status === OrderStauts.ON_THE_WAY
-                                                &&
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            role={'div'}
-                                                            size="icon" variant={'outline'}
-                                                            aria-label={'On the way'}
-                                                        >
-                                                            <Truck/>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>{'On the way'}</TooltipContent>
-                                                </Tooltip>
-                                            }
-                                            {
-                                                order.status === OrderStauts.COMPLETED &&
+                                            <div className="flex gap-2">
+
+                                                {
+                                                    //order can be deleted only if it is in INITIATED state
+                                                    order.status === OrderStauts.INITIATED
+                                                    &&
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                size="icon" variant={'outline'}
+                                                                aria-label={'Delete Order'}
+                                                                onClick={() => {
+                                                                    setSelectedOrderId(order.id);
+                                                                    setOpenOrderDeleteModal(true);
+                                                                }}
+                                                            >
+                                                                <Trash/>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>{'Delete this order'}</TooltipContent>
+                                                    </Tooltip>
+                                                }
+                                                {
+                                                    order.status === OrderStauts.ACCEPTED &&
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                size="icon" variant={'outline'}
+                                                                aria-label={'can not delete order'}
+                                                            >
+                                                                <Trash color={'#808080'}/>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>{'Accepted order can not be deleted'}</TooltipContent>
+                                                    </Tooltip>
+                                                }
+                                                {
+                                                    order.status === OrderStauts.ON_THE_WAY
+                                                    &&
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                role={'div'}
+                                                                size="icon" variant={'outline'}
+                                                                aria-label={'On the way'}
+                                                            >
+                                                                <Truck/>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>{'On the way'}</TooltipContent>
+                                                    </Tooltip>
+                                                }
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Link
@@ -171,24 +170,24 @@ export function OrdersList() {
                                                             <ReceiptText/>
                                                         </Link>
                                                     </TooltipTrigger>
-                                                    <TooltipContent>{'See Receipt'}</TooltipContent>
+                                                    <TooltipContent>{'Order Details'}</TooltipContent>
                                                 </Tooltip>
-                                            }
-                                            {
-                                                order.status === OrderStauts.FAILED &&
-                                                <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                        <Button
-                                                            role={'div'}
-                                                            size="icon" variant={'outline'}
-                                                            aria-label={'Order  Cancelled'}
-                                                        >
-                                                            <Truck/>
-                                                        </Button>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent>{'Order  Cancelled'}</TooltipContent>
-                                                </Tooltip>
-                                            }
+                                                {
+                                                    order.status === OrderStauts.FAILED &&
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                role={'div'}
+                                                                size="icon" variant={'outline'}
+                                                                aria-label={'Order  Cancelled'}
+                                                            >
+                                                                <Truck/>
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>{'Order  Cancelled'}</TooltipContent>
+                                                    </Tooltip>
+                                                }
+                                            </div>
                                         </div>
                                     ))
                                 }
