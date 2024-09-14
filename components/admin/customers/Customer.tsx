@@ -198,6 +198,7 @@ export const Customer = () => {
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <DownloadPdfButton
+                                                            disabled={!order.receiptUrl}
                                                             url={'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'}
                                                         />
                                                     </TooltipTrigger>

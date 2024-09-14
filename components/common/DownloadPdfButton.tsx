@@ -3,11 +3,11 @@ import {Download} from 'lucide-react';
 
 
 type  DownloadPdfButtonProps = {
-    url:string
-    disabled:boolean
+    url: string
+    disabled: boolean
 }
 
-export const DownloadPdfButton = (props:DownloadPdfButtonProps) => {
+export const DownloadPdfButton = (props: DownloadPdfButtonProps) => {
 
     const {url, disabled} = props;
 
@@ -20,6 +20,7 @@ export const DownloadPdfButton = (props:DownloadPdfButtonProps) => {
                 const pdfLink = url;
                 const link = document.createElement('a');
                 link.href = pdfLink;
+                link.target = '_blank';
                 link.download = 'CashMemo.pdf';
                 document.body.appendChild(link);
                 link.click();
