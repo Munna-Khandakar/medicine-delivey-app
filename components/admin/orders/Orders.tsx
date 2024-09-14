@@ -4,7 +4,7 @@ import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import {format} from 'date-fns';
 import {DateRange} from 'react-day-picker';
-import {Check, Download, Eye, PackageCheck, Truck, X} from 'lucide-react';
+import {Check, Eye, PackageCheck, Truck, X} from 'lucide-react';
 import {CalendarIcon} from '@radix-ui/react-icons';
 import {TableCell, TableHead, TableRow,} from '@/components/ui/table';
 import {SimpleTable} from '@/components/SimpleTable';
@@ -123,7 +123,10 @@ export function Orders() {
     };
 
     const updateSelectedDeliveyCharge = () => {
-        api.put(`orders/${selectedOrderId}`, {deliveryCharge: deliveryCharge}).then(() => {
+        api.post(`orders/update-delivery-charge`, {
+            orderId: selectedOrderId,
+            deliveryCharge: deliveryCharge
+        }).then(() => {
             toast({
                 title: 'Success',
                 description: 'Delivery Charge Updated',

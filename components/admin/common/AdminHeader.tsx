@@ -3,12 +3,13 @@
 import {Sheet, SheetContent, SheetTrigger} from '@/components/ui/sheet';
 import {Button} from '@/components/ui/button';
 import {useRouter} from 'next/navigation';
-import {Flag, Home, Package, PanelLeft, ShoppingCart, SquareMenu, Tag, Users} from 'lucide-react';
+import {CircleUserRound, Flag, Home, Package, PanelLeft, ShoppingCart, SquareMenu, Tag, Users} from 'lucide-react';
 import Link from 'next/link';
 import {Input} from '@/components/ui/input';
 import {
     DropdownMenu,
-    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger
@@ -19,15 +20,22 @@ import {
     CommandGroup,
     CommandInput,
     CommandItem,
-    CommandList,
+    CommandList
 } from '@/components/ui/command';
-import Image from 'next/image';
 import {GearIcon} from '@radix-ui/react-icons';
 import {useEffect, useState} from 'react';
+import useSWR from 'swr';
+import {User} from '@/types/User';
+import api from '@/lib/apiInstance';
+import {Cookie} from '@/utils/Cookie';
+
+const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const AdminHeader = () => {
 
     const [open, setOpen] = useState(false);
+    const [ownUserId, setOwnUserId] = useState<string | null>(null);
+    const {data} = useSWR<User>(ownUserId ? `users/${ownUserId}` : null, fetcher, {revalidateOnFocus: false});
     const router = useRouter();
 
     const NavItems = [
@@ -78,6 +86,12 @@ export const AdminHeader = () => {
         document.addEventListener('keydown', down);
         return () => document.removeEventListener('keydown', down);
     }, []);
+
+    useEffect(() => {
+        const id = Cookie.getMyUserId();
+        if (id) setOwnUserId(id);
+    }, []);
+
 
     return (
         <header
@@ -165,13 +179,12 @@ export const AdminHeader = () => {
                         size="icon"
                         className="overflow-hidden rounded-full"
                     >
-                        <Image
-                            src="/placeholder-user.jpg"
-                            width={36}
-                            height={36}
-                            alt="Avatar"
-                            className="overflow-hidden rounded-full"
-                        />
+                        {
+                            data?.profilePictureUrl
+                                ? <img src={data.profilePictureUrl} alt="profile"
+                                       className="w-[2rem] h-[2rem] object-cover rounded-full shadow border "/>
+                                : <CircleUserRound className="w-[26px]"/>
+                        }
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -186,6 +199,5 @@ export const AdminHeader = () => {
                 </DropdownMenuContent>
             </DropdownMenu>
         </header>
-
     );
 };
