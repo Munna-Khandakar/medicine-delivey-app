@@ -28,7 +28,7 @@ export function CirularChart(props: CirularChartProps) {
 
     const chartConfig = {
         visitors: {
-            label: 'Visitors',
+            label: label,
         },
         safari: {
             label: 'Safari',

@@ -209,7 +209,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="number"
                                     className="w-full"
                                     placeholder="BDT"
-                                    defaultValue={0.00}
+                                    step="0.01"
                                     {...register('discount')}
                                 />
                                 {

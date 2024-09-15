@@ -32,7 +32,6 @@ export const AnnouncementSettings = () => {
         register,
         control,
         handleSubmit,
-        setValue,
         reset,
         formState: {errors, isDirty},
     } = useForm<Announcement>();
@@ -86,6 +85,7 @@ export const AnnouncementSettings = () => {
                                         <Label htmlFor="enabled">Enabled</Label>
                                         <Switch
                                             id="enabled"
+                                            aria-label={'announcement enabled'}
                                             checked={value}
                                             onCheckedChange={onChange}
                                         />
@@ -97,6 +97,7 @@ export const AnnouncementSettings = () => {
                             <Label htmlFor="description">Description</Label>
                             <Textarea
                                 id="description"
+                                aria-label={'announcement description'}
                                 placeholder="title"
                                 {...register('description', {required: 'Please enter description'})}
                             />

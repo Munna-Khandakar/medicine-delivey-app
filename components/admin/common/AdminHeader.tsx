@@ -138,6 +138,7 @@ export const AdminHeader = () => {
             {/*</Breadcrumb>*/}
             <div className="relative ml-auto flex-1 md:grow-0">
                 <Input className="border w-[250px]"
+                       aria-label={'command'}
                        placeholder="Type a command or search..."
                        onFocus={() => setOpen(true)}
                 />

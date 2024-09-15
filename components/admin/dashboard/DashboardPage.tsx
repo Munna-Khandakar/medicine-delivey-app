@@ -23,22 +23,51 @@ export function DashboardPage() {
             className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div className="col-span-1">
                 <div className="grid grid-cols-1 gap-2">
-                    <CirularChart length={data?.totalUsers || 0} label="Total Users"/>
+                    {
+                        isLoading
+                            ? <CircularChartSkeleton/>
+                            : <CirularChart length={data?.totalUsers || 0} label="Total Users"/>
+                    }
                     <WeeklySales/>
                 </div>
             </div>
             <div className="col-span-1">
                 <div className="grid grid-cols-1 gap-2">
-                    <CirularChart length={data?.totalOrders || 0} label="Total Orders"/>
+                    {
+                        isLoading
+                            ? <CircularChartSkeleton/>
+                            : <CirularChart length={data?.totalOrders || 0} label="Total Orders"/>
+                    }
                     <OngoingOrders/>
                 </div>
             </div>
             <div className="col-span-1">
                 <div className="grid grid-cols-1 gap-2">
-                    <CirularChart length={data?.totalProducts || 0} label="Total Products"/>
+                    {
+                        isLoading
+                            ? <CircularChartSkeleton/>
+                            : <CirularChart length={data?.totalProducts || 0} label="Total Products"/>
+                    }
                     <AnnouncementSettings/>
                 </div>
             </div>
         </div>
+    );
+}
+
+import {Card, CardContent} from '@/components/ui/card';
+
+export function CircularChartSkeleton() {
+    return (
+        <Card className="flex flex-col">
+            <CardContent className="flex-1 pb-0">
+                <div className="mx-auto aspect-square max-h-[250px] flex items-center justify-center">
+                    <div className="animate-pulse">
+                        <div className="h-24 w-24 bg-gray-300 rounded-full"></div>
+                        <div className="mt-4 h-4 w-32 bg-gray-300 rounded"></div>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
     );
 }
