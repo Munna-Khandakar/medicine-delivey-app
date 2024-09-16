@@ -1,7 +1,6 @@
 'use client';
 import {Card, CardContent, CardFooter, CardHeader} from '@/components/ui/card';
 import {Fragment, useState} from 'react';
-import {DateRange} from 'react-day-picker';
 import useSWR from 'swr';
 import {OrderResponse} from '@/types/OrderResponse';
 import api from '@/lib/apiInstance';
@@ -21,10 +20,6 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export const OngoingOrders = () => {
 
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(new Date().setHours(0, 0, 0, 0)),
-        to: new Date(),
-    });
     const {toast} = useToast();
     const router = useRouter();
     const [selectedOrderId, setSelectedOrderId] = useState('');
@@ -35,7 +30,7 @@ export const OngoingOrders = () => {
         data,
         isLoading,
         mutate
-    } = useSWR<OrderResponse[]>(date ? `orders/within-date?startDate=${date?.from!.toISOString()}&endDate=${date.to?.toISOString()}` : null, fetcher, {revalidateOnFocus: false});
+    } = useSWR<OrderResponse[]>(`/orders/by-status?status=${OrderStauts.INITIATED}`, fetcher, {revalidateOnFocus: false});
 
     const acceptSelectedOrder = () => {
         api.post('/orders/update-status', {orderId: selectedOrderId, status: OrderStauts.ACCEPTED}).then(() => {
