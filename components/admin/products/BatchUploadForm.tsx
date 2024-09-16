@@ -23,6 +23,7 @@ export const BatchUploadForm = () => {
         setValue,
         getValues,
         reset,
+        watch,
         formState: {isDirty, isSubmitting}
     } = useForm<Input>({
         defaultValues: {
@@ -30,6 +31,7 @@ export const BatchUploadForm = () => {
         }
     });
 
+    console.log(watch());
 
     const onSubmit: SubmitHandler<Input> = (data) => {
         const url = '/products/bulk-create';
@@ -67,7 +69,13 @@ export const BatchUploadForm = () => {
                         placeholder={'Choose Your File'}
                         fileUrl={getValues('filePath')}
                         fileType={'file'}
-                        onUploadComplete={(url) => setValue('filePath', url)}
+                        onUploadComplete={(url) => {
+                            const prefix = 'https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/';
+                            if (url.includes(prefix)) {
+                                url = url.replace(prefix, '');
+                                setValue('filePath', url);
+                            }
+                        }}
                     />
                 </CardContent>
                 <CardFooter>
