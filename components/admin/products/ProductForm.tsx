@@ -1,31 +1,32 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import {useForm, SubmitHandler, Controller} from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import dynamic from 'next/dynamic';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-const ReactQuill = dynamic(() => import('react-quill'), {ssr: false});
-import {format} from 'date-fns';
-import {CalendarIcon} from '@radix-ui/react-icons';
-import {cn} from '@/lib/utils';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {Calendar} from '@/components/ui/calendar';
-import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {FileUploader} from '@/components/common/FileUploader';
-import {ErrorLabel} from '@/components/common/ErrorLabel';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import { format } from 'date-fns';
+import { CalendarIcon } from '@radix-ui/react-icons';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FileUploader } from '@/components/common/FileUploader';
+import { ErrorLabel } from '@/components/common/ErrorLabel';
 import api from '@/lib/apiInstance';
-import {useToast} from '@/components/ui/use-toast';
-import {Category} from '@/types/Category';
-import {ProductInput, ProductType} from '@/types/ProductType';
+import { useToast } from '@/components/ui/use-toast';
+import { Category } from '@/types/Category';
+import { ProductInput, ProductType } from '@/types/ProductType';
 import 'react-quill/dist/quill.snow.css';
-import {Brand} from '@/types/Brand';
-import {Country} from '@/types/Country';
+import { Brand } from '@/types/Brand';
+import { Country } from '@/types/Country';
+import { Textarea } from '@/components/ui/textarea';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
@@ -34,39 +35,17 @@ type ProductFormProps = {
 }
 
 export const ProductForm = (props: ProductFormProps) => {
-
-    const {product} = props;
+    const { product } = props;
     const [date, setDate] = useState<Date>();
+    const [isClient, setIsClient] = useState(false);
 
-    const {toast} = useToast();
+    const { toast } = useToast();
     const router = useRouter();
-    const {
-        data: categories,
-        error: categoriesError,
-        isLoading: categoriesLoading
-    } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
+    const { data: categories, error: categoriesError, isLoading: categoriesLoading } = useSWR<Category[]>('categories', fetcher, { revalidateOnFocus: false });
+    const { data: brands, error: brandsError, isLoading: brandsLoading } = useSWR<Brand[]>('brands', fetcher, { revalidateOnFocus: false });
+    const { data: countries, error: countriesError, isLoading: countriesLoading } = useSWR<Country[]>('countries', fetcher, { revalidateOnFocus: false });
 
-    const {
-        data: brands,
-        error: brandsError,
-        isLoading: brandsLoading
-    } = useSWR<Brand[]>('brands', fetcher, {revalidateOnFocus: false});
-
-    const {
-        data: countries,
-        error: countriesError,
-        isLoading: countriesLoading
-    } = useSWR<Country[]>('countries', fetcher, {revalidateOnFocus: false});
-
-    const {
-        register,
-        handleSubmit,
-        control,
-        setValue,
-        getValues,
-        reset,
-        formState: {errors, isDirty},
-    } = useForm<ProductInput>({
+    const { register, handleSubmit, control, setValue, getValues, reset, formState: { errors, isDirty } } = useForm<ProductInput>({
         defaultValues: {
             productName: '',
             description: '',
@@ -78,6 +57,8 @@ export const ProductForm = (props: ProductFormProps) => {
             brandId: '',
             countryId: '',
             composition: '',
+            howToUse: '',
+            ingredients: '',
         }
     });
 
@@ -114,22 +95,23 @@ export const ProductForm = (props: ProductFormProps) => {
             setValue('brandId', product.brand.id);
             setValue('countryId', product.country.id);
             setValue('composition', product.composition);
+            setValue('howToUse', product.howToUse);
+            setValue('ingredients', product.ingredients);
+            setDate(new Date(product.expires));
         }
-    }, [product, reset, setValue]);
+    }, [product, reset, setValue, setDate]);
 
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     return (
-        <form
-            className={cn('grid items-start gap-4 grid-cols-1 md:grid-cols-3')}
-            onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className={cn('grid items-start gap-4 grid-cols-1 md:grid-cols-3')} onSubmit={handleSubmit(onSubmit)}>
             <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
                 <Card>
                     <CardHeader>
                         <CardTitle>Product Details</CardTitle>
-                        <CardDescription>
-                            User will get these details in the product page
-                        </CardDescription>
+                        <CardDescription>User will get these details in the product page</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid gap-6">
@@ -140,11 +122,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="text"
                                     className="w-full"
                                     placeholder="medicine name"
-                                    {...register('productName', {required: 'Product name is required'})}
+                                    {...register('productName', { required: 'Product name is required' })}
                                 />
-                                {
-                                    errors?.productName && <ErrorLabel message={errors.productName.message!}/>
-                                }
+                                {errors?.productName && <ErrorLabel message={errors.productName.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="strength">Composition</Label>
@@ -155,28 +135,49 @@ export const ProductForm = (props: ProductFormProps) => {
                                     placeholder="composition"
                                     {...register('composition')}
                                 />
-                                {
-                                    errors?.composition && <ErrorLabel message={errors.composition.message!}/>
-                                }
+                                {errors?.composition && <ErrorLabel message={errors.composition.message!} />}
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="ingredients">Ingredients</Label>
+                                <Input
+                                    id="ingredients"
+                                    type="text"
+                                    className="w-full"
+                                    placeholder="ingredients"
+                                    {...register('ingredients')}
+                                />
+                                {errors?.ingredients && <ErrorLabel message={errors.ingredients.message!} />}
+                            </div>
+                            <div className="grid gap-3">
+                                <Label htmlFor="howToUse">How To Use</Label>
+                                <Textarea
+                                    id="howToUse"
+                                    className="w-full"
+                                    placeholder="howToUse"
+                                    {...register('howToUse')}
+                                />
+                                {errors?.howToUse && <ErrorLabel message={errors.howToUse.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="description">Description</Label>
                                 <div className="">
-                                    <Controller
-                                        name="description"
-                                        control={control}
-                                        render={({field: {value, onChange}}) => (
-                                            <ReactQuill
-                                                value={value}
-                                                onChange={onChange}
-                                                placeholder="medicine the descriptions"
-                                                style={{
-                                                    maxHeight: '200px',
-                                                    overflowY: 'auto',
-                                                }}
-                                            />
-                                        )}
-                                    />
+                                    {isClient && (
+                                        <Controller
+                                            name="description"
+                                            control={control}
+                                            render={({ field: { value, onChange } }) => (
+                                                <ReactQuill
+                                                    value={value}
+                                                    onChange={onChange}
+                                                    placeholder="medicine the descriptions"
+                                                    style={{
+                                                        maxHeight: '200px',
+                                                        overflowY: 'auto',
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -196,11 +197,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                     step="0.01"
                                     className="w-full"
                                     placeholder="BDT"
-                                    {...register('price', {required: 'Please enter the price'})}
+                                    {...register('price', { required: 'Please enter the price' })}
                                 />
-                                {
-                                    errors?.price && <ErrorLabel message={errors.price.message!}/>
-                                }
+                                {errors?.price && <ErrorLabel message={errors.price.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="discount">Discount (BDT)</Label>
@@ -212,9 +211,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                     step="0.01"
                                     {...register('discount')}
                                 />
-                                {
-                                    errors?.discount && <ErrorLabel message={errors.discount.message!}/>
-                                }
+                                {errors?.discount && <ErrorLabel message={errors.discount.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="discount">Available in Stock</Label>
@@ -223,11 +220,9 @@ export const ProductForm = (props: ProductFormProps) => {
                                     type="number"
                                     className="w-full"
                                     placeholder=""
-                                    {...register('stock', {required: 'Please enter the stock amount'})}
+                                    {...register('stock', { required: 'Please enter the stock amount' })}
                                 />
-                                {
-                                    errors?.stock && <ErrorLabel message={errors.stock.message!}/>
-                                }
+                                {errors?.stock && <ErrorLabel message={errors.stock.message!} />}
                             </div>
                         </div>
                     </CardContent>
@@ -240,19 +235,14 @@ export const ProductForm = (props: ProductFormProps) => {
                         <div className="grid gap-6 sm:grid-cols-3">
                             <div className="grid gap-3">
                                 <Label htmlFor="categoryId">Category</Label>
-                                {
-                                    categoriesLoading && <p>Loading...</p>
-                                }
-                                {
-                                    categoriesError && <p>Error...</p>
-                                }
-                                {
-                                    categories &&
+                                {categoriesLoading && <p>Loading...</p>}
+                                {categoriesError && <p>Error...</p>}
+                                {categories && (
                                     <Controller
                                         name="categoryId"
                                         control={control}
-                                        rules={{required: 'Please select a category'}}
-                                        render={({field: {value, onChange}}) => {
+                                        rules={{ required: 'Please select a category' }}
+                                        render={({ field: { value, onChange } }) => {
                                             const selectedCategory = categories.find(category => category.id === value);
                                             return (
                                                 <Select onValueChange={onChange} value={value}>
@@ -270,26 +260,19 @@ export const ProductForm = (props: ProductFormProps) => {
                                             );
                                         }}
                                     />
-                                }
-                                {
-                                    errors?.categoryId && <ErrorLabel message={errors.categoryId.message!}/>
-                                }
+                                )}
+                                {errors?.categoryId && <ErrorLabel message={errors.categoryId.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="countryOfOrigin">Country</Label>
-                                {
-                                    countriesLoading && <p>Loading...</p>
-                                }
-                                {
-                                    countriesError && <p>Error...</p>
-                                }
-                                {
-                                    countries &&
+                                {countriesLoading && <p>Loading...</p>}
+                                {countriesError && <p>Error...</p>}
+                                {countries && (
                                     <Controller
                                         name="countryId"
                                         control={control}
-                                        rules={{required: 'Please select a country'}}
-                                        render={({field: {value, onChange}}) => {
+                                        rules={{ required: 'Please select a country' }}
+                                        render={({ field: { value, onChange } }) => {
                                             const selectedCountry = countries.find(country => country.id === value);
                                             return (
                                                 <Select onValueChange={onChange} value={value}>
@@ -297,39 +280,29 @@ export const ProductForm = (props: ProductFormProps) => {
                                                         <SelectValue>{selectedCountry ? selectedCountry.countryName : 'Select Country'}</SelectValue>
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {
-                                                            countries.map((country) => (
-                                                                <SelectItem key={country.id}
-                                                                            value={country.id}>
-                                                                    {country.countryName}
-                                                                </SelectItem>
-                                                            ))
-                                                        }
+                                                        {countries.map((country) => (
+                                                            <SelectItem key={country.id} value={country.id}>
+                                                                {country.countryName}
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                             );
                                         }}
                                     />
-                                }
-                                {
-                                    errors?.countryId && <ErrorLabel message={errors.countryId.message!}/>
-                                }
+                                )}
+                                {errors?.countryId && <ErrorLabel message={errors.countryId.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="brand">Brand</Label>
-                                {
-                                    brandsLoading && <p>Loading...</p>
-                                }
-                                {
-                                    brandsError && <p>Error...</p>
-                                }
-                                {
-                                    brands &&
+                                {brandsLoading && <p>Loading...</p>}
+                                {brandsError && <p>Error...</p>}
+                                {brands && (
                                     <Controller
                                         name="brandId"
                                         control={control}
-                                        rules={{required: 'Please select a brand'}}
-                                        render={({field: {value, onChange}}) => {
+                                        rules={{ required: 'Please select a brand' }}
+                                        render={({ field: { value, onChange } }) => {
                                             const selectedBrand = brands.find(brand => brand.id === value);
                                             return (
                                                 <Select onValueChange={onChange} value={value}>
@@ -337,22 +310,16 @@ export const ProductForm = (props: ProductFormProps) => {
                                                         <SelectValue>{selectedBrand ? selectedBrand.brandName : 'Select Brand'}</SelectValue>
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {
-                                                            brands.map((brand) => (
-                                                                <SelectItem key={brand.id}
-                                                                            value={brand.id}>{brand.brandName}
-                                                                </SelectItem>
-                                                            ))
-                                                        }
+                                                        {brands.map((brand) => (
+                                                            <SelectItem key={brand.id} value={brand.id}>{brand.brandName}</SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
                                             );
                                         }}
                                     />
-                                }
-                                {
-                                    errors?.brandId && <ErrorLabel message={errors.brandId.message!}/>
-                                }
+                                )}
+                                {errors?.brandId && <ErrorLabel message={errors.brandId.message!} />}
                             </div>
                             <div className="grid gap-3">
                                 <Label htmlFor="subcategory">Expires In (Date)</Label>
@@ -365,7 +332,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                                 !date && 'text-muted-foreground'
                                             )}
                                         >
-                                            <CalendarIcon className="mr-2 h-4 w-4"/>
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
                                             {date ? format(date, 'PPP') : <span>Pick a date</span>}
                                         </Button>
                                     </PopoverTrigger>
@@ -373,8 +340,8 @@ export const ProductForm = (props: ProductFormProps) => {
                                         <Controller
                                             name="expires"
                                             control={control}
-                                            rules={{required: 'Expiry date is required'}}
-                                            render={({field: {onChange}}) => (
+                                            rules={{ required: 'Expiry date is required' }}
+                                            render={({ field: { onChange } }) => (
                                                 <Calendar
                                                     mode="single"
                                                     selected={date}
@@ -388,9 +355,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                         />
                                     </PopoverContent>
                                 </Popover>
-                                {
-                                    errors?.expires && <ErrorLabel message={errors.expires.message!}/>
-                                }
+                                {errors?.expires && <ErrorLabel message={errors.expires.message!} />}
                             </div>
                         </div>
                     </CardContent>
@@ -400,16 +365,14 @@ export const ProductForm = (props: ProductFormProps) => {
                 <Card className="overflow-hidden">
                     <CardHeader>
                         <CardTitle>Product Image</CardTitle>
-                        <CardDescription>
-                            Upload image of the product
-                        </CardDescription>
+                        <CardDescription>Upload image of the product</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid gap-2 mb-2">
                             <Controller
                                 name="imageUrl"
                                 control={control}
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FileUploader
                                         onUploadComplete={(url) => {
                                             field.onChange(url);
@@ -420,9 +383,7 @@ export const ProductForm = (props: ProductFormProps) => {
                                 )}
                             />
                         </div>
-                        {
-                            errors?.imageUrl && <ErrorLabel message={errors.imageUrl.message!}/>
-                        }
+                        {errors?.imageUrl && <ErrorLabel message={errors.imageUrl.message!} />}
                     </CardContent>
                 </Card>
                 <Button

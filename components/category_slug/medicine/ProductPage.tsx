@@ -84,6 +84,24 @@ export const ProductPage = (props: ProductPageProps) => {
             </div>
             <div>
                 {
+                    data?.ingredients &&
+                    <Fragment>
+                        <SectionLabel label={'Ingredients'}/>
+                        <div
+                            className="ql-editor"
+                            dangerouslySetInnerHTML={{__html: data.ingredients}}/>
+                    </Fragment>
+                }
+                {
+                    data?.howToUse &&
+                    <Fragment>
+                        <SectionLabel label={'How To Use'}/>
+                        <div
+                            className="ql-editor"
+                            dangerouslySetInnerHTML={{__html: data.howToUse}}/>
+                    </Fragment>
+                }
+                {
                     data?.description &&
                     <Fragment>
                         <SectionLabel label={'Description'}/>
