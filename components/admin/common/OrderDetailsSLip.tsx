@@ -54,7 +54,7 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                                             <li key={item.productId} className="flex items-center justify-between">
                                         <span
                                             className="text-muted-foreground">{item?.productName} x <span>{item.quantity}</span></span>
-                                                <span>৳{item.unitPrice}</span>
+                                                <span>৳{item.unitPrice.toFixed(2)}</span>
                                             </li>
                                         );
                                     })
@@ -64,19 +64,19 @@ export default function OrderDetailsSLip(props: OrderDetailsSLipProps) {
                             <ul className="grid gap-3">
                                 <li className="flex items-center justify-between">
                                     <span className="text-muted-foreground">Subtotal</span>
-                                    <span>৳{calculateSubTotal()}</span>
+                                    <span>৳{calculateSubTotal()?.toFixed(2)}</span>
                                 </li>
                                 <li className="flex items-center justify-between">
                                     <span className="text-muted-foreground">Shipping</span>
                                     <span>৳{order.deliveryCharge}</span>
                                 </li>
-                                <li className="flex items-center justify-between">
-                                    <span className="text-muted-foreground">Vat</span>
-                                    <span>৳0.00</span>
-                                </li>
+                                {/*<li className="flex items-center justify-between">*/}
+                                {/*    <span className="text-muted-foreground">Vat</span>*/}
+                                {/*    <span>৳0.00</span>*/}
+                                {/*</li>*/}
                                 <li className="flex items-center justify-between font-semibold">
                                     <span className="text-muted-foreground">Total</span>
-                                    <span>৳{order.totalAmount + order.deliveryCharge}</span>
+                                    <span>৳{(order.totalAmount + order.deliveryCharge).toFixed(2)}</span>
                                 </li>
                             </ul>
                         </div>

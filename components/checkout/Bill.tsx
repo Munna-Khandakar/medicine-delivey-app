@@ -84,7 +84,7 @@ export default function Bill(props: BillProps) {
                                     <li key={item.id} className="flex items-center justify-between">
                                         <span
                                             className="text-muted-foreground">{product?.productName} x <span>{item.quantity}</span></span>
-                                        <span>৳{discountedPrice}</span>
+                                        <span>৳{discountedPrice.toFixed(2)}</span>
                                     </li>
                                 );
                             })
@@ -94,19 +94,19 @@ export default function Bill(props: BillProps) {
                     <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Subtotal</span>
-                            <span>৳{calculateSubTotal()}</span>
+                            <span>৳{calculateSubTotal().toFixed(2)}</span>
                         </li>
                         <li className="flex items-center justify-between">
                             <span className="text-muted-foreground">Shipping</span>
                             <span>৳{deliveyType.rate}</span>
                         </li>
-                        <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Vat</span>
-                            <span>৳0.00</span>
-                        </li>
+                        {/*<li className="flex items-center justify-between">*/}
+                        {/*    <span className="text-muted-foreground">Vat</span>*/}
+                        {/*    <span>৳0.00</span>*/}
+                        {/*</li>*/}
                         <li className="flex items-center justify-between font-semibold">
                             <span className="text-muted-foreground">Total</span>
-                            <span>৳{calculateTotal()}</span>
+                            <span>৳{calculateTotal().toFixed(2)}</span>
                         </li>
                     </ul>
                 </div>

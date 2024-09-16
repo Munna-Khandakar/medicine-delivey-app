@@ -33,6 +33,10 @@ export function Products() {
         mutate
     } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
+    const {
+        data:paginatedProducts,
+    } = useSWR<ProductType[]>('products/paginated?page=3&size=5', fetcher, {revalidateOnFocus: false});
+
     const deleteProduct = async () => {
         api.delete(`products/${selectedProductToDelete}`)
             .then(() => {

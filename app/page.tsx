@@ -15,16 +15,17 @@ export default function Home() {
         <main className="flex flex-col space-y-6 md:space-y-16">
             <Searchbar/>
             <CategorySection/>
-
             <Promo/>
             <OrderWithPrescription/>
             <NewLaunchSection/>
             <TrendingNearYouSection/>
             <SelfAdvertisement/>
             <DealsOfTheDay/>
-            <VideoPlayer
-                videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725699442600_V1.mp4"
-            />
+            <section className="container mx-auto">
+                <VideoPlayer
+                    videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725699442600_V1.mp4"
+                />
+            </section>
             <HealthArticles/>
             <WhyChooseUs/>
         </main>

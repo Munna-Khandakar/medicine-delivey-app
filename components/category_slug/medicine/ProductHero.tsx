@@ -74,7 +74,7 @@ export const ProductHero = (props: ProductHeroProps) => {
                                         </Badge>
                                         <br/>
                                         <span
-                                            className="font-bold text-slate-900">৳{product?.price - product?.discount}</span>
+                                            className="font-bold text-slate-900">৳{(product?.price - product?.discount).toFixed(2)}</span>
                                     </Fragment>
                                     : null
                             }
@@ -87,7 +87,7 @@ export const ProductHero = (props: ProductHeroProps) => {
                     </div>
                     {
                         quantity &&
-                        <p className="text-xs text-slate-500">{`Price of ${quantity} piece is ৳${quantity * (product?.price - product?.discount)}`}</p>
+                        <p className="text-xs text-slate-500">{`Price of ${quantity} piece is ৳${(quantity * (product?.price - product?.discount)).toFixed(2)}`}</p>
                     }
                     <p className="text-xs text-slate-500">Inclusive of all taxes</p>
                 </div>
