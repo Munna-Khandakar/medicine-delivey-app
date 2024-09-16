@@ -15,9 +15,7 @@ export default function Home() {
         <main className="flex flex-col space-y-6 md:space-y-16">
             <Searchbar/>
             <CategorySection/>
-            <VideoPlayer
-                videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725700369279_V2.mp4"
-            />
+
             <Promo/>
             <OrderWithPrescription/>
             <NewLaunchSection/>

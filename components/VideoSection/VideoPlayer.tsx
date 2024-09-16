@@ -5,10 +5,11 @@ import ReactPlayer from 'react-player';
 
 type VideoPlayerProps = {
     videoSrc: string;
+    height?:string
 }
 
 export const VideoPlayer = (props: VideoPlayerProps) => {
-    const { videoSrc } = props;
+    const { videoSrc, height } = props;
     const [screenSize, setScreenSize] = useState({ width: 0, height: 0 });
 
     const updateScreenSize = () => {
@@ -31,7 +32,7 @@ export const VideoPlayer = (props: VideoPlayerProps) => {
         <section>
             <ReactPlayer
                 width="100%"
-                height={playerHeight}
+                height={height || playerHeight}
                 url={videoSrc}
                 controls={true}
                 light={false}
