@@ -3,10 +3,11 @@ import {SectionLabel} from '@/components/SectionLabel';
 import {ProductCard} from '@/components/medicine/ProductCard';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductType} from '@/types/ProductType';
+import {PaginatedProduct} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {SeeMoreProducts} from '@/components/common/SeeMoreProducts';
 
 const SECTION_LABEL = 'New Launches';
 const SUB_LABEL = 'New wellness range just for you!';
@@ -19,7 +20,7 @@ export const NewLaunchSection = () => {
         data,
         error,
         isLoading,
-    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+    } = useSWR<PaginatedProduct>('products/paginated?page=1&size=10', fetcher, {revalidateOnFocus: false});
 
 
     return (
@@ -45,12 +46,15 @@ export const NewLaunchSection = () => {
                     </Alert>
                 }
                 {
-                    data?.map((medicine, index) => (
+                    data?.content.map((medicine, index) => (
                         <ProductCard
                             key={index}
                             product={medicine}
                         />
                     ))
+                }
+                {
+                    data && data.content.length > 8 && <SeeMoreProducts/>
                 }
             </div>
         </section>

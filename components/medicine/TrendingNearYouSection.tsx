@@ -4,10 +4,11 @@ import {SectionLabel} from '@/components/SectionLabel';
 import {ProductCard} from '@/components/medicine/ProductCard';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
-import {ProductType} from '@/types/ProductType';
+import {PaginatedProduct} from '@/types/ProductType';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 import {Skeleton} from '@/components/ui/skeleton';
+import {SeeMoreProducts} from '@/components/common/SeeMoreProducts';
 
 const SECTION_LABEL = 'Trending Near You';
 const SUB_LABEL = 'Popular in your city';
@@ -20,7 +21,7 @@ export const TrendingNearYouSection = () => {
         data,
         error,
         isLoading,
-    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+    } = useSWR<PaginatedProduct>('products/paginated?page=2&size=10', fetcher, {revalidateOnFocus: false});
 
     return (
         <section className="container mx-auto">
@@ -45,12 +46,15 @@ export const TrendingNearYouSection = () => {
                     </Alert>
                 }
                 {
-                    data?.map((medicine, index) => (
+                    data?.content.map((medicine, index) => (
                         <ProductCard
                             key={index}
                             product={medicine}
                         />
                     ))
+                }
+                {
+                    data && data.content.length > 8 && <SeeMoreProducts/>
                 }
             </div>
         </section>

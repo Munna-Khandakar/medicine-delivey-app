@@ -37,3 +37,11 @@ export type ProductInput = {
     coupons: string[];
     composition: string;
 }
+
+export type PaginatedProduct = {
+    content: ProductType[];
+    totalPages: number;
+    totalElements: number;
+    size: number;
+    currentPage: number;
+}
