@@ -3,7 +3,18 @@
 import {Sheet, SheetContent, SheetTrigger} from '@/components/ui/sheet';
 import {Button} from '@/components/ui/button';
 import {useRouter} from 'next/navigation';
-import {CircleUserRound, Flag, Home, Package, PanelLeft, ShoppingCart, SquareMenu, Tag, Users} from 'lucide-react';
+import {
+    CircleUserRound,
+    Flag,
+    Home,
+    Package,
+    PanelLeft,
+    Settings,
+    ShoppingCart,
+    SquareMenu,
+    Tag,
+    Users
+} from 'lucide-react';
 import Link from 'next/link';
 import {Input} from '@/components/ui/input';
 import {
@@ -74,6 +85,11 @@ export const AdminHeader = () => {
             label: 'Brands',
             href: '/admin/brands',
         },
+        {
+            icon: Settings,
+            label: 'Settings',
+            href: '/admin/settings'
+        }
     ];
 
     useEffect(() => {

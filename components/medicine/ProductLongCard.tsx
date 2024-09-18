@@ -48,7 +48,7 @@ export function ProductLongCard(props: ProductLongCardProps) {
                                     </Badge>
                                     <br/>
                                     <span
-                                        className="font-bold text-slate-900">৳{product.price - product.discount}</span>
+                                        className="font-bold text-slate-900">৳{(product.price - product.discount).toFixed(2)}</span>
                                 </Fragment>
                                 : null
                         }

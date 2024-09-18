@@ -8,6 +8,7 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {ProductLongCard} from '@/components/medicine/ProductLongCard';
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 import {useRouter, useSearchParams} from 'next/navigation';
+import {Button} from '@/components/ui/button';
 
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
@@ -16,13 +17,12 @@ export const Products = () => {
 
     const searchParams = useSearchParams();
     const router = useRouter();
-    const page = searchParams.get('page') || 0;
+    const page = searchParams.get('page') || '0';
     const size = searchParams.get('size') || '10';
     const sortDirection = searchParams.get('sortDirection') || 'ASC';
 
     const {
         data,
-        error,
         isLoading,
     } = useSWR<PaginatedProduct>(`products/paginated?page=${page}&size=${size}&sortDirection=${sortDirection}`, fetcher, {revalidateOnFocus: false});
 
@@ -85,6 +85,15 @@ export const Products = () => {
                 <ProductLongCard product={medicine} key={index}/>
             ))}
         </div>
-    </section>
-        ;
+        <div className="flex justify-between items-center mt-4">
+            <Button variant={'secondary'} size={'sm'}
+                    disabled={parseInt(page) === 0}
+                    onClick={() => router.push(`?page=${parseInt(page) - 1}&size=${size}&sortDirection=${sortDirection}`)}
+            >Previous</Button>
+            <Button variant={'default'} size={'sm'}
+                    disabled={data ? parseInt(page) === data?.totalPages - 1 : true}
+                    onClick={() => router.push(`?page=${parseInt(page) + 1}&size=${size}&sortDirection=${sortDirection}`)}
+            >Next</Button>
+        </div>
+    </section>;
 };
