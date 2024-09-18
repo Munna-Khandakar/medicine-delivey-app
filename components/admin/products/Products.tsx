@@ -3,14 +3,14 @@
 import {Fragment, useState} from 'react';
 import useSWR from 'swr';
 import {Pencil, PlusCircle, Trash, File, Search} from 'lucide-react';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import Link from 'next/link';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {TableCell, TableHead, TableRow} from '@/components/ui/table';
 import {SimpleTable} from '@/components/SimpleTable';
 import api from '@/lib/apiInstance';
-import {ProductType} from '@/types/ProductType';
+import {PaginatedProduct, ProductType} from '@/types/ProductType';
 import {useToast} from '@/components/ui/use-toast';
 import Modal from '@/components/Modal';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -27,15 +27,17 @@ export function Products() {
     const [selectedProductToDelete, setSelectedProductToDelete] = useState('');
     const [search, setSearch] = useState('');
     const [searchedResults, setSearchedResults] = useState<ProductType[]>([]);
+
+    const searchParams = useSearchParams();
+    const page = searchParams.get('page') || '0';
+    const size = searchParams.get('size') || '10';
+    const sortDirection = searchParams.get('sortDirection') || 'ASC';
+
     const {
         data,
         isLoading,
-        mutate
-    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
-
-    const {
-        data:paginatedProducts,
-    } = useSWR<ProductType[]>('products/paginated?page=3&size=5', fetcher, {revalidateOnFocus: false});
+        mutate,
+    } = useSWR<PaginatedProduct>(`products/paginated?page=${page}&size=${size}&sortDirection=${sortDirection}`, fetcher, {revalidateOnFocus: false});
 
     const deleteProduct = async () => {
         api.delete(`products/${selectedProductToDelete}`)
@@ -241,7 +243,7 @@ export function Products() {
                                     </Tooltip>
                                 </TableCell>
                             </TableRow>
-                        )) : data?.map((product) => (
+                        )) : data?.content.map((product) => (
                             <TableRow key={product.productId} className={`${product.stock < 10 && 'bg-red-50'}`}>
                                 <TableCell className="hidden sm:table-cell">
                                     <img
