@@ -18,11 +18,6 @@ export const WeeklySales = () => {
         <Card x-chunk="charts-01-chunk-0">
             <CardHeader className="space-y-0 pb-2">
                 <CardDescription>Sales of the week</CardDescription>
-                <CardTitle className="text-4xl tabular-nums">
-                    12,584{' '}
-                    <span
-                        className="font-sans text-sm font-normal tracking-normal text-muted-foreground">Taka</span>
-                </CardTitle>
             </CardHeader>
             <CardContent>
 
@@ -45,7 +40,7 @@ export const WeeklySales = () => {
                                     right: -4,
                                 }}
                                 data={[
-                                    ...data
+                                    ...data,
                                 ]}
                             >
                                 <Bar
@@ -107,17 +102,6 @@ export const WeeklySales = () => {
                         </ChartContainer>
                 }
             </CardContent>
-            <CardFooter className="flex-col items-start gap-1">
-                <CardDescription>
-                    Over the past 7 days, you have walked{' '}
-                    <span className="font-medium text-foreground">53,305</span> steps.
-                </CardDescription>
-                <CardDescription>
-                    You need{' '}
-                    <span className="font-medium text-foreground">12,584</span> more
-                    steps to reach your goal.
-                </CardDescription>
-            </CardFooter>
         </Card>
     );
 };

@@ -1,5 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import useSWR from 'swr';
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
@@ -17,16 +16,8 @@ const fetcher = (url: string) => api.get(url).then((res) => res.data);
 export const SearchPage = () => {
     const searchParams = useSearchParams();
     const query = searchParams.get('name');
-    const [products, setProducts] = useState<ProductType[]>([]);
 
-    const { data, error, isLoading } = useSWR<ProductType[]>('products', fetcher, { revalidateOnFocus: false });
-
-    useEffect(() => {
-        if (data && query) {
-            const filteredData = data.filter((product) => product.productName.toLowerCase().includes(query.toLowerCase()));
-            setProducts(filteredData);
-        }
-    }, [data, query]);
+    const { data, error, isLoading } = useSWR<ProductType[]>(`/products/name/${query}`, fetcher, { revalidateOnFocus: false });
 
     return (
         <section className="container mx-auto min-h-screen">
@@ -48,10 +39,10 @@ export const SearchPage = () => {
                         </AlertDescription>
                     </Alert>
                 )}
-                {products.map((medicine, index) => (
+                {data?.map((medicine, index) => (
                     <ProductCard key={index} product={medicine} />
                 ))}
-                {products.length === 0 && !isLoading && !error && (
+                {data?.length === 0 && !isLoading && !error && (
                     <Alert>
                         <ExclamationTriangleIcon className="h-4 w-4" />
                         <AlertTitle>No results found</AlertTitle>

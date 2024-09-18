@@ -1,6 +1,7 @@
 import {Brand} from '@/types/Brand';
 import {Category} from '@/types/Category';
 import {Country} from '@/types/Country';
+import {Pagination} from '@/types/Pagination';
 
 export type ProductType = {
     category: Category
@@ -38,10 +39,6 @@ export type ProductInput = {
     composition: string;
 }
 
-export type PaginatedProduct = {
+export interface PaginatedProduct extends Pagination {
     content: ProductType[];
-    totalPages: number;
-    totalElements: number;
-    size: number;
-    currentPage: number;
 }

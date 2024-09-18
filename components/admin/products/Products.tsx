@@ -80,6 +80,12 @@ export function Products() {
             <SimpleTable
                 title={'Products'}
                 subTitle={'Manage your products and view their sales performance.'}
+                pagination={{
+                    totalPages: data?.totalPages || 0,
+                    totalElements: data?.totalElements || 0,
+                    size: data?.size || 0,
+                    currentPage: data?.currentPage || 0,
+                }}
                 actionItems={
                     <div className="flex justify-end items-center pb-2 w-full gap-2">
                         <div className="relative">
