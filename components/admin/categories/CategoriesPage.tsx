@@ -67,7 +67,7 @@ export const CategoriesPage = () => {
         });
     };
 
-    const deleteCountry = () => {
+    const deleteCategory = () => {
         if (selectedCategory) {
             api.delete(`/categories/${selectedCategory.id}`).then(() => {
                 mutate().then(() => {
@@ -297,18 +297,18 @@ export const CategoriesPage = () => {
             <Modal isOpen={openCategoryDeleteModal} onClose={() => {
                 setSelectedCategory(null);
                 setOpenCategoryDeleteModal(false);
-            }} title={'Delete Country'}>
+            }} title={'Delete Category'}>
                 {
                     selectedCategory
                     && <div>
-                        <div className="text-lg font-normal">Are you sure you want to cancel this country?</div>
+                        <div className="text-lg font-normal">Are you sure you want to cancel this category?</div>
                         <div className="flex gap-2 mt-4">
                             <Button variant={'outline'} onClick={() => {
                                 setOpenCategoryDeleteModal(false);
                             }}>No</Button>
                             <Button onClick={() => {
                                 setOpenCategoryDeleteModal(false);
-                                deleteCountry();
+                                deleteCategory();
                             }}>
                                 Yes</Button>
                         </div>

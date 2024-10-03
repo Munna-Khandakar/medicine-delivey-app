@@ -99,13 +99,13 @@ export const Footer = () => {
 
                     <ul className="mt-6 space-y-5">
                         <li>
-                            <a href="#" className="text-gray-800 hover:text-gray-600 text-sm">Order Medicine</a>
+                            <a href="/" className="text-gray-800 hover:text-gray-600 text-sm">Order Medicine</a>
                         </li>
                         <li>
-                            <a href="#" className="text-gray-800 hover:text-gray-600 text-sm">Healthcare Products</a>
+                            <a href="/" className="text-gray-800 hover:text-gray-600 text-sm">Healthcare Products</a>
                         </li>
                         <li>
-                            <a href="#" className="text-gray-800 hover:text-gray-600 text-sm">Support</a>
+                            <a href="/" className="text-gray-800 hover:text-gray-600 text-sm">Support</a>
                         </li>
                     </ul>
                 </div>
