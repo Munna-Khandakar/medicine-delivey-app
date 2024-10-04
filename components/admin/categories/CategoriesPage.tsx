@@ -208,7 +208,7 @@ export const CategoriesPage = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Accept this category'}
+                                                    aria-label={'Edit this category'}
                                                     onClick={() => {
                                                         setSelectedCategory(category);
                                                         setOpenCategoryFormModal(true);
@@ -221,7 +221,7 @@ export const CategoriesPage = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <Button variant={'outline'} size={'icon'}
-                                                    aria-label={'Cancel this category'}
+                                                    aria-label={'Delete this category'}
                                                     className="ml-1"
                                                     disabled={category.totalProductCount > 0}
                                                     onClick={() => {
