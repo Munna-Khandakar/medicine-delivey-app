@@ -45,7 +45,7 @@ export function Products() {
                 mutate();
                 toast({
                     title: 'Delete Successfully',
-                    description: 'This category is deleted Successfully.',
+                    description: 'This Product is deleted Successfully.',
                 });
             })
             .catch((error) => {
@@ -58,7 +58,15 @@ export function Products() {
 
     const onSearch = () => {
         api.get(`/products/name/${search}`).then((response) => {
-            setSearchedResults(response.data);
+            if(response.data.length === 0){
+                toast({
+                    title: 'No result found',
+                    description: 'There is no product with this name',
+                });
+            }else{
+                setSearchedResults(response.data);
+            }
+
         }).catch((error) => {
             console.log(error);
         });
