@@ -1,11 +1,13 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 import {Cookie} from '@/utils/Cookie';
 
+const DEFAULT_API = 'https://pharmatic.co/pharmatica';
+
 interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
 }
 
-const backend_url: string = 'http://139.59.233.61:8080/pharmatica';
+const backend_url: string = process.env.NEXT_PUBLIC_API || DEFAULT_API;
 
 const api: ApiInstance = axios.create({
     baseURL: `${backend_url}/api`,
