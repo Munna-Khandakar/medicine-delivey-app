@@ -42,7 +42,7 @@ export const Announcements = () => {
     } = useForm<Announcement>();
 
     const onSubmit: SubmitHandler<Announcement> = (data) => {
-        const url = selectedAnnouncement ? `/announcement/${DEFAULT_ANNOUNCEMENT_ID}` : '/delivery-options';
+        const url = selectedAnnouncement ? `/announcement-update/${DEFAULT_ANNOUNCEMENT_ID}` : '/delivery-options';
         const method = selectedAnnouncement ? 'put' : 'post';
 
         api[method](url, data).then(() => {

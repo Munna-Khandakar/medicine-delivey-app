@@ -7,10 +7,10 @@ interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
 }
 
-const backend_url: string = DEFAULT_API;
+const backend_url: string = process.env.NEXT_PUBLIC_API || DEFAULT_API;
 
 const api: ApiInstance = axios.create({
-    baseURL: `${backend_url}/api`
+    baseURL: `${backend_url}/api`,
 });
 
 api.interceptors.request.use(
