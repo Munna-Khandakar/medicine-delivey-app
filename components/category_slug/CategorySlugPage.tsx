@@ -21,13 +21,8 @@ export const CategorySlugPage = () => {
     const categoryId = Array.isArray(category_id) ? category_id[0] : category_id;
 
     const {
-        data: categories,
-    } = useSWR<Category[]>('categories', fetcher, {revalidateOnFocus: false});
-
-    const getCategoryName = (categoryId: string) => {
-        const category = categories?.find((category) => category.id == categoryId);
-        return category?.label || '-';
-    };
+        data: category,
+    } = useSWR<Category>(`categories/${category_id}`, fetcher, {revalidateOnFocus: false});
 
     const {
         data,
@@ -63,7 +58,12 @@ export const CategorySlugPage = () => {
     return (
         <section className="container py-8 min-h-screen">
             <div className="flex justify-between items-center pb-4">
-                <SectionLabel label={'Category'} subLabel={`${getCategoryName(categoryId)}`}/>
+                {
+                    category
+                        ? <SectionLabel label={'Category'} subLabel={`${category?.label}`}/>
+                        : <Skeleton className="w-[200px] h-8"/>
+                }
+
                 <Select onValueChange={sortProducts}>
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Sort By"/>

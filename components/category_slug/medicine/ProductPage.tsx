@@ -21,7 +21,7 @@ export const ProductPage = (props: ProductPageProps) => {
 
     return (
         <section className="container py-4 md:py-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 ">
+            <div className="grid grid-cols-1 md:grid-cols-1">
                 <div className="col-span-1 md:col-span-2 pr-4">
                     {
                         error &&
@@ -69,18 +69,18 @@ export const ProductPage = (props: ProductPageProps) => {
                     </div>
 
                 </div>
-                <div className="pl-2 my-auto hidden md:block"
-                     style={{
-                         transform: 'translateY(-80%)'
-                     }}>
-                    <div className="p-4 mt-4 border-2 rounded-lg bg-teal-50 border-dashed">
-                        <p className="text-sm text-slate-800 font-semibold mb-2">Offers Just for you</p>
-                        <ul className="text-sm font-normal text-slate-700">
-                            <li>Get extra 10% off</li>
-                            <li>Get free delivery on first delivery</li>
-                        </ul>
-                    </div>
-                </div>
+                {/*<div className="pl-2 my-auto hidden md:block"*/}
+                {/*     style={{*/}
+                {/*         transform: 'translateY(-80%)'*/}
+                {/*     }}>*/}
+                {/*    <div className="p-4 mt-4 border-2 rounded-lg bg-teal-50 border-dashed">*/}
+                {/*        <p className="text-sm text-slate-800 font-semibold mb-2">Offers Just for you</p>*/}
+                {/*        <ul className="text-sm font-normal text-slate-700">*/}
+                {/*            <li>Get extra 10% off</li>*/}
+                {/*            <li>Get free delivery on first delivery</li>*/}
+                {/*        </ul>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
             <div>
                 {
