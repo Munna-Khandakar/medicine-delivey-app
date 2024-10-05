@@ -1,6 +1,6 @@
 import {ReactNode} from 'react';
 import {Inter} from 'next/font/google';
-import { Toaster } from "@/components/ui/toaster"
+import {Toaster} from '@/components/ui/toaster';
 import {TooltipProvider} from '@/components/ui/tooltip';
 import {Navbar} from '@/components/Navbar/Navbar';
 import {Footer} from '@/components/Footer';
@@ -23,12 +23,12 @@ export default function RootLayout({children}: Readonly<{ children: ReactNode; }
         </head>
         <body className={inter.className}>
         <TooltipProvider>
-        <Navbar/>
-        <main>
-            {children}
-        </main>
-        <Toaster />
-        <Footer/>
+            <Navbar/>
+            <main>
+                {children}
+            </main>
+            <Toaster/>
+            <Footer/>
         </TooltipProvider>
         </body>
         </html>
