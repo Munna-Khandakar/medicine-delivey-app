@@ -37,7 +37,7 @@ export const AnnouncementSettings = () => {
     } = useForm<Announcement>();
 
     const onSubmit: SubmitHandler<Announcement> = (data) => {
-        const url = `/announcement/${DEFAULT_ANNOUNCEMENT_ID}`;
+        const url = `/announcement-update/${DEFAULT_ANNOUNCEMENT_ID}`;
         const method = 'put';
 
         api[method](url, data).then(() => {

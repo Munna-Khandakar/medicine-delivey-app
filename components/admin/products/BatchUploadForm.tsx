@@ -70,7 +70,7 @@ export const BatchUploadForm = () => {
                         fileUrl={getValues('filePath')}
                         fileType={'file'}
                         onUploadComplete={(url) => {
-                            const prefix = 'https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/';
+                            const prefix = 'https://pharamatic-storage.sgp1.cdn.digitaloceanspaces.com/';
                             if (url.includes(prefix)) {
                                 url = url.replace(prefix, '');
                                 setValue('filePath', url);
