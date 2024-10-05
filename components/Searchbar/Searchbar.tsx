@@ -11,6 +11,7 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {SearchResultCard} from '@/components/Searchbar/SearchResultCard';
 import {ReactFastMarquee} from '@/components/common/ReactFastMarquee';
 import api from '@/lib/apiInstance';
+import useProductStore from '@/stores/productStore';
 import {ProductType} from '@/types/ProductType';
 import {Announcement} from '@/types/Announcement';
 import './searchbar.css';
@@ -21,13 +22,11 @@ const DEFAULT_ANNOUNCEMENT_ID = 1;
 export const Searchbar = () => {
     const searchInputRef = useRef<HTMLDivElement>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [products, setProducts] = useState<ProductType[]>([]);
+    const [searchProducts, setSearchProducts] = useState<ProductType[]>([]);
+    const {products, isProductsLoading} = useProductStore();
     const [showDropdown, setShowDropdown] = useState(false);
     const [searchDisabled, setSearchDisabled] = useState(true);
-
     const router = useRouter();
-
-    const {data, isLoading} = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
 
     const {
         data: announcement,
@@ -40,9 +39,9 @@ export const Searchbar = () => {
     };
 
     const filterSearch = (query: string) => {
-        if (query && data) {
-            const filteredProducts = data.filter((product) => product.productName.toLowerCase().includes(query.toLowerCase()));
-            setProducts(filteredProducts);
+        if (query && products) {
+            const filteredProducts = products.filter((product) => product.productName.toLowerCase().includes(query.toLowerCase()));
+            setSearchProducts(filteredProducts);
         }
     };
 
@@ -50,11 +49,11 @@ export const Searchbar = () => {
         setSearchDisabled(searchQuery === '');
     }, [searchQuery]);
 
-    // useEffect(() => {
-    //     if (data) {
-    //         setProducts(data);
-    //     }
-    // }, [data, setProducts]);
+    useEffect(() => {
+        if (products) {
+            setSearchProducts(products);
+        }
+    }, [products, setSearchProducts]);
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {
@@ -147,7 +146,7 @@ export const Searchbar = () => {
                         showDropdown && (
                             <ScrollArea className="h-40 w-full py-4">
                                 {
-                                    isLoading && <div className="w-full border-0 p-2 rounded-0 space-y-2">
+                                    isProductsLoading && <div className="w-full border-0 p-2 rounded-0 space-y-2">
                                         <Skeleton className="h-8 w-full"/>
                                         <Skeleton className="h-8 w-full"/>
                                         <Skeleton className="h-8 w-full"/>

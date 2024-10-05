@@ -23,6 +23,7 @@ import api from '@/lib/apiInstance';
 import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
+import useProductStore from '@/stores/productStore';
 
 import MedicineDemo from '../medicine/medicine-demo.png';
 
@@ -32,6 +33,7 @@ export const CartComponent = () => {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem} = useCartStore();
+    const {setProducts, setIsProductsLoading} = useProductStore();
     const [cartItemCount, setCartItemCount] = useState(0);
     const router = useRouter();
 
@@ -46,6 +48,16 @@ export const CartComponent = () => {
     useEffect(() => {
         setCartItemCount(getItemsQuantityCount());
     }, [items, setCartItemCount, getItemsQuantityCount]);
+
+    useEffect(() => {
+        if (data) {
+            setProducts(data);
+        }
+    }, [data, setProducts]);
+
+    useEffect(() => {
+        setIsProductsLoading(isLoading);
+    }, [isLoading, setIsProductsLoading]);
 
     return (
         <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen} direction="right">

@@ -1,6 +1,5 @@
 'use client'
-import useSWR from 'swr';
-import useProductStore from '@/stores/productStore';
+
 import {CategorySection} from '@/components/categorysection/CategorySection';
 import {NewLaunchSection} from '@/components/medicine/NewLaunchSection';
 import {Searchbar} from '@/components/Searchbar/Searchbar';

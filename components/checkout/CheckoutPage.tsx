@@ -10,7 +10,6 @@ import {ScrollArea} from '@/components/ui/scroll-area';
 import {useCartStore} from '@/stores/cartStore';
 import {Button} from '@/components/ui/button';
 import api from '@/lib/apiInstance';
-import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import Bill from '@/components/checkout/Bill';
@@ -21,46 +20,21 @@ import {FileUploader} from '@/components/common/FileUploader';
 import {DeliveryType} from '@/types/DeliveryType';
 import {CheckoutCartCard} from '@/components/medicine/CheckoutCartCard';
 import {DeliveryCard} from '@/components/medicine/DeliveryCard';
+import useProductStore from '@/stores/productStore';
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data);
-
-const deliveryTypes: DeliveryType[] = [
-    {
-        id: 1,
-        title: 'Regular Delivery',
-        description: 'Estimate Delivery 30 mins',
-        rate: 20,
-    },
-    {
-        id: 2,
-        title: 'Urgent Delivery',
-        description: 'Estimate Delivery 24 hrs',
-        rate: 100,
-    },
-    {
-        id: 3,
-        title: 'Courier Delivery',
-        description: 'Estimate Delivery 2-3 working day',
-        rate: 200,
-    }
-];
 
 export const CheckoutPage = () => {
 
     const {toast} = useToast();
     const router = useRouter();
     const [isOrderPlacing, setIsOrderPlacing] = useState(false);
-    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType>(deliveryTypes[0]);
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType>({} as DeliveryType);
     const [imageUrl, setImageUrl] = useState<string>('');
     const [ownUserId, setOwnUserId] = useState<string | null>(null);
     const [isMounted, setIsMounted] = useState(false);
     const {items, getItemsQuantityCount, incrementItem, decrementItem, clearCart} = useCartStore();
-
-    const {
-        data,
-        error,
-        isLoading,
-    } = useSWR<ProductType[]>('products', fetcher, {revalidateOnFocus: false});
+    const {products, isProductsLoading} = useProductStore();
 
     const {
         data: user,
@@ -154,7 +128,7 @@ export const CheckoutPage = () => {
                 <div className="col-span-1 md:col-span-3">
                     <div className="flex flex-col gap-2 md:gap-4">
                         {
-                            isLoading &&
+                            isProductsLoading &&
                             <div className="flex flex-col gap-2">
                                 <Skeleton className="w-full h-[100px]"/>
                                 <Skeleton className="w-full h-[100px]"/>
@@ -162,18 +136,8 @@ export const CheckoutPage = () => {
                             </div>
                         }
                         {
-                            error &&
-                            <Alert variant="destructive">
-                                <ExclamationTriangleIcon className="h-4 w-4"/>
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>
-                                    Sorry, there is something wrong with internet.
-                                </AlertDescription>
-                            </Alert>
-                        }
-                        {
                             items.map((item) => {
-                                const product = data?.find(med => med.productId === item.id);
+                                const product = products?.find(med => med.productId === item.id);
                                 if (product) {
                                     return (
                                         <CheckoutCartCard
@@ -201,7 +165,7 @@ export const CheckoutPage = () => {
                             Your Delivery Type</h1>
                         <h2 className="text-slate-500 font-normal text-xs text-start mb-4">The system administrator may
                             adjust this delivery charge if necessary. You will be notified of any changes.</h2>
-                        <div className="flex flex-col md:flex-row gap-2">
+                        <div className="flex flex-col md:flex-row gap-2 overflow-auto no-scrollbar">
                             {
                                 deliveryOptionsLoading
                                     ? <div

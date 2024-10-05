@@ -3,7 +3,7 @@
 import {SectionLabel} from '@/components/SectionLabel';
 import {useParams} from 'next/navigation';
 import {ProductCard} from '@/components/medicine/ProductCard';
-import api from '@/lib/apiInstance';
+import {fetcher} from '@/lib/apiInstance';
 import useSWR from 'swr';
 import {ProductType} from '@/types/ProductType';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -11,9 +11,14 @@ import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {ExclamationTriangleIcon} from '@radix-ui/react-icons';
 
 const LABEL = 'Similar Products';
-const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
-export const SimilarProducts = () => {
+type SimilarProductsProps = {
+    similarProductId: string,
+}
+
+export const SimilarProducts = (props: SimilarProductsProps) => {
+
+    const {similarProductId} = props;
 
     const {category_id} = useParams();
 
@@ -47,12 +52,13 @@ export const SimilarProducts = () => {
                     </Alert>
                 }
                 {
-                    data?.map((medicine, index) => (
-                        <ProductCard
-                            key={index}
-                            product={medicine}
-                        />
-                    ))
+                    data?.filter((medicine) => medicine.productId !== similarProductId)
+                        .map((medicine, index) => (
+                            <ProductCard
+                                key={index}
+                                product={medicine}
+                            />
+                        ))
                 }
             </div>
         </div>

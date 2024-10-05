@@ -125,7 +125,7 @@ export const PublicFooter = () => {
                         {
                             categories?.slice(0, 3).map((category) => (
                                 <li key={category.label}>
-                                    <a href={`/category/${category.id}`}
+                                    <a href={`/${category.id}`}
                                        className="text-gray-800 hover:text-gray-600 text-sm">{category.label}</a>
                                 </li>
                             ))
