@@ -50,11 +50,11 @@ export const Searchbar = () => {
         setSearchDisabled(searchQuery === '');
     }, [searchQuery]);
 
-    useEffect(() => {
-        if (data) {
-            setProducts(data);
-        }
-    }, [data, setProducts]);
+    // useEffect(() => {
+    //     if (data) {
+    //         setProducts(data);
+    //     }
+    // }, [data, setProducts]);
 
     useEffect(() => {
         const handleClickOutside = (event: any) => {

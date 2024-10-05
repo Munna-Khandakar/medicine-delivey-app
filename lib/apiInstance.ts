@@ -7,7 +7,7 @@ interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
 }
 
-const backend_url: string = process.env.NEXT_PUBLIC_API || DEFAULT_API;
+const backend_url: string = DEFAULT_API;
 
 const api: ApiInstance = axios.create({
     baseURL: `${backend_url}/api`,
@@ -60,5 +60,6 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+export const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 export default api;

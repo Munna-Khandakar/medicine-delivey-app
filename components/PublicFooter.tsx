@@ -5,11 +5,12 @@ import Logo from '@/public/fullLogo.png';
 import api from '@/lib/apiInstance';
 import useSWR from 'swr';
 import {Category} from '@/types/Category';
+import Link from 'next/link';
 
 const SOCIAL_LINKS = {
     FACEBOOK: 'https://www.facebook.com/profile.php?id=61562212855960&mibextid=ZbWKwL',
     YOUTUBE: 'https://www.youtube.com/@Pharmatic24',
-    WHATSAPP: 'https://wa.me/01521329980',
+    WHATSAPP: 'https://wa.me/+8801521329980',
     EMAIL: 'mailto:pharmatic24@gmail.com'
 };
 
@@ -26,9 +27,12 @@ export const PublicFooter = () => {
         <footer className="font-sans tracking-wide bg-[#22D3EE] container py-8 mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
                 <div>
-                    <a href="#">
-                        <Image className="w-24 md:w-44" src={Logo} alt={'logo'}/>
-                    </a>
+                   
+                        <Link href={'/'}>
+                            <Image className="w-24 md:w-44" src={Logo} alt={'logo'}/>
+                        </Link>
+
+
 
                     <ul className="mt-10 flex space-x-5">
                         <li>
