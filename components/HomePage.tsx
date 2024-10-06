@@ -8,8 +8,6 @@ import {Promo} from '@/components/promo/Promo';
 import {TrendingNearYouSection} from '@/components/medicine/TrendingNearYouSection';
 import {SelfAdvertisement} from '@/components/SelfAdvertisement/SelfAdvertisement';
 import {DealsOfTheDay} from '@/components/DealsOfTheDay/DealsOfTheDay';
-import {HealthArticles} from '@/components/HealthArticle/HealthArticles';
-import {WhyChooseUs} from '@/components/WhyChooseUs/WhyChooseUs.';
 import {VideoPlayer} from '@/components/VideoSection/VideoPlayer';
 
 export default function HomePage() {
@@ -29,8 +27,8 @@ export default function HomePage() {
                     videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725699442600_V1.mp4"
                 />
             </section>
-            <HealthArticles/>
-            <WhyChooseUs/>
+            {/*<HealthArticles/>*/}
+            {/*<WhyChooseUs/>*/}
         </main>
     );
 }
