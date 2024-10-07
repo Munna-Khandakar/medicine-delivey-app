@@ -180,6 +180,27 @@ export const AdminHeader = () => {
                             </CommandItem>
                             <CommandItem onSelect={() => {
                                 setOpen(false);
+                                router.push('/admin/customers');
+                            }}>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Customers</span>
+                            </CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
+                                router.push('/admin/settings/deactivated-customers');
+                            }}>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Deactivated Customers</span>
+                            </CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
+                                router.push('/admin/settings/delivery-charge');
+                            }}>
+                                <GearIcon className="mr-2 h-4 w-4"/>
+                                <span>Delivery Charge</span>
+                            </CommandItem>
+                            <CommandItem onSelect={() => {
+                                setOpen(false);
                                 router.push('/logout');
                             }}>
                                 <GearIcon className="mr-2 h-4 w-4"/>
