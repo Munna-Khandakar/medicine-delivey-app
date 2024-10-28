@@ -10,7 +10,7 @@ import Link from 'next/link';
 const SOCIAL_LINKS = {
     FACEBOOK: 'https://www.facebook.com/profile.php?id=61562212855960&mibextid=ZbWKwL',
     YOUTUBE: 'https://www.youtube.com/@Pharmatic24',
-    WHATSAPP: 'https://wa.me/+8801521329980',
+    WHATSAPP: 'https://wa.me/+8801605521145',
     EMAIL: 'mailto:pharmatic24@gmail.com'
 };
 
