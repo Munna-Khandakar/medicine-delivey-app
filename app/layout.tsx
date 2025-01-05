@@ -12,7 +12,7 @@ export default function RootLayout({children}: Readonly<{ children: ReactNode; }
     return (
         <html lang="en">
         <head>
-            <title>PHARMATIC | Beyond Medication</title>
+            <title>PHARMATIC | A Smart Healthcare</title>
             <link rel="icon" href="/icon.ico" sizes="any"/>
             <link
                 rel="icon"
