@@ -49,7 +49,7 @@ export const Promo = () => {
                                 index === 0 ?
                                         <VideoPlayer
                                             height={playerHeight}
-                                            videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725700369279_V2.mp4"
+                                            videoSrc="https://pharamatic-storage.sgp1.cdn.digitaloceanspaces.com/V2.mp4"
                                         />
                                     : <div
                                         className="h-[100px] md:h-[300px]"

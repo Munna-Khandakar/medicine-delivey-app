@@ -24,7 +24,7 @@ export default function HomePage() {
             <DealsOfTheDay/>
             <section className="container mx-auto">
                 <VideoPlayer
-                    videoSrc="https://pharmatica-test.blr1.cdn.digitaloceanspaces.com/1725699442600_V1.mp4"
+                    videoSrc="https://pharamatic-storage.sgp1.cdn.digitaloceanspaces.com/V1-1.mp4"
                 />
             </section>
             {/*<HealthArticles/>*/}
