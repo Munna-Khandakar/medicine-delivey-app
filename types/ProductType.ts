@@ -20,6 +20,7 @@ export type ProductType = {
     brand: Brand;
     strength: string;
     composition: string;
+    similarProducts: string
 }
 
 export type ProductInput = {
@@ -37,6 +38,7 @@ export type ProductInput = {
     stock: number;
     coupons: string[];
     composition: string;
+    similarProducts: string
 }
 
 export interface PaginatedProduct extends Pagination {

@@ -1,7 +1,8 @@
 import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 import {Cookie} from '@/utils/Cookie';
 
-const DEFAULT_API = 'https://pharmatic.co/pharmatica';
+// const DEFAULT_API = 'https://pharmatic.co/pharmatica';
+const DEFAULT_API = 'https://4766-61-247-182-214.ngrok-free.app/pharmatica';
 
 interface ApiInstance extends AxiosInstance {
     (config: AxiosRequestConfig): Promise<any>;
@@ -19,6 +20,7 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        config.headers['ngrok-skip-browser-warning'] = 'true';
         return config;
     },
     (error) => {

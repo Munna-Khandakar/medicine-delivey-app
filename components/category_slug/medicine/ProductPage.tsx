@@ -64,14 +64,14 @@ export const ProductPage = (props: ProductPageProps) => {
                     }
 
                     <hr className="my-6"/>
-                    {/*{*/}
-                    {/*    data &&*/}
-                    {/*    <div className="mb-6">*/}
-                    {/*        <SimilarProducts*/}
-                    {/*            similarProductId={data.productId}*/}
-                    {/*        />*/}
-                    {/*    </div>*/}
-                    {/*}*/}
+                    {
+                        data && data.similarProducts &&
+                        <div className="mb-6">
+                            <SimilarProducts
+                                similarProductId={data.productId}
+                            />
+                        </div>
+                    }
                 </div>
                 {/*<div className="pl-2 my-auto hidden md:block"*/}
                 {/*     style={{*/}
